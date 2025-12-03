@@ -492,6 +492,14 @@ const EnterpriseSoftwarePortfolioNew = () => {
             )}
           </div>
           <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-muted-foreground hover:text-destructive"
+            onClick={handleClearAllFilters}
+          >
+            Clear All Filters
+          </Button>
+          <Button 
             variant="outline" 
             size="sm" 
             className="text-cisco-blue border-cisco-blue hover:bg-cisco-blue/10"
@@ -499,14 +507,6 @@ const EnterpriseSoftwarePortfolioNew = () => {
           >
             <Plus className="h-4 w-4 mr-1" />
             Add Filter
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-muted-foreground hover:text-destructive"
-            onClick={handleClearAllFilters}
-          >
-            Clear All Filters
           </Button>
         </div>
 
