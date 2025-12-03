@@ -354,7 +354,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
 
   // Determine what to show based on tab and view mode
   const showFullTable = activeTab === "table" && viewMode === "all";
-  const showSummarizedTable = activeTab === "table" && viewMode === "summarized" || activeTab === "summarized";
+  const showSummarizedTable = activeTab === "table" && viewMode === "summarized";
   const showAnalytics = activeTab === "analytics";
   const showHistory = activeTab === "history";
 
@@ -515,9 +515,6 @@ const EnterpriseSoftwarePortfolioNew = () => {
           <TabsList className="bg-card border border-border">
             <TabsTrigger value="table" className="data-[state=active]:bg-cisco-blue data-[state=active]:text-white">
               Table View
-            </TabsTrigger>
-            <TabsTrigger value="summarized" className="data-[state=active]:bg-cisco-blue data-[state=active]:text-white">
-              Summarized Fields
             </TabsTrigger>
             <TabsTrigger value="analytics" className="data-[state=active]:bg-cisco-blue data-[state=active]:text-white">
               Analytics
