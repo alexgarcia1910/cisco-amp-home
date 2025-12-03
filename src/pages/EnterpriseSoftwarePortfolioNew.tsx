@@ -93,7 +93,12 @@ const EnterpriseSoftwarePortfolioNew = () => {
   const [activeTab, setActiveTab] = useState("table");
   const [viewMode, setViewMode] = useState<"all" | "summarized">("all");
   const [selectedFilterField, setSelectedFilterField] = useState("");
-  const [selectedFilterValue, setSelectedFilterValue] = useState("");
+  const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>([]);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState<{ field: string; values: string[] }[]>([
+    { field: "Publisher", values: ["Splunk"] },
+    { field: "Status", values: ["Active"] }
+  ]);
 
   const handleActionClick = (row: typeof mockRows[0]) => {
     setSelectedRow(row);
@@ -120,7 +125,51 @@ const EnterpriseSoftwarePortfolioNew = () => {
   const handleAddFilterClose = () => {
     setIsFilterModalOpen(false);
     setSelectedFilterField("");
-    setSelectedFilterValue("");
+    setSelectedFilterValues([]);
+    setIsFilterDropdownOpen(false);
+  };
+
+  const handleApplyFilter = () => {
+    if (selectedFilterField && selectedFilterValues.length > 0) {
+      setAppliedFilters(prev => {
+        const existingIdx = prev.findIndex(f => f.field === selectedFilterField);
+        if (existingIdx >= 0) {
+          const updated = [...prev];
+          updated[existingIdx] = { field: selectedFilterField, values: selectedFilterValues };
+          return updated;
+        }
+        return [...prev, { field: selectedFilterField, values: selectedFilterValues }];
+      });
+    }
+    handleAddFilterClose();
+  };
+
+  const handleRemoveFilterValue = (field: string, value: string) => {
+    setAppliedFilters(prev => 
+      prev.map(f => {
+        if (f.field === field) {
+          const newValues = f.values.filter(v => v !== value);
+          return { ...f, values: newValues };
+        }
+        return f;
+      }).filter(f => f.values.length > 0)
+    );
+  };
+
+  const handleClearAllFilters = () => {
+    setAppliedFilters([]);
+  };
+
+  const toggleFilterValue = (value: string) => {
+    setSelectedFilterValues(prev => 
+      prev.includes(value) 
+        ? prev.filter(v => v !== value)
+        : [...prev, value]
+    );
+  };
+
+  const removeSelectedValue = (value: string) => {
+    setSelectedFilterValues(prev => prev.filter(v => v !== value));
   };
 
   // Determine what to show based on tab and view mode
@@ -226,18 +275,29 @@ const EnterpriseSoftwarePortfolioNew = () => {
         <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border mb-4">
           <span className="text-sm text-muted-foreground">Filtered:</span>
           <div className="flex items-center gap-2 flex-wrap flex-1">
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm text-foreground">
-              Publisher: Splunk
-              <button className="hover:text-destructive">
-                <X className="h-3 w-3" />
-              </button>
-            </span>
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm text-foreground">
-              Status: Active
-              <button className="hover:text-destructive">
-                <X className="h-3 w-3" />
-              </button>
-            </span>
+            {appliedFilters.length === 0 ? (
+              <span className="text-sm text-muted-foreground">No Filters</span>
+            ) : (
+              appliedFilters.map((filter) => (
+                <div key={filter.field} className="flex items-center gap-1">
+                  <span className="text-sm text-muted-foreground">{filter.field}:</span>
+                  {filter.values.map((value) => (
+                    <span 
+                      key={value}
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cisco-blue/10 border border-cisco-blue/30 text-sm text-cisco-blue"
+                    >
+                      {value}
+                      <button 
+                        className="hover:text-destructive ml-1"
+                        onClick={() => handleRemoveFilterValue(filter.field, value)}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              ))
+            )}
           </div>
           <Button 
             variant="outline" 
@@ -248,7 +308,12 @@ const EnterpriseSoftwarePortfolioNew = () => {
             <Plus className="h-4 w-4 mr-1" />
             Add Filter
           </Button>
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-muted-foreground hover:text-destructive"
+            onClick={handleClearAllFilters}
+          >
             Clear All Filters
           </Button>
         </div>
@@ -797,7 +862,13 @@ const EnterpriseSoftwarePortfolioNew = () => {
           <div className="py-4 space-y-4">
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Select Field</label>
-              <Select value={selectedFilterField} onValueChange={setSelectedFilterField}>
+              <Select 
+                value={selectedFilterField} 
+                onValueChange={(value) => {
+                  setSelectedFilterField(value);
+                  setSelectedFilterValues([]);
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Choose a field to filter..." />
                 </SelectTrigger>
@@ -810,23 +881,77 @@ const EnterpriseSoftwarePortfolioNew = () => {
             </div>
             
             <div>
-              <label className="text-sm font-medium text-foreground mb-2 block">Select Value</label>
+              <label className="text-sm font-medium text-foreground mb-2 block">Select Values</label>
+              
+              {/* Selected values as chips */}
+              {selectedFilterValues.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2 p-2 bg-secondary/50 rounded-md border border-border">
+                  {selectedFilterValues.map((value) => (
+                    <span 
+                      key={value}
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-cisco-blue text-white text-sm"
+                    >
+                      {value}
+                      <button 
+                        onClick={() => removeSelectedValue(value)}
+                        className="hover:bg-white/20 rounded-full p-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Multi-select dropdown */}
               {selectedFilterField && filterValues[selectedFilterField] ? (
-                <Select value={selectedFilterValue} onValueChange={setSelectedFilterValue}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a value..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {filterValues[selectedFilterField].map((value) => (
-                      <SelectItem key={value} value={value}>{value}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                    className="flex items-center justify-between w-full h-10 px-3 py-2 text-sm bg-background border border-input rounded-md hover:bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-cisco-blue focus:ring-offset-1"
+                  >
+                    <span className="text-muted-foreground">
+                      {selectedFilterValues.length === 0 
+                        ? "Select values..." 
+                        : `${selectedFilterValues.length} value(s) selected`}
+                    </span>
+                    <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {isFilterDropdownOpen && (
+                    <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                      {filterValues[selectedFilterField].map((value) => (
+                        <button
+                          key={value}
+                          type="button"
+                          onClick={() => toggleFilterValue(value)}
+                          className={`flex items-center gap-2 w-full px-3 py-2 text-sm text-left hover:bg-secondary transition-colors ${
+                            selectedFilterValues.includes(value) ? 'bg-cisco-blue/10 text-cisco-blue' : 'text-foreground'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 rounded border flex items-center justify-center ${
+                            selectedFilterValues.includes(value) 
+                              ? 'bg-cisco-blue border-cisco-blue' 
+                              : 'border-border'
+                          }`}>
+                            {selectedFilterValues.includes(value) && (
+                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                          {value}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ) : (
                 <Input 
-                  placeholder="Enter filter value..." 
-                  value={selectedFilterValue}
-                  onChange={(e) => setSelectedFilterValue(e.target.value)}
+                  placeholder="Select a field first..." 
+                  disabled
+                  className="bg-secondary/50"
                 />
               )}
             </div>
@@ -837,7 +962,8 @@ const EnterpriseSoftwarePortfolioNew = () => {
             </Button>
             <Button 
               className="bg-cisco-blue hover:bg-cisco-blue/90"
-              onClick={handleAddFilterClose}
+              onClick={handleApplyFilter}
+              disabled={selectedFilterValues.length === 0}
             >
               Apply Filter
             </Button>
