@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { 
   Upload, Download, Columns, RefreshCw, HelpCircle, 
   ChevronDown, X, Plus, ChevronLeft, ChevronRight,
-  Edit3, AlertTriangle, BarChart3, Clock, Filter, Search
+  Edit3, AlertTriangle, BarChart3, Clock, Filter, Search,
+  ArrowUp, ArrowDown, ArrowUpDown
 } from "lucide-react";
 import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
@@ -209,6 +210,8 @@ const EnterpriseSoftwarePortfolioNew = () => {
   const [appliedFilters, setAppliedFilters] = useState<{ field: string; values: string[] }[]>([]);
   const [filterSearchQuery, setFilterSearchQuery] = useState("");
   const [visibleColumns, setVisibleColumns] = useState<string[]>(mockColumns);
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const toggleColumnVisibility = (col: string) => {
     if (lockedColumns.includes(col)) return;
@@ -220,7 +223,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
   const displayedColumns = mockColumns.filter(col => visibleColumns.includes(col));
 
   // Filter rows based on applied filters
-  const filteredRows = mockRows.filter(row => {
+  const filteredRows = useMemo(() => mockRows.filter(row => {
     if (appliedFilters.length === 0) return true;
     
     return appliedFilters.every(filter => {
@@ -242,7 +245,38 @@ const EnterpriseSoftwarePortfolioNew = () => {
       const rowValue = row[rowKey] as string;
       return filter.values.includes(rowValue);
     });
-  });
+  }), [appliedFilters]);
+
+  // Sort filtered rows
+  const sortedRows = useMemo(() => {
+    if (!sortColumn) return filteredRows;
+    
+    const key = columnToKeyMap[sortColumn];
+    if (!key) return filteredRows;
+    
+    return [...filteredRows].sort((a, b) => {
+      const aVal = a[key];
+      const bVal = b[key];
+      
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+      
+      return sortDirection === 'asc' 
+        ? String(aVal).localeCompare(String(bVal))
+        : String(bVal).localeCompare(String(aVal));
+    });
+  }, [filteredRows, sortColumn, sortDirection]);
+
+  const handleSort = (col: string) => {
+    if (col === "Action") return;
+    if (sortColumn === col) {
+      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(col);
+      setSortDirection('asc');
+    }
+  };
 
   const handleActionClick = (row: typeof mockRows[0]) => {
     setSelectedRow(row);
@@ -502,20 +536,32 @@ const EnterpriseSoftwarePortfolioNew = () => {
               <table className="w-full text-sm">
                 <thead className="bg-secondary sticky top-0 z-10">
                   <tr>
-                    {displayedColumns.map((col, idx) => (
+                    {displayedColumns.map((col) => (
                       <th 
                         key={col} 
-                        className={`px-3 py-3 text-left font-medium text-foreground whitespace-nowrap border-b border-border ${
-                          col === "Action" ? "sticky left-0 bg-secondary z-20" : ""
+                        onClick={() => handleSort(col)}
+                        className={`px-3 py-3 text-left font-medium text-foreground whitespace-nowrap border-b border-border group ${
+                          col === "Action" ? "sticky left-0 bg-secondary z-20" : "cursor-pointer hover:bg-secondary/80"
                         }`}
                       >
-                        {col}
+                        <div className="flex items-center gap-1">
+                          {col}
+                          {col !== "Action" && (
+                            sortColumn === col ? (
+                              sortDirection === 'asc' 
+                                ? <ArrowUp className="h-3.5 w-3.5 text-cisco-blue" />
+                                : <ArrowDown className="h-3.5 w-3.5 text-cisco-blue" />
+                            ) : (
+                              <ArrowUpDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-50 transition-opacity text-muted-foreground" />
+                            )
+                          )}
+                        </div>
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredRows.map((row) => (
+                  {sortedRows.map((row) => (
                     <tr 
                       key={row.id} 
                       className={`border-b border-border hover:bg-secondary/50 transition-colors ${getRowClassName(row)}`}
@@ -603,18 +649,30 @@ const EnterpriseSoftwarePortfolioNew = () => {
                   <tr>
                     {summarizedColumns.map((col, idx) => (
                       <th 
-                        key={col} 
-                        className={`px-4 py-3 text-left font-medium text-foreground whitespace-nowrap border-b border-border ${
-                          idx === 0 ? "sticky left-0 bg-secondary z-20" : ""
+                        key={col}
+                        onClick={() => handleSort(col)}
+                        className={`px-4 py-3 text-left font-medium text-foreground whitespace-nowrap border-b border-border group ${
+                          idx === 0 ? "sticky left-0 bg-secondary z-20" : "cursor-pointer hover:bg-secondary/80"
                         }`}
                       >
-                        {col}
+                        <div className="flex items-center gap-1">
+                          {col}
+                          {col !== "Action" && (
+                            sortColumn === col ? (
+                              sortDirection === 'asc' 
+                                ? <ArrowUp className="h-3.5 w-3.5 text-cisco-blue" />
+                                : <ArrowDown className="h-3.5 w-3.5 text-cisco-blue" />
+                            ) : (
+                              <ArrowUpDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-50 transition-opacity text-muted-foreground" />
+                            )
+                          )}
+                        </div>
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredRows.map((row) => (
+                  {sortedRows.map((row) => (
                     <tr 
                       key={row.id} 
                       className={`border-b border-border hover:bg-secondary/50 transition-colors ${getRowClassName(row)}`}
