@@ -161,6 +161,40 @@ const lockedColumns = ["Action", "PO Number", "Publisher", "Product Name"];
 // Summarized columns for simplified view
 const summarizedColumns = ["Action", "PO Number", "Publisher", "Product Name", "License Type", "Total Cost", "Business Owner", "Department"];
 
+// Column to row property mapping
+const columnToKeyMap: Record<string, keyof typeof mockRows[0] | null> = {
+  "Action": null,
+  "PO Number": "poNumber",
+  "Publisher": "publisher",
+  "Product Name": "product",
+  "License Type": "licenseType",
+  "Quantity": "quantity",
+  "Unit Cost": "unitCost",
+  "Total Cost": "totalCost",
+  "Start Date": "startDate",
+  "End Date": "endDate",
+  "Business Owner": "businessOwner",
+  "Cost Center": "costCenter",
+  "Department": "department",
+  "GL Account": "glAccount",
+  "Tax Region": "taxRegion",
+  "Currency": "currency",
+  "Contract ID": "contractId",
+  "Vendor ID": "vendorId",
+  "Asset Tag": "assetTag",
+  "Serial Number": "serialNumber",
+  "Support Level": "supportLevel",
+  "Renewal Status": "renewalStatus",
+  "Compliance Status": "complianceStatus",
+  "Last Audit": "lastAudit",
+  "Notes": "notes",
+  "Created By": "createdBy",
+  "Created Date": "createdDate",
+  "Modified By": "modifiedBy",
+  "Modified Date": "modifiedDate",
+  "Approval Status": "approvalStatus"
+};
+
 const EnterpriseSoftwarePortfolioNew = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isPiiModalOpen, setIsPiiModalOpen] = useState(false);
@@ -174,6 +208,16 @@ const EnterpriseSoftwarePortfolioNew = () => {
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<{ field: string; values: string[] }[]>([]);
   const [filterSearchQuery, setFilterSearchQuery] = useState("");
+  const [visibleColumns, setVisibleColumns] = useState<string[]>(mockColumns);
+
+  const toggleColumnVisibility = (col: string) => {
+    if (lockedColumns.includes(col)) return;
+    setVisibleColumns(prev => 
+      prev.includes(col) ? prev.filter(c => c !== col) : [...prev, col]
+    );
+  };
+
+  const displayedColumns = mockColumns.filter(col => visibleColumns.includes(col));
 
   // Filter rows based on applied filters
   const filteredRows = mockRows.filter(row => {
@@ -458,11 +502,11 @@ const EnterpriseSoftwarePortfolioNew = () => {
               <table className="w-full text-sm">
                 <thead className="bg-secondary sticky top-0 z-10">
                   <tr>
-                    {mockColumns.map((col, idx) => (
+                    {displayedColumns.map((col, idx) => (
                       <th 
                         key={col} 
                         className={`px-3 py-3 text-left font-medium text-foreground whitespace-nowrap border-b border-border ${
-                          idx === 0 ? "sticky left-0 bg-secondary z-20" : ""
+                          col === "Action" ? "sticky left-0 bg-secondary z-20" : ""
                         }`}
                       >
                         {col}
@@ -476,69 +520,72 @@ const EnterpriseSoftwarePortfolioNew = () => {
                       key={row.id} 
                       className={`border-b border-border hover:bg-secondary/50 transition-colors ${getRowClassName(row)}`}
                     >
-                      <td className="px-3 py-2 sticky left-0 bg-card z-10 border-r border-border">
-                        <button 
-                          onClick={() => handleActionClick(row)}
-                          className="p-1.5 rounded hover:bg-cisco-blue/10 text-cisco-blue transition-colors"
-                        >
-                          <Edit3 className="h-4 w-4" />
-                        </button>
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.poNumber}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.publisher}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.product}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.licenseType}</td>
-                      <td className="px-3 py-2 whitespace-nowrap text-right">{row.quantity}</td>
-                      <td className="px-3 py-2 whitespace-nowrap text-right">${row.unitCost}</td>
-                      <td className="px-3 py-2 whitespace-nowrap text-right">${row.totalCost.toLocaleString()}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.startDate}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.endDate}</td>
-                      <td className={`px-3 py-2 whitespace-nowrap ${getCellHighlight(row, "businessOwner")}`}>
-                        {row.businessOwner || <span className="text-red-500 italic">Missing</span>}
-                      </td>
-                      <td className={`px-3 py-2 whitespace-nowrap ${getCellHighlight(row, "costCenter")}`}>
-                        {row.costCenter || <span className="text-yellow-600 italic">Missing</span>}
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.department}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.glAccount}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.taxRegion}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.currency}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.contractId}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.vendorId}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.assetTag}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.serialNumber}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.supportLevel}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        <span className={`px-2 py-0.5 rounded-full text-xs ${
-                          row.renewalStatus === "Active" ? "bg-green-100 text-green-700" :
-                          row.renewalStatus === "Pending" ? "bg-yellow-100 text-yellow-700" :
-                          "bg-gray-100 text-gray-600"
-                        }`}>
-                          {row.renewalStatus}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        <span className={`px-2 py-0.5 rounded-full text-xs ${
-                          row.complianceStatus === "Compliant" ? "bg-green-100 text-green-700" :
-                          "bg-yellow-100 text-yellow-700"
-                        }`}>
-                          {row.complianceStatus}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.lastAudit}</td>
-                      <td className="px-3 py-2 whitespace-nowrap max-w-[150px] truncate">{row.notes}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.createdBy}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.createdDate}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.modifiedBy}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">{row.modifiedDate}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        <span className={`px-2 py-0.5 rounded-full text-xs ${
-                          row.approvalStatus === "Approved" ? "bg-green-100 text-green-700" :
-                          "bg-yellow-100 text-yellow-700"
-                        }`}>
-                          {row.approvalStatus}
-                        </span>
-                      </td>
+                      {displayedColumns.map((col) => {
+                        if (col === "Action") {
+                          return (
+                            <td key={col} className="px-3 py-2 sticky left-0 bg-card z-10 border-r border-border">
+                              <button 
+                                onClick={() => handleActionClick(row)}
+                                className="p-1.5 rounded hover:bg-cisco-blue/10 text-cisco-blue transition-colors"
+                              >
+                                <Edit3 className="h-4 w-4" />
+                              </button>
+                            </td>
+                          );
+                        }
+                        
+                        const key = columnToKeyMap[col];
+                        if (!key) return <td key={col} className="px-3 py-2 whitespace-nowrap">-</td>;
+                        
+                        const value = row[key];
+                        
+                        // Special rendering for certain columns
+                        if (col === "Business Owner") {
+                          return (
+                            <td key={col} className={`px-3 py-2 whitespace-nowrap ${getCellHighlight(row, "businessOwner")}`}>
+                              {value || <span className="text-red-500 italic">Missing</span>}
+                            </td>
+                          );
+                        }
+                        if (col === "Cost Center") {
+                          return (
+                            <td key={col} className={`px-3 py-2 whitespace-nowrap ${getCellHighlight(row, "costCenter")}`}>
+                              {value || <span className="text-yellow-600 italic">Missing</span>}
+                            </td>
+                          );
+                        }
+                        if (col === "Renewal Status" || col === "Compliance Status" || col === "Approval Status") {
+                          const statusValue = String(value);
+                          return (
+                            <td key={col} className="px-3 py-2 whitespace-nowrap">
+                              <span className={`px-2 py-0.5 rounded-full text-xs ${
+                                statusValue === "Active" || statusValue === "Compliant" || statusValue === "Approved" 
+                                  ? "bg-green-100 text-green-700" 
+                                  : statusValue === "Pending" || statusValue === "Review"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-gray-100 text-gray-600"
+                              }`}>
+                                {statusValue}
+                              </span>
+                            </td>
+                          );
+                        }
+                        if (col === "Unit Cost" || col === "Total Cost") {
+                          return (
+                            <td key={col} className="px-3 py-2 whitespace-nowrap text-right">
+                              ${typeof value === 'number' ? value.toLocaleString() : value}
+                            </td>
+                          );
+                        }
+                        if (col === "Quantity") {
+                          return <td key={col} className="px-3 py-2 whitespace-nowrap text-right">{value}</td>;
+                        }
+                        if (col === "Notes") {
+                          return <td key={col} className="px-3 py-2 whitespace-nowrap max-w-[150px] truncate">{value}</td>;
+                        }
+                        
+                        return <td key={col} className="px-3 py-2 whitespace-nowrap">{value}</td>;
+                      })}
                     </tr>
                   ))}
                 </tbody>
@@ -917,12 +964,14 @@ const EnterpriseSoftwarePortfolioNew = () => {
                 return (
                   <div 
                     key={col}
-                    className={`flex items-center gap-3 p-2 rounded ${isLocked ? "bg-secondary" : "hover:bg-secondary/50"}`}
+                    className={`flex items-center gap-3 p-2 rounded ${isLocked ? "bg-secondary" : "hover:bg-secondary/50 cursor-pointer"}`}
+                    onClick={() => !isLocked && toggleColumnVisibility(col)}
                   >
                     <Checkbox 
                       id={col} 
-                      defaultChecked 
+                      checked={visibleColumns.includes(col)}
                       disabled={isLocked}
+                      onCheckedChange={() => !isLocked && toggleColumnVisibility(col)}
                       className={isLocked ? "opacity-50" : ""}
                     />
                     <label 
@@ -939,13 +988,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
           </div>
           <DialogFooter className="border-t border-border pt-4">
             <Button variant="outline" onClick={() => setIsColumnModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button 
-              className="bg-cisco-blue hover:bg-cisco-blue/90"
-              onClick={() => setIsColumnModalOpen(false)}
-            >
-              Apply
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
