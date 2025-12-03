@@ -212,6 +212,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>(mockColumns);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [selectedFiscalYear, setSelectedFiscalYear] = useState("2025");
 
   const toggleColumnVisibility = (col: string) => {
     if (lockedColumns.includes(col)) return;
@@ -365,7 +366,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
         {/* Page Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">
-            <Select defaultValue="2025">
+            <Select value={selectedFiscalYear} onValueChange={setSelectedFiscalYear}>
               <SelectTrigger className="w-[140px] bg-card border-border">
                 <SelectValue placeholder="Fiscal Year" />
               </SelectTrigger>
@@ -388,7 +389,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
               </SelectContent>
             </Select>
             <h1 className="text-xl font-semibold text-foreground">
-              Enterprise Software Portfolio – Fiscal Year 2024
+              Enterprise Software Portfolio – Fiscal Year {selectedFiscalYear}
             </h1>
           </div>
           
