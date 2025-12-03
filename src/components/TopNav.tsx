@@ -4,7 +4,7 @@ import ciscoLogo from "@/assets/cisco-logo.png";
 const TopNav = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-card border-b border-border">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo / Brand */}
           <div className="flex items-center gap-3">
