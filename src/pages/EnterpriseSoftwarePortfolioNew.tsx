@@ -365,14 +365,16 @@ const EnterpriseSoftwarePortfolioNew = () => {
         {/* Page Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">
-            <Select defaultValue="2024">
+            <Select defaultValue="2025">
               <SelectTrigger className="w-[140px] bg-card border-border">
                 <SelectValue placeholder="Fiscal Year" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="2025">FY 2025</SelectItem>
                 <SelectItem value="2024">FY 2024</SelectItem>
                 <SelectItem value="2023">FY 2023</SelectItem>
                 <SelectItem value="2022">FY 2022</SelectItem>
+                <SelectItem value="2021">FY 2021</SelectItem>
               </SelectContent>
             </Select>
             <h1 className="text-xl font-semibold text-foreground">
