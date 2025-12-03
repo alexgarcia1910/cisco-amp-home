@@ -41,16 +41,91 @@ const mockColumns = [
   "Created Date", "Modified By", "Modified Date", "Approval Status"
 ];
 
-const mockRows = [
-  { id: 1, poNumber: "PO-2024-001", publisher: "Splunk", product: "Splunk Enterprise", licenseType: "Subscription", quantity: 100, unitCost: 150, totalCost: 15000, startDate: "2024-01-01", endDate: "2024-12-31", businessOwner: "John Smith", costCenter: "CC-1001", department: "IT Security", glAccount: "5200-01", taxRegion: "US-CA", currency: "USD", contractId: "CNT-001", vendorId: "V-001", assetTag: "AT-001", serialNumber: "SN-001", supportLevel: "Premium", renewalStatus: "Active", complianceStatus: "Compliant", lastAudit: "2024-03-15", notes: "Annual renewal", createdBy: "Admin", createdDate: "2024-01-01", modifiedBy: "Admin", modifiedDate: "2024-03-01", approvalStatus: "Approved", hasRedFlag: false, hasYellowFlag: false },
-  { id: 2, poNumber: "PO-2024-002", publisher: "Microsoft", product: "Azure DevOps", licenseType: "Perpetual", quantity: 50, unitCost: 200, totalCost: 10000, startDate: "2024-02-01", endDate: "2025-01-31", businessOwner: "", costCenter: "CC-1002", department: "Engineering", glAccount: "5200-02", taxRegion: "US-TX", currency: "USD", contractId: "CNT-002", vendorId: "V-002", assetTag: "AT-002", serialNumber: "SN-002", supportLevel: "Standard", renewalStatus: "Pending", complianceStatus: "Review", lastAudit: "2024-02-20", notes: "", createdBy: "Admin", createdDate: "2024-02-01", modifiedBy: "User1", modifiedDate: "2024-03-10", approvalStatus: "Pending", hasRedFlag: true, hasYellowFlag: false },
-  { id: 3, poNumber: "PO-2024-003", publisher: "Salesforce", product: "Sales Cloud", licenseType: "Subscription", quantity: 200, unitCost: 125, totalCost: 25000, startDate: "2024-03-01", endDate: "2025-02-28", businessOwner: "Jane Doe", costCenter: "", department: "Sales", glAccount: "5200-03", taxRegion: "US-NY", currency: "USD", contractId: "CNT-003", vendorId: "V-003", assetTag: "AT-003", serialNumber: "SN-003", supportLevel: "Premium", renewalStatus: "Active", complianceStatus: "Compliant", lastAudit: "2024-03-01", notes: "Multi-year deal", createdBy: "Admin", createdDate: "2024-03-01", modifiedBy: "Admin", modifiedDate: "2024-03-01", approvalStatus: "Approved", hasRedFlag: false, hasYellowFlag: true },
-  { id: 4, poNumber: "PO-2024-004", publisher: "ServiceNow", product: "ITSM Pro", licenseType: "Subscription", quantity: 75, unitCost: 300, totalCost: 22500, startDate: "2024-01-15", endDate: "2025-01-14", businessOwner: "Mike Johnson", costCenter: "CC-1004", department: "IT Operations", glAccount: "5200-04", taxRegion: "US-WA", currency: "USD", contractId: "CNT-004", vendorId: "V-004", assetTag: "AT-004", serialNumber: "SN-004", supportLevel: "Premium", renewalStatus: "Active", complianceStatus: "Compliant", lastAudit: "2024-02-28", notes: "", createdBy: "Admin", createdDate: "2024-01-15", modifiedBy: "Admin", modifiedDate: "2024-02-15", approvalStatus: "Approved", hasRedFlag: false, hasYellowFlag: false },
-  { id: 5, poNumber: "PO-2024-005", publisher: "Tableau", product: "Tableau Desktop", licenseType: "Perpetual", quantity: 30, unitCost: 500, totalCost: 15000, startDate: "2024-04-01", endDate: "N/A", businessOwner: "", costCenter: "", department: "Analytics", glAccount: "5200-05", taxRegion: "US-IL", currency: "USD", contractId: "CNT-005", vendorId: "V-005", assetTag: "AT-005", serialNumber: "SN-005", supportLevel: "Standard", renewalStatus: "N/A", complianceStatus: "Review", lastAudit: "2024-04-01", notes: "One-time purchase", createdBy: "Admin", createdDate: "2024-04-01", modifiedBy: "Admin", modifiedDate: "2024-04-01", approvalStatus: "Pending", hasRedFlag: true, hasYellowFlag: true },
-  { id: 6, poNumber: "PO-2024-006", publisher: "Adobe", product: "Creative Cloud", licenseType: "Subscription", quantity: 150, unitCost: 55, totalCost: 8250, startDate: "2024-02-15", endDate: "2025-02-14", businessOwner: "Sarah Wilson", costCenter: "CC-1006", department: "Marketing", glAccount: "5200-06", taxRegion: "US-CA", currency: "USD", contractId: "CNT-006", vendorId: "V-006", assetTag: "AT-006", serialNumber: "SN-006", supportLevel: "Standard", renewalStatus: "Active", complianceStatus: "Compliant", lastAudit: "2024-03-10", notes: "", createdBy: "Admin", createdDate: "2024-02-15", modifiedBy: "User2", modifiedDate: "2024-03-05", approvalStatus: "Approved", hasRedFlag: false, hasYellowFlag: false },
-  { id: 7, poNumber: "PO-2024-007", publisher: "Atlassian", product: "Jira Software", licenseType: "Subscription", quantity: 500, unitCost: 7, totalCost: 3500, startDate: "2024-01-01", endDate: "2024-12-31", businessOwner: "Tom Brown", costCenter: "CC-1007", department: "Engineering", glAccount: "5200-07", taxRegion: "US-OR", currency: "USD", contractId: "CNT-007", vendorId: "V-007", assetTag: "AT-007", serialNumber: "SN-007", supportLevel: "Premium", renewalStatus: "Active", complianceStatus: "Compliant", lastAudit: "2024-01-15", notes: "Cloud hosted", createdBy: "Admin", createdDate: "2024-01-01", modifiedBy: "Admin", modifiedDate: "2024-01-01", approvalStatus: "Approved", hasRedFlag: false, hasYellowFlag: false },
-  { id: 8, poNumber: "PO-2024-008", publisher: "Okta", product: "Workforce Identity", licenseType: "Subscription", quantity: 1000, unitCost: 4, totalCost: 4000, startDate: "2024-03-01", endDate: "2025-02-28", businessOwner: "", costCenter: "CC-1008", department: "IT Security", glAccount: "5200-08", taxRegion: "US-AZ", currency: "USD", contractId: "CNT-008", vendorId: "V-008", assetTag: "AT-008", serialNumber: "SN-008", supportLevel: "Premium", renewalStatus: "Active", complianceStatus: "Review", lastAudit: "2024-03-20", notes: "SSO implementation", createdBy: "Admin", createdDate: "2024-03-01", modifiedBy: "Admin", modifiedDate: "2024-03-15", approvalStatus: "Approved", hasRedFlag: true, hasYellowFlag: false },
-];
+// Helper to generate 100 mock rows
+const publishers = ["Splunk", "Microsoft", "Salesforce", "ServiceNow", "Tableau", "Adobe", "Atlassian", "Okta", "SAP", "Oracle", "IBM", "VMware", "Cisco", "AWS", "Google Cloud"];
+const products: Record<string, string[]> = {
+  "Splunk": ["Splunk Enterprise", "Splunk Cloud", "Splunk SOAR"],
+  "Microsoft": ["Azure DevOps", "Office 365", "Power BI", "Dynamics 365"],
+  "Salesforce": ["Sales Cloud", "Service Cloud", "Marketing Cloud"],
+  "ServiceNow": ["ITSM Pro", "ITOM", "SecOps"],
+  "Tableau": ["Tableau Desktop", "Tableau Server", "Tableau Online"],
+  "Adobe": ["Creative Cloud", "Experience Cloud", "Document Cloud"],
+  "Atlassian": ["Jira Software", "Confluence", "Bitbucket"],
+  "Okta": ["Workforce Identity", "Customer Identity"],
+  "SAP": ["S/4HANA", "SuccessFactors", "Ariba"],
+  "Oracle": ["ERP Cloud", "HCM Cloud", "Database"],
+  "IBM": ["Watson", "Cloud Pak", "Maximo"],
+  "VMware": ["vSphere", "NSX", "Horizon"],
+  "Cisco": ["Webex", "Meraki", "Umbrella"],
+  "AWS": ["EC2", "S3", "Lambda"],
+  "Google Cloud": ["BigQuery", "GKE", "Cloud Run"]
+};
+const licenseTypes = ["Subscription", "Perpetual", "Trial"];
+const departments = ["IT Security", "Engineering", "Sales", "IT Operations", "Analytics", "Marketing", "Finance", "HR", "Legal", "Product"];
+const businessUnits = ["Corporate IT", "Product Development", "Sales Operations", "Customer Success", "Finance", "Human Resources"];
+const renewalStatuses = ["Active", "Pending", "N/A", "Expired"];
+const complianceStatuses = ["Compliant", "Review", "Non-Compliant"];
+const approvalStatuses = ["Approved", "Pending", "Rejected", "Draft"];
+const businessOwners = ["John Smith", "Jane Doe", "Mike Johnson", "Sarah Wilson", "Tom Brown", "Emily Davis", "Chris Lee", "Anna Martinez", "David Chen", "Lisa Wang", ""];
+
+const generateMockRows = () => {
+  const rows = [];
+  for (let i = 1; i <= 100; i++) {
+    const publisher = publishers[Math.floor(Math.random() * publishers.length)];
+    const publisherProducts = products[publisher] || ["Default Product"];
+    const product = publisherProducts[Math.floor(Math.random() * publisherProducts.length)];
+    const licenseType = licenseTypes[Math.floor(Math.random() * licenseTypes.length)];
+    const department = departments[Math.floor(Math.random() * departments.length)];
+    const businessUnit = businessUnits[Math.floor(Math.random() * businessUnits.length)];
+    const renewalStatus = renewalStatuses[Math.floor(Math.random() * renewalStatuses.length)];
+    const complianceStatus = complianceStatuses[Math.floor(Math.random() * complianceStatuses.length)];
+    const approvalStatus = approvalStatuses[Math.floor(Math.random() * approvalStatuses.length)];
+    const businessOwner = businessOwners[Math.floor(Math.random() * businessOwners.length)];
+    const quantity = Math.floor(Math.random() * 500) + 10;
+    const unitCost = Math.floor(Math.random() * 500) + 10;
+    const hasRedFlag = Math.random() < 0.15;
+    const hasYellowFlag = Math.random() < 0.2;
+    
+    rows.push({
+      id: i,
+      poNumber: `PO-2024-${String(i).padStart(3, '0')}`,
+      publisher,
+      product,
+      licenseType,
+      quantity,
+      unitCost,
+      totalCost: quantity * unitCost,
+      startDate: `2024-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-01`,
+      endDate: licenseType === "Perpetual" ? "N/A" : `2025-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-28`,
+      businessOwner,
+      costCenter: Math.random() > 0.2 ? `CC-${1000 + i}` : "",
+      department,
+      businessUnit,
+      glAccount: `5200-${String(i).padStart(2, '0')}`,
+      taxRegion: ["US-CA", "US-TX", "US-NY", "US-WA", "US-IL"][Math.floor(Math.random() * 5)],
+      currency: "USD",
+      contractId: `CNT-${String(i).padStart(3, '0')}`,
+      vendorId: `V-${String(i).padStart(3, '0')}`,
+      assetTag: `AT-${String(i).padStart(3, '0')}`,
+      serialNumber: `SN-${String(i).padStart(3, '0')}`,
+      supportLevel: Math.random() > 0.5 ? "Premium" : "Standard",
+      renewalStatus,
+      complianceStatus,
+      lastAudit: `2024-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`,
+      notes: Math.random() > 0.7 ? "Auto-generated note" : "",
+      createdBy: "Admin",
+      createdDate: "2024-01-01",
+      modifiedBy: "Admin",
+      modifiedDate: "2024-03-01",
+      approvalStatus,
+      hasRedFlag,
+      hasYellowFlag
+    });
+  }
+  return rows;
+};
+
+const mockRows = generateMockRows();
 
 // Mock change history data
 const changeHistoryData = [
@@ -64,22 +139,21 @@ const changeHistoryData = [
 
 // Filter field options
 const filterFields = [
-  "Publisher", "Status", "PO Number", "Product Name", "Business Unit", 
+  "Publisher", "Product Name", "PO Number", "Business Unit", 
   "Department", "License Type", "Renewal Status", "Compliance Status", "Approval Status"
 ];
 
-// Filter value options (mock)
+// Generate filter values dynamically from mock data
 const filterValues: Record<string, string[]> = {
-  "Publisher": ["Splunk", "Microsoft", "Salesforce", "ServiceNow", "Tableau", "Adobe", "Atlassian", "Okta"],
-  "Status": ["Active", "Pending", "Expired", "Draft"],
-  "License Type": ["Subscription", "Perpetual", "Trial"],
-  "Renewal Status": ["Active", "Pending", "N/A", "Expired"],
-  "Compliance Status": ["Compliant", "Review", "Non-Compliant"],
-  "Approval Status": ["Approved", "Pending", "Rejected", "Draft"],
-  "Department": ["IT Security", "Engineering", "Sales", "IT Operations", "Analytics", "Marketing"],
-  "PO Number": ["PO-2024-001", "PO-2024-002", "PO-2024-003", "PO-2024-004", "PO-2024-005", "PO-2024-006", "PO-2024-007", "PO-2024-008"],
-  "Product Name": ["Splunk Enterprise", "Azure DevOps", "Sales Cloud", "ITSM Pro", "Tableau Desktop", "Creative Cloud", "Jira Software", "Workforce Identity"],
-  "Business Unit": ["Corporate IT", "Product Development", "Sales Operations", "Customer Success", "Finance", "Human Resources"],
+  "Publisher": publishers,
+  "License Type": licenseTypes,
+  "Renewal Status": renewalStatuses,
+  "Compliance Status": complianceStatuses,
+  "Approval Status": approvalStatuses,
+  "Department": departments,
+  "Business Unit": businessUnits,
+  "PO Number": mockRows.map(r => r.poNumber),
+  "Product Name": [...new Set(mockRows.map(r => r.product))],
 };
 
 const lockedColumns = ["Action", "PO Number", "Publisher", "Product Name"];
@@ -98,11 +172,33 @@ const EnterpriseSoftwarePortfolioNew = () => {
   const [selectedFilterField, setSelectedFilterField] = useState("");
   const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>([]);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState<{ field: string; values: string[] }[]>([
-    { field: "Publisher", values: ["Splunk"] },
-    { field: "Status", values: ["Active"] }
-  ]);
+  const [appliedFilters, setAppliedFilters] = useState<{ field: string; values: string[] }[]>([]);
   const [filterSearchQuery, setFilterSearchQuery] = useState("");
+
+  // Filter rows based on applied filters
+  const filteredRows = mockRows.filter(row => {
+    if (appliedFilters.length === 0) return true;
+    
+    return appliedFilters.every(filter => {
+      const fieldMap: Record<string, keyof typeof row> = {
+        "Publisher": "publisher",
+        "Product Name": "product",
+        "PO Number": "poNumber",
+        "Business Unit": "businessUnit",
+        "Department": "department",
+        "License Type": "licenseType",
+        "Renewal Status": "renewalStatus",
+        "Compliance Status": "complianceStatus",
+        "Approval Status": "approvalStatus"
+      };
+      
+      const rowKey = fieldMap[filter.field];
+      if (!rowKey) return true;
+      
+      const rowValue = row[rowKey] as string;
+      return filter.values.includes(rowValue);
+    });
+  });
 
   const handleActionClick = (row: typeof mockRows[0]) => {
     setSelectedRow(row);
@@ -375,7 +471,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {mockRows.map((row) => (
+                  {filteredRows.map((row) => (
                     <tr 
                       key={row.id} 
                       className={`border-b border-border hover:bg-secondary/50 transition-colors ${getRowClassName(row)}`}
@@ -471,7 +567,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {mockRows.map((row) => (
+                  {filteredRows.map((row) => (
                     <tr 
                       key={row.id} 
                       className={`border-b border-border hover:bg-secondary/50 transition-colors ${getRowClassName(row)}`}
