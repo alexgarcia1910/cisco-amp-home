@@ -1,5 +1,6 @@
 import { NavLink } from "@/components/NavLink";
 import {
+  Home,
   LayoutDashboard,
   Shield,
   Wrench,
@@ -11,7 +12,8 @@ import {
 } from "lucide-react";
 
 const sidebarItems = [
-  { title: "Dashboard", icon: LayoutDashboard, path: "/admin" },
+  { title: "Home", icon: Home, path: "/admin" },
+  { title: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
   { title: "Admin View", icon: Shield, path: "/admin/view" },
   { title: "Tool Kits", icon: Wrench, path: "/admin/toolkits" },
   { title: "Artifacts", icon: FileBox, path: "/admin/artifacts" },

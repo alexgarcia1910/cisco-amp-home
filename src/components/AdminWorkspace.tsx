@@ -1,4 +1,6 @@
+import { useLocation } from "react-router-dom";
 import { Users, Shield, Wrench, Building2 } from "lucide-react";
+import ModuleGrid from "@/components/ModuleGrid";
 
 const adminCards = [
   {
@@ -24,6 +26,25 @@ const adminCards = [
 ];
 
 const AdminWorkspace = () => {
+  const location = useLocation();
+  const isHome = location.pathname === "/admin";
+
+  if (isHome) {
+    return (
+      <div className="flex-1 p-8">
+        <div className="mb-2">
+          <span className="text-sm text-muted-foreground">
+            Admin / <span className="text-foreground">Home</span>
+          </span>
+        </div>
+        <h1 className="text-2xl font-semibold text-foreground mb-8">
+          Asset Management Platform
+        </h1>
+        <ModuleGrid />
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 p-8">
       {/* Breadcrumb */}
