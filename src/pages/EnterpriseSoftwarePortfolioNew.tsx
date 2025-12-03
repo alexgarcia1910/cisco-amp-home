@@ -2,7 +2,7 @@ import { useState } from "react";
 import { 
   Upload, Download, Columns, RefreshCw, HelpCircle, 
   ChevronDown, X, Plus, ChevronLeft, ChevronRight,
-  Edit3, AlertTriangle, BarChart3, Clock, Filter
+  Edit3, AlertTriangle, BarChart3, Clock, Filter, Search
 } from "lucide-react";
 import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
@@ -99,6 +99,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
     { field: "Publisher", values: ["Splunk"] },
     { field: "Status", values: ["Active"] }
   ]);
+  const [filterSearchQuery, setFilterSearchQuery] = useState("");
 
   const handleActionClick = (row: typeof mockRows[0]) => {
     setSelectedRow(row);
@@ -127,6 +128,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
     setSelectedFilterField("");
     setSelectedFilterValues([]);
     setIsFilterDropdownOpen(false);
+    setFilterSearchQuery("");
   };
 
   const handleApplyFilter = () => {
@@ -867,6 +869,7 @@ const EnterpriseSoftwarePortfolioNew = () => {
                 onValueChange={(value) => {
                   setSelectedFilterField(value);
                   setSelectedFilterValues([]);
+                  setFilterSearchQuery("");
                 }}
               >
                 <SelectTrigger>
@@ -920,30 +923,64 @@ const EnterpriseSoftwarePortfolioNew = () => {
                   </button>
                   
                   {isFilterDropdownOpen && (
-                    <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
-                      {filterValues[selectedFilterField].map((value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          onClick={() => toggleFilterValue(value)}
-                          className={`flex items-center gap-2 w-full px-3 py-2 text-sm text-left hover:bg-secondary transition-colors ${
-                            selectedFilterValues.includes(value) ? 'bg-cisco-blue/10 text-cisco-blue' : 'text-foreground'
-                          }`}
-                        >
-                          <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                            selectedFilterValues.includes(value) 
-                              ? 'bg-cisco-blue border-cisco-blue' 
-                              : 'border-border'
-                          }`}>
-                            {selectedFilterValues.includes(value) && (
-                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                              </svg>
-                            )}
+                    <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-md shadow-lg">
+                      {/* Search input */}
+                      <div className="p-2 border-b border-border">
+                        <div className="relative">
+                          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <input
+                            type="text"
+                            placeholder={`Search ${selectedFilterField.toLowerCase()}...`}
+                            value={filterSearchQuery}
+                            onChange={(e) => setFilterSearchQuery(e.target.value)}
+                            className="w-full pl-8 pr-3 py-2 text-sm bg-secondary/50 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-cisco-blue focus:border-transparent"
+                            autoFocus
+                          />
+                        </div>
+                        {filterSearchQuery && (
+                          <div className="mt-1 text-xs text-muted-foreground">
+                            Showing {filterValues[selectedFilterField].filter(v => 
+                              v.toLowerCase().includes(filterSearchQuery.toLowerCase())
+                            ).length} of {filterValues[selectedFilterField].length}
                           </div>
-                          {value}
-                        </button>
-                      ))}
+                        )}
+                      </div>
+                      
+                      {/* Options list */}
+                      <div className="max-h-48 overflow-y-auto">
+                        {filterValues[selectedFilterField]
+                          .filter(value => value.toLowerCase().includes(filterSearchQuery.toLowerCase()))
+                          .map((value) => (
+                            <button
+                              key={value}
+                              type="button"
+                              onClick={() => toggleFilterValue(value)}
+                              className={`flex items-center gap-2 w-full px-3 py-2 text-sm text-left hover:bg-secondary transition-colors ${
+                                selectedFilterValues.includes(value) ? 'bg-cisco-blue/10 text-cisco-blue' : 'text-foreground'
+                              }`}
+                            >
+                              <div className={`w-4 h-4 rounded border flex items-center justify-center ${
+                                selectedFilterValues.includes(value) 
+                                  ? 'bg-cisco-blue border-cisco-blue' 
+                                  : 'border-border'
+                              }`}>
+                                {selectedFilterValues.includes(value) && (
+                                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                )}
+                              </div>
+                              {value}
+                            </button>
+                          ))}
+                        {filterValues[selectedFilterField].filter(v => 
+                          v.toLowerCase().includes(filterSearchQuery.toLowerCase())
+                        ).length === 0 && (
+                          <div className="px-3 py-4 text-sm text-muted-foreground text-center">
+                            No results found
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
