@@ -27,7 +27,7 @@ const adminCards = [
 
 const AdminWorkspace = () => {
   const location = useLocation();
-  const isHome = location.pathname === "/admin";
+  const isHome = location.pathname === "/admin" || location.pathname === "/admin/";
 
   if (isHome) {
     return (
