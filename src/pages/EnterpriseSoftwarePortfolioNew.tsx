@@ -628,13 +628,13 @@ const EnterpriseSoftwarePortfolioNew = () => {
                         }
                         if (col === "Unit Cost" || col === "Total Cost") {
                           return (
-                            <td key={col} className="px-3 py-2 whitespace-nowrap text-right">
+                            <td key={col} className="px-3 py-2 whitespace-nowrap">
                               ${typeof value === 'number' ? value.toLocaleString() : value}
                             </td>
                           );
                         }
                         if (col === "Quantity") {
-                          return <td key={col} className="px-3 py-2 whitespace-nowrap text-right">{value}</td>;
+                          return <td key={col} className="px-3 py-2 whitespace-nowrap">{value}</td>;
                         }
                         if (col === "Notes") {
                           return <td key={col} className="px-3 py-2 whitespace-nowrap max-w-[150px] truncate">{value}</td>;
