@@ -77,6 +77,9 @@ const filterValues: Record<string, string[]> = {
   "Compliance Status": ["Compliant", "Review", "Non-Compliant"],
   "Approval Status": ["Approved", "Pending", "Rejected", "Draft"],
   "Department": ["IT Security", "Engineering", "Sales", "IT Operations", "Analytics", "Marketing"],
+  "PO Number": ["PO-2024-001", "PO-2024-002", "PO-2024-003", "PO-2024-004", "PO-2024-005", "PO-2024-006", "PO-2024-007", "PO-2024-008"],
+  "Product Name": ["Splunk Enterprise", "Azure DevOps", "Sales Cloud", "ITSM Pro", "Tableau Desktop", "Creative Cloud", "Jira Software", "Workforce Identity"],
+  "Business Unit": ["Corporate IT", "Product Development", "Sales Operations", "Customer Success", "Finance", "Human Resources"],
 };
 
 const lockedColumns = ["Action", "PO Number", "Publisher", "Product Name"];
