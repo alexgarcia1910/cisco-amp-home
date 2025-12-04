@@ -617,37 +617,41 @@ const SoftwareEntitlement = () => {
                         </button>
                       </div>
 
-                      {/* Scan Age Buckets */}
-                      <div className="pt-2 mt-2 border-t border-border">
+                      {/* Scan Age Buckets - Mini Cards */}
+                      <div className="pt-3 mt-3 border-t border-border">
                         <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Scanned Age</span>
-                        <div className="flex flex-col gap-1 mt-2 text-sm">
+                        <div className="grid grid-cols-4 gap-2 mt-2">
                           <button 
                             onClick={() => handleDrilldown(`${osData.os} — Scanned 0-30 days`, osData.os, "scan0-30")}
-                            className="text-left hover:bg-muted/50 px-2 py-1 rounded transition-colors"
+                            className="bg-green-500/10 hover:bg-green-500/20 rounded-lg p-2 text-center transition-colors"
                           >
-                            <span className="text-muted-foreground">Scanned 0-30 days:</span>{" "}
-                            <span className="text-primary font-medium">{osData.scanAge["0-30"].count.toLocaleString()} ({osData.scanAge["0-30"].percent}%)</span>
+                            <div className="text-xs text-muted-foreground">0-30</div>
+                            <div className="text-sm font-semibold text-green-600">{osData.scanAge["0-30"].count.toLocaleString()}</div>
+                            <div className="text-xs text-muted-foreground">{osData.scanAge["0-30"].percent}%</div>
                           </button>
                           <button 
                             onClick={() => handleDrilldown(`${osData.os} — Scanned 31-60 days`, osData.os, "scan31-60")}
-                            className="text-left hover:bg-muted/50 px-2 py-1 rounded transition-colors"
+                            className="bg-yellow-500/10 hover:bg-yellow-500/20 rounded-lg p-2 text-center transition-colors"
                           >
-                            <span className="text-muted-foreground">Scanned 31-60 days:</span>{" "}
-                            <span className="text-primary font-medium">{osData.scanAge["31-60"].count.toLocaleString()} ({osData.scanAge["31-60"].percent}%)</span>
+                            <div className="text-xs text-muted-foreground">31-60</div>
+                            <div className="text-sm font-semibold text-yellow-600">{osData.scanAge["31-60"].count.toLocaleString()}</div>
+                            <div className="text-xs text-muted-foreground">{osData.scanAge["31-60"].percent}%</div>
                           </button>
                           <button 
                             onClick={() => handleDrilldown(`${osData.os} — Scanned 61-90 days`, osData.os, "scan61-90")}
-                            className="text-left hover:bg-muted/50 px-2 py-1 rounded transition-colors"
+                            className="bg-orange-500/10 hover:bg-orange-500/20 rounded-lg p-2 text-center transition-colors"
                           >
-                            <span className="text-muted-foreground">Scanned 61-90 days:</span>{" "}
-                            <span className="text-primary font-medium">{osData.scanAge["61-90"].count.toLocaleString()} ({osData.scanAge["61-90"].percent}%)</span>
+                            <div className="text-xs text-muted-foreground">61-90</div>
+                            <div className="text-sm font-semibold text-orange-600">{osData.scanAge["61-90"].count.toLocaleString()}</div>
+                            <div className="text-xs text-muted-foreground">{osData.scanAge["61-90"].percent}%</div>
                           </button>
                           <button 
                             onClick={() => handleDrilldown(`${osData.os} — Scanned 90+ days`, osData.os, "scan90+")}
-                            className="text-left hover:bg-muted/50 px-2 py-1 rounded transition-colors"
+                            className="bg-red-500/10 hover:bg-red-500/20 rounded-lg p-2 text-center transition-colors"
                           >
-                            <span className="text-muted-foreground">Scanned &gt; 90 days:</span>{" "}
-                            <span className="text-primary font-medium">{osData.scanAge["90+"].count.toLocaleString()} ({osData.scanAge["90+"].percent}%)</span>
+                            <div className="text-xs text-muted-foreground">90+</div>
+                            <div className="text-sm font-semibold text-red-600">{osData.scanAge["90+"].count.toLocaleString()}</div>
+                            <div className="text-xs text-muted-foreground">{osData.scanAge["90+"].percent}%</div>
                           </button>
                         </div>
                       </div>
