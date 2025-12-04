@@ -173,7 +173,12 @@ const osKpiData = [
     gap: 70,
     agentsWithoutEsp: 145,
     espWithoutAgent: 75,
-    scanAge: { "0-30": 3200, "31-60": 680, "61-90": 250, "90+": 120 }
+    scanAge: { 
+      "0-30": { count: 3200, percent: 75.29 }, 
+      "31-60": { count: 680, percent: 16.00 }, 
+      "61-90": { count: 250, percent: 5.88 }, 
+      "90+": { count: 120, percent: 2.82 } 
+    }
   },
   {
     os: "Windows",
@@ -183,7 +188,12 @@ const osKpiData = [
     gap: 220,
     agentsWithoutEsp: 312,
     espWithoutAgent: 92,
-    scanAge: { "0-30": 6800, "31-60": 1100, "61-90": 420, "90+": 220 }
+    scanAge: { 
+      "0-30": { count: 6800, percent: 79.63 }, 
+      "31-60": { count: 1100, percent: 12.88 }, 
+      "61-90": { count: 420, percent: 4.92 }, 
+      "90+": { count: 220, percent: 2.58 } 
+    }
   },
   {
     os: "Mac",
@@ -193,7 +203,12 @@ const osKpiData = [
     gap: 130,
     agentsWithoutEsp: 98,
     espWithoutAgent: 32,
-    scanAge: { "0-30": 1650, "31-60": 320, "61-90": 140, "90+": 70 }
+    scanAge: { 
+      "0-30": { count: 1650, percent: 75.69 }, 
+      "31-60": { count: 320, percent: 14.68 }, 
+      "61-90": { count: 140, percent: 6.42 }, 
+      "90+": { count: 70, percent: 3.21 } 
+    }
   }
 ];
 
@@ -605,34 +620,34 @@ const SoftwareEntitlement = () => {
                       {/* Scan Age Buckets */}
                       <div className="pt-2 mt-2 border-t border-border">
                         <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Scanned Age</span>
-                        <div className="grid grid-cols-4 gap-1 mt-2">
+                        <div className="flex flex-col gap-1 mt-2 text-sm">
                           <button 
                             onClick={() => handleDrilldown(`${osData.os} — Scanned 0-30 days`, osData.os, "scan0-30")}
-                            className="text-center p-2 bg-green-500/10 rounded hover:bg-green-500/20 transition-colors"
+                            className="text-left hover:bg-muted/50 px-2 py-1 rounded transition-colors"
                           >
-                            <div className="text-xs text-muted-foreground">0-30d</div>
-                            <div className="text-sm font-medium text-green-600">{osData.scanAge["0-30"].toLocaleString()}</div>
+                            <span className="text-muted-foreground">Scanned 0-30 days:</span>{" "}
+                            <span className="text-primary font-medium">{osData.scanAge["0-30"].count.toLocaleString()} ({osData.scanAge["0-30"].percent}%)</span>
                           </button>
                           <button 
                             onClick={() => handleDrilldown(`${osData.os} — Scanned 31-60 days`, osData.os, "scan31-60")}
-                            className="text-center p-2 bg-yellow-500/10 rounded hover:bg-yellow-500/20 transition-colors"
+                            className="text-left hover:bg-muted/50 px-2 py-1 rounded transition-colors"
                           >
-                            <div className="text-xs text-muted-foreground">31-60d</div>
-                            <div className="text-sm font-medium text-yellow-600">{osData.scanAge["31-60"].toLocaleString()}</div>
+                            <span className="text-muted-foreground">Scanned 31-60 days:</span>{" "}
+                            <span className="text-primary font-medium">{osData.scanAge["31-60"].count.toLocaleString()} ({osData.scanAge["31-60"].percent}%)</span>
                           </button>
                           <button 
                             onClick={() => handleDrilldown(`${osData.os} — Scanned 61-90 days`, osData.os, "scan61-90")}
-                            className="text-center p-2 bg-orange-500/10 rounded hover:bg-orange-500/20 transition-colors"
+                            className="text-left hover:bg-muted/50 px-2 py-1 rounded transition-colors"
                           >
-                            <div className="text-xs text-muted-foreground">61-90d</div>
-                            <div className="text-sm font-medium text-orange-600">{osData.scanAge["61-90"].toLocaleString()}</div>
+                            <span className="text-muted-foreground">Scanned 61-90 days:</span>{" "}
+                            <span className="text-primary font-medium">{osData.scanAge["61-90"].count.toLocaleString()} ({osData.scanAge["61-90"].percent}%)</span>
                           </button>
                           <button 
                             onClick={() => handleDrilldown(`${osData.os} — Scanned 90+ days`, osData.os, "scan90+")}
-                            className="text-center p-2 bg-destructive/10 rounded hover:bg-destructive/20 transition-colors"
+                            className="text-left hover:bg-muted/50 px-2 py-1 rounded transition-colors"
                           >
-                            <div className="text-xs text-muted-foreground">90+d</div>
-                            <div className="text-sm font-medium text-destructive">{osData.scanAge["90+"].toLocaleString()}</div>
+                            <span className="text-muted-foreground">Scanned &gt; 90 days:</span>{" "}
+                            <span className="text-primary font-medium">{osData.scanAge["90+"].count.toLocaleString()} ({osData.scanAge["90+"].percent}%)</span>
                           </button>
                         </div>
                       </div>
