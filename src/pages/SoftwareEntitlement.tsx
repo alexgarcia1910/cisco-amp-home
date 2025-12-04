@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ArrowLeft, ExternalLink, ChevronDown, Plus, X, ChevronLeft, ChevronRight, Clock, User, FileText, AlertTriangle, AlertCircle, PieChart, BarChart3 } from "lucide-react";
+import { ArrowLeft, ExternalLink, ChevronDown, Plus, X, ChevronLeft, ChevronRight, Clock, User, FileText, AlertTriangle, AlertCircle, PieChart, BarChart3, Monitor, Download, Filter } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from "recharts";
 import { Link } from "react-router-dom";
 import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
@@ -162,80 +163,68 @@ const trackerData = [{
   notes: "ITSM module added",
   lastUpdated: "2024-03-01"
 }];
-const saturationData = {
-  kpis: {
-    totalActiveAgents: 12450,
-    saturationPercent: 78,
-    overConsumed: 24,
-    underutilized: 156
+// Agent Saturation - OS KPI Data
+const osKpiData = [
+  {
+    os: "Linux",
+    saturationPercent: 87,
+    espRecords: 4250,
+    flexeraRecords: 4180,
+    gap: 70,
+    agentsWithoutEsp: 145,
+    espWithoutAgent: 75,
+    scanAge: { "0-30": 3200, "31-60": 680, "61-90": 250, "90+": 120 }
   },
-  publisherSaturation: [{
-    publisher: "Microsoft",
-    saturation: 92
-  }, {
-    publisher: "Oracle",
-    saturation: 85
-  }, {
-    publisher: "Adobe",
-    saturation: 78
-  }, {
-    publisher: "SAP",
-    saturation: 65
-  }, {
-    publisher: "Salesforce",
-    saturation: 88
-  }, {
-    publisher: "ServiceNow",
-    saturation: 72
-  }],
-  productConsumption: [{
-    product: "Office 365",
-    consumption: 45
-  }, {
-    product: "Oracle DB",
-    consumption: 22
-  }, {
-    product: "Creative Cloud",
-    consumption: 18
-  }, {
-    product: "SAP ERP",
-    consumption: 10
-  }, {
-    product: "Other",
-    consumption: 5
-  }],
-  drilldownData: [{
-    publisher: "Microsoft",
-    product: "Office 365",
-    country: "USA",
-    consumption: 95,
-    analysts: "John Smith, Jane Doe"
-  }, {
-    publisher: "Microsoft",
-    product: "Azure",
-    country: "USA",
-    consumption: 88,
-    analysts: "Mike Brown"
-  }, {
-    publisher: "Oracle",
-    product: "Oracle DB",
-    country: "Germany",
-    consumption: 82,
-    analysts: "Jane Doe"
-  }, {
-    publisher: "Adobe",
-    product: "Creative Cloud",
-    country: "UK",
-    consumption: 76,
-    analysts: "John Smith"
-  }, {
-    publisher: "SAP",
-    product: "SAP ERP",
-    country: "India",
-    consumption: 68,
-    analysts: "Mike Brown, Sarah Lee"
-  }]
-};
+  {
+    os: "Windows",
+    saturationPercent: 92,
+    espRecords: 8540,
+    flexeraRecords: 8320,
+    gap: 220,
+    agentsWithoutEsp: 312,
+    espWithoutAgent: 92,
+    scanAge: { "0-30": 6800, "31-60": 1100, "61-90": 420, "90+": 220 }
+  },
+  {
+    os: "Mac",
+    saturationPercent: 78,
+    espRecords: 2180,
+    flexeraRecords: 2050,
+    gap: 130,
+    agentsWithoutEsp: 98,
+    espWithoutAgent: 32,
+    scanAge: { "0-30": 1650, "31-60": 320, "61-90": 140, "90+": 70 }
+  }
+];
+
+const scanAgeDistribution = [
+  { range: "0-30 Days", count: 11650, percent: 78, color: "bg-green-500" },
+  { range: "31-60 Days", count: 2100, percent: 14, color: "bg-yellow-500" },
+  { range: "61-90 Days", count: 810, percent: 5, color: "bg-orange-500" },
+  { range: "90+ Days", count: 410, percent: 3, color: "bg-destructive" }
+];
+
+const saturationTrendData = [
+  { month: "Jul", Linux: 82, Windows: 88, Mac: 72 },
+  { month: "Aug", Linux: 84, Windows: 89, Mac: 74 },
+  { month: "Sep", Linux: 85, Windows: 90, Mac: 75 },
+  { month: "Oct", Linux: 86, Windows: 91, Mac: 76 },
+  { month: "Nov", Linux: 87, Windows: 92, Mac: 78 },
+  { month: "Dec", Linux: 87, Windows: 92, Mac: 78 }
+];
+
+const agentDrilldownData = [
+  { name: "srv-linux-001", deviceType: "Server", status: "Active", ipAddress: "10.0.1.15", serialNumber: "SN-L001", os: "Linux", macAddress: "00:1A:2B:3C:4D:5E", computerId: "CMP-001", assetId: "AST-L001" },
+  { name: "ws-win-045", deviceType: "Workstation", status: "Active", ipAddress: "10.0.2.45", serialNumber: "SN-W045", os: "Windows", macAddress: "00:1A:2B:3C:4D:5F", computerId: "CMP-045", assetId: "AST-W045" },
+  { name: "mbp-mac-012", deviceType: "Laptop", status: "Active", ipAddress: "10.0.3.12", serialNumber: "SN-M012", os: "Mac", macAddress: "00:1A:2B:3C:4D:60", computerId: "CMP-012", assetId: "AST-M012" },
+  { name: "srv-linux-002", deviceType: "Server", status: "Inactive", ipAddress: "10.0.1.16", serialNumber: "SN-L002", os: "Linux", macAddress: "00:1A:2B:3C:4D:61", computerId: "CMP-002", assetId: "AST-L002" },
+  { name: "ws-win-046", deviceType: "Workstation", status: "Active", ipAddress: "10.0.2.46", serialNumber: "SN-W046", os: "Windows", macAddress: "00:1A:2B:3C:4D:62", computerId: "CMP-046", assetId: "AST-W046" },
+  { name: "srv-linux-003", deviceType: "Server", status: "Active", ipAddress: "10.0.1.17", serialNumber: "SN-L003", os: "Linux", macAddress: "00:1A:2B:3C:4D:63", computerId: "CMP-003", assetId: "AST-L003" },
+  { name: "mbp-mac-013", deviceType: "Laptop", status: "Active", ipAddress: "10.0.3.13", serialNumber: "SN-M013", os: "Mac", macAddress: "00:1A:2B:3C:4D:64", computerId: "CMP-013", assetId: "AST-M013" },
+  { name: "ws-win-047", deviceType: "Workstation", status: "Warning", ipAddress: "10.0.2.47", serialNumber: "SN-W047", os: "Windows", macAddress: "00:1A:2B:3C:4D:65", computerId: "CMP-047", assetId: "AST-W047" },
+  { name: "srv-linux-004", deviceType: "Server", status: "Active", ipAddress: "10.0.1.18", serialNumber: "SN-L004", os: "Linux", macAddress: "00:1A:2B:3C:4D:66", computerId: "CMP-004", assetId: "AST-L004" },
+  { name: "ws-win-048", deviceType: "Workstation", status: "Active", ipAddress: "10.0.2.48", serialNumber: "SN-W048", os: "Windows", macAddress: "00:1A:2B:3C:4D:67", computerId: "CMP-048", assetId: "AST-W048" }
+];
 const logHistory = [{
   timestamp: "2024-03-14 14:30:00",
   updatedBy: "John Smith",
@@ -272,7 +261,25 @@ const SoftwareEntitlement = () => {
   const [addEntryModalOpen, setAddEntryModalOpen] = useState(false);
 
   // Section 3: Agent Saturation state
-  const [showDrilldown, setShowDrilldown] = useState(false);
+  const [saturationView, setSaturationView] = useState<"dashboard" | "drilldown">("dashboard");
+  const [drilldownContext, setDrilldownContext] = useState<{ title: string; os?: string; metric?: string }>({ title: "" });
+  const [saturationFilters, setSaturationFilters] = useState<{ field: string; values: string[] }[]>([]);
+  const [saturationFilterModalOpen, setSaturationFilterModalOpen] = useState(false);
+  const [saturationRowsPerPage, setSaturationRowsPerPage] = useState(100);
+
+  const handleDrilldown = (title: string, os?: string, metric?: string) => {
+    setDrilldownContext({ title, os, metric });
+    setSaturationView("drilldown");
+  };
+
+  const handleBackToDashboard = () => {
+    setSaturationView("dashboard");
+    setSaturationFilters([]);
+  };
+
+  const removeSaturationFilter = (field: string) => {
+    setSaturationFilters(saturationFilters.filter(f => f.field !== field));
+  };
   const tabs = [{
     id: "processing",
     label: "Entitlement Data Processing"
@@ -525,164 +532,330 @@ const SoftwareEntitlement = () => {
             SECTION 3: AGENT SATURATION
          ============================================= */}
         {activeTab === "saturation" && <div className="space-y-6">
-            {/* Title */}
-            <h1 className="text-xl font-semibold text-card-foreground">
-              Agent Saturation
-            </h1>
+            {/* Dashboard View */}
+            {saturationView === "dashboard" && <>
+              {/* Title */}
+              <h1 className="text-xl font-semibold text-card-foreground">
+                Agent Saturation Dashboard
+              </h1>
 
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-card border border-border rounded-lg p-5">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <User className="h-5 w-5 text-primary" />
-                  </div>
-                  <span className="text-sm text-muted-foreground">Total Active Agents</span>
-                </div>
-                <div className="text-2xl font-semibold text-card-foreground">
-                  {saturationData.kpis.totalActiveAgents.toLocaleString()}
-                </div>
-              </div>
-
-              <div className="bg-card border border-border rounded-lg p-5">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <PieChart className="h-5 w-5 text-primary" />
-                  </div>
-                  <span className="text-sm text-muted-foreground">Saturation %</span>
-                </div>
-                <div className="text-2xl font-semibold text-card-foreground">
-                  {saturationData.kpis.saturationPercent}%
-                </div>
-              </div>
-
-              <div className="bg-card border border-border rounded-lg p-5">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-destructive/10 rounded-lg">
-                    <AlertTriangle className="h-5 w-5 text-destructive" />
-                  </div>
-                  <span className="text-sm text-muted-foreground">Over-Consumed Licenses</span>
-                </div>
-                <div className="text-2xl font-semibold text-destructive">
-                  {saturationData.kpis.overConsumed}
-                </div>
-              </div>
-
-              <div className="bg-card border border-border rounded-lg p-5">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-yellow-500/10 rounded-lg">
-                    <AlertCircle className="h-5 w-5 text-yellow-600" />
-                  </div>
-                  <span className="text-sm text-muted-foreground">Underutilized Licenses</span>
-                </div>
-                <div className="text-2xl font-semibold text-yellow-600">
-                  {saturationData.kpis.underutilized}
-                </div>
-              </div>
-            </div>
-
-            {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Publisher by Saturation - Bar Chart */}
-              <div className="bg-card border border-border rounded-lg p-5">
-                <h3 className="text-base font-medium text-card-foreground mb-4">
-                  Publisher by Saturation %
-                </h3>
-                <div className="space-y-3">
-                  {saturationData.publisherSaturation.map(item => <div key={item.publisher} className="cursor-pointer hover:bg-muted/30 p-2 rounded transition-colors" onClick={() => setShowDrilldown(true)}>
-                      <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="text-card-foreground">{item.publisher}</span>
-                        <span className="text-muted-foreground">{item.saturation}%</span>
+              {/* OS KPI Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {osKpiData.map((osData) => (
+                  <div key={osData.os} className="bg-card border border-border rounded-lg p-5 hover:border-primary/50 transition-colors">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`p-2 rounded-lg ${osData.os === "Linux" ? "bg-orange-500/10" : osData.os === "Windows" ? "bg-primary/10" : "bg-gray-500/10"}`}>
+                        <Monitor className={`h-5 w-5 ${osData.os === "Linux" ? "text-orange-500" : osData.os === "Windows" ? "text-primary" : "text-gray-500"}`} />
                       </div>
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full transition-all ${item.saturation >= 90 ? "bg-destructive" : item.saturation >= 75 ? "bg-primary" : "bg-yellow-500"}`} style={{
-                    width: `${item.saturation}%`
-                  }} />
+                      <div>
+                        <h3 className="font-semibold text-card-foreground">{osData.os}</h3>
+                        <span className={`text-lg font-bold ${osData.saturationPercent >= 90 ? "text-green-600" : osData.saturationPercent >= 75 ? "text-primary" : "text-yellow-600"}`}>
+                          {osData.saturationPercent}% Saturation
+                        </span>
                       </div>
-                    </div>)}
-                </div>
+                    </div>
+
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">ESP Records</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — ESP Records`, osData.os, "esp")}
+                          className="text-primary hover:underline font-medium"
+                        >
+                          {osData.espRecords.toLocaleString()}
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">Flexera Records</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — Flexera Records`, osData.os, "flexera")}
+                          className="text-primary hover:underline font-medium"
+                        >
+                          {osData.flexeraRecords.toLocaleString()}
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">GAP</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — GAP Analysis`, osData.os, "gap")}
+                          className="text-destructive hover:underline font-medium"
+                        >
+                          {osData.gap}
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">Agents without ESP</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — Agents without ESP Record`, osData.os, "noEsp")}
+                          className="text-yellow-600 hover:underline font-medium"
+                        >
+                          {osData.agentsWithoutEsp}
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">ESP without Agent</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — ESP Records without Agent`, osData.os, "noAgent")}
+                          className="text-yellow-600 hover:underline font-medium"
+                        >
+                          {osData.espWithoutAgent}
+                        </button>
+                      </div>
+
+                      {/* Scan Age Buckets */}
+                      <div className="pt-2 mt-2 border-t border-border">
+                        <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Scanned Age</span>
+                        <div className="grid grid-cols-4 gap-1 mt-2">
+                          <button 
+                            onClick={() => handleDrilldown(`${osData.os} — Scanned 0-30 days`, osData.os, "scan0-30")}
+                            className="text-center p-2 bg-green-500/10 rounded hover:bg-green-500/20 transition-colors"
+                          >
+                            <div className="text-xs text-muted-foreground">0-30d</div>
+                            <div className="text-sm font-medium text-green-600">{osData.scanAge["0-30"].toLocaleString()}</div>
+                          </button>
+                          <button 
+                            onClick={() => handleDrilldown(`${osData.os} — Scanned 31-60 days`, osData.os, "scan31-60")}
+                            className="text-center p-2 bg-yellow-500/10 rounded hover:bg-yellow-500/20 transition-colors"
+                          >
+                            <div className="text-xs text-muted-foreground">31-60d</div>
+                            <div className="text-sm font-medium text-yellow-600">{osData.scanAge["31-60"].toLocaleString()}</div>
+                          </button>
+                          <button 
+                            onClick={() => handleDrilldown(`${osData.os} — Scanned 61-90 days`, osData.os, "scan61-90")}
+                            className="text-center p-2 bg-orange-500/10 rounded hover:bg-orange-500/20 transition-colors"
+                          >
+                            <div className="text-xs text-muted-foreground">61-90d</div>
+                            <div className="text-sm font-medium text-orange-600">{osData.scanAge["61-90"].toLocaleString()}</div>
+                          </button>
+                          <button 
+                            onClick={() => handleDrilldown(`${osData.os} — Scanned 90+ days`, osData.os, "scan90+")}
+                            className="text-center p-2 bg-destructive/10 rounded hover:bg-destructive/20 transition-colors"
+                          >
+                            <div className="text-xs text-muted-foreground">90+d</div>
+                            <div className="text-sm font-medium text-destructive">{osData.scanAge["90+"].toLocaleString()}</div>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              {/* Product by License Consumption - Donut style representation */}
-              <div className="bg-card border border-border rounded-lg p-5">
-                <h3 className="text-base font-medium text-card-foreground mb-4">
-                  Product by License Consumption
-                </h3>
-                <div className="flex items-center gap-6">
-                  {/* Simple donut representation */}
-                  <div className="relative w-32 h-32 flex-shrink-0">
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                      {saturationData.productConsumption.reduce((acc, item, idx) => {
-                    const colors = ["hsl(var(--primary))", "hsl(var(--destructive))", "hsl(210, 100%, 65%)", "hsl(150, 60%, 50%)", "hsl(var(--muted))"];
-                    const total = saturationData.productConsumption.reduce((s, i) => s + i.consumption, 0);
-                    const prevOffset = acc.offset;
-                    const percentage = item.consumption / total * 100;
-                    const circumference = 2 * Math.PI * 40;
-                    const strokeDasharray = `${percentage / 100 * circumference} ${circumference}`;
-                    const strokeDashoffset = -(prevOffset / 100) * circumference;
-                    acc.elements.push(<circle key={idx} cx="50" cy="50" r="40" fill="none" stroke={colors[idx]} strokeWidth="20" strokeDasharray={strokeDasharray} strokeDashoffset={strokeDashoffset} />);
-                    acc.offset += percentage;
-                    return acc;
-                  }, {
-                    elements: [] as JSX.Element[],
-                    offset: 0
-                  }).elements}
-                    </svg>
-                  </div>
-                  
-                  {/* Legend */}
-                  <div className="space-y-2 text-sm">
-                    {saturationData.productConsumption.map((item, idx) => {
-                  const colors = ["bg-primary", "bg-destructive", "bg-blue-400", "bg-green-500", "bg-muted"];
-                  return <div key={item.product} className="flex items-center gap-2">
-                          <div className={`w-3 h-3 rounded-sm ${colors[idx]}`} />
-                          <span className="text-card-foreground">{item.product}</span>
-                          <span className="text-muted-foreground">({item.consumption}%)</span>
-                        </div>;
-                })}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Drilldown Table */}
-            {showDrilldown && <div className="bg-card border border-border rounded-lg overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
-                  <h3 className="font-medium text-card-foreground flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4 text-primary" />
-                    Drilldown: License Details
+              {/* Bottom Row: Scan Age Distribution + Trend Chart */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Scan Age Distribution Card */}
+                <div className="bg-card border border-border rounded-lg p-5">
+                  <h3 className="text-base font-medium text-card-foreground mb-4">
+                    Scan Age Distribution (All OS)
                   </h3>
-                  <Button variant="ghost" size="sm" onClick={() => setShowDrilldown(false)}>
-                    <X className="h-4 w-4" />
-                  </Button>
+                  <div className="space-y-3">
+                    {scanAgeDistribution.map((item) => (
+                      <button 
+                        key={item.range}
+                        onClick={() => handleDrilldown(`All OS — ${item.range}`, undefined, item.range)}
+                        className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors text-left"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${item.color}`} />
+                          <span className="text-sm text-card-foreground">{item.range}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-medium text-card-foreground">
+                            {item.count.toLocaleString()}
+                          </span>
+                          <Badge variant="secondary" className={`${item.color} text-white text-xs`}>
+                            {item.percent}%
+                          </Badge>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
+
+                {/* Saturation Trend Chart */}
+                <div className="lg:col-span-2 bg-card border border-border rounded-lg p-5">
+                  <h3 className="text-base font-medium text-card-foreground mb-4">
+                    Saturation Trend (6 Months)
+                  </h3>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={saturationTrendData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                        <XAxis 
+                          dataKey="month" 
+                          stroke="hsl(var(--muted-foreground))" 
+                          fontSize={12}
+                        />
+                        <YAxis 
+                          domain={[60, 100]} 
+                          stroke="hsl(var(--muted-foreground))" 
+                          fontSize={12}
+                          tickFormatter={(value) => `${value}%`}
+                        />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: "hsl(var(--card))", 
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: "8px"
+                          }}
+                          formatter={(value: number) => [`${value}%`, ""]}
+                        />
+                        <Legend />
+                        <ReferenceLine y={90} stroke="hsl(var(--destructive))" strokeDasharray="5 5" label={{ value: "90% Goal", position: "right", fill: "hsl(var(--destructive))", fontSize: 10 }} />
+                        <Line type="monotone" dataKey="Linux" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316" }} />
+                        <Line type="monotone" dataKey="Windows" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: "hsl(195, 96%, 43%)" }} />
+                        <Line type="monotone" dataKey="Mac" stroke="#6b7280" strokeWidth={2} dot={{ fill: "#6b7280" }} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+            </>}
+
+            {/* Drilldown Detail View */}
+            {saturationView === "drilldown" && <>
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleBackToDashboard}
+                    className="gap-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Dashboard
+                  </Button>
+                  <h1 className="text-xl font-semibold text-card-foreground">
+                    {drilldownContext.title}
+                  </h1>
+                </div>
+                <Button variant="outline" className="gap-2">
+                  <Download className="h-4 w-4" />
+                  Export CSV
+                </Button>
+              </div>
+
+              {/* Global Filter Bar */}
+              <div className="bg-card border border-border rounded-lg p-4">
+                <div className="flex items-center flex-wrap gap-3">
+                  <span className="text-sm text-muted-foreground font-medium">Filtered:</span>
+                  
+                  {saturationFilters.length === 0 && (
+                    <span className="text-sm text-muted-foreground italic">No Filters</span>
+                  )}
+                  
+                  {saturationFilters.map((filter) => (
+                    <Badge 
+                      key={filter.field} 
+                      variant="secondary" 
+                      className="gap-1 pr-1"
+                    >
+                      {filter.field}: {filter.values.join(", ")}
+                      <button 
+                        onClick={() => removeSaturationFilter(filter.field)}
+                        className="ml-1 hover:bg-muted rounded-full p-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-2"
+                    onClick={() => setSaturationFilterModalOpen(true)}
+                  >
+                    <Filter className="h-4 w-4" />
+                    Add Filter
+                  </Button>
+
+                  {saturationFilters.length > 0 && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setSaturationFilters([])}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      Clear All Filters
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Detail Table */}
+              <div className="bg-card border border-border rounded-lg overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-muted/50 border-b border-border">
+                    <thead className="bg-muted/50 border-b border-border sticky top-0">
                       <tr>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Publisher</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Product</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Country</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Consumption %</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Assigned Analysts</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Name</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Device Type</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">IP Address</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Serial Number</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Operating System</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">MAC Address</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Computer ID</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Asset ID</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {saturationData.drilldownData.map((row, idx) => <tr key={`${row.publisher}-${row.product}`} className={`border-b border-border ${idx % 2 === 0 ? "bg-card" : "bg-muted/10"}`}>
-                          <td className="px-4 py-3 font-medium text-primary">{row.publisher}</td>
-                          <td className="px-4 py-3">{row.product}</td>
-                          <td className="px-4 py-3">{row.country}</td>
+                      {agentDrilldownData.map((row, idx) => (
+                        <tr 
+                          key={row.computerId} 
+                          className={`border-b border-border hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? "bg-card" : "bg-muted/10"}`}
+                        >
+                          <td className="px-4 py-3 font-medium text-primary">{row.name}</td>
+                          <td className="px-4 py-3">{row.deviceType}</td>
                           <td className="px-4 py-3">
-                            <span className={row.consumption >= 90 ? "text-destructive font-medium" : row.consumption >= 75 ? "text-primary" : "text-yellow-600"}>
-                              {row.consumption}%
-                            </span>
+                            <Badge 
+                              variant={row.status === "Active" ? "default" : row.status === "Warning" ? "secondary" : "outline"}
+                              className={row.status === "Active" ? "bg-green-500" : row.status === "Warning" ? "bg-yellow-500" : ""}
+                            >
+                              {row.status}
+                            </Badge>
                           </td>
-                          <td className="px-4 py-3 text-muted-foreground">{row.analysts}</td>
-                        </tr>)}
+                          <td className="px-4 py-3 font-mono text-xs">{row.ipAddress}</td>
+                          <td className="px-4 py-3">{row.serialNumber}</td>
+                          <td className="px-4 py-3">{row.os}</td>
+                          <td className="px-4 py-3 font-mono text-xs">{row.macAddress}</td>
+                          <td className="px-4 py-3">{row.computerId}</td>
+                          <td className="px-4 py-3">{row.assetId}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
-              </div>}
+
+                {/* Pagination */}
+                <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/30">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span>Items per page:</span>
+                    <Select value={String(saturationRowsPerPage)} onValueChange={(v) => setSaturationRowsPerPage(Number(v))}>
+                      <SelectTrigger className="w-20 h-8">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        <SelectItem value="100">100</SelectItem>
+                        <SelectItem value="200">200</SelectItem>
+                        <SelectItem value="500">500</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">1-10 of 10</span>
+                    <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>}
           </div>}
       </main>
 
@@ -922,6 +1095,54 @@ const SoftwareEntitlement = () => {
             </Button>
             <Button onClick={() => setAddEntryModalOpen(false)}>
               Save Entry
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Saturation Filter Modal */}
+      <Dialog open={saturationFilterModalOpen} onOpenChange={setSaturationFilterModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add Filter</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Select Field</label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a field" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="name">Name</SelectItem>
+                  <SelectItem value="deviceType">Device Type</SelectItem>
+                  <SelectItem value="status">Status</SelectItem>
+                  <SelectItem value="os">Operating System</SelectItem>
+                  <SelectItem value="ipAddress">IP Address</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Select Value(s)</label>
+              <div className="border border-border rounded-lg p-3 max-h-48 overflow-y-auto space-y-2">
+                {["Server", "Workstation", "Laptop"].map((value) => (
+                  <label key={value} className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-1 rounded">
+                    <Checkbox />
+                    <span className="text-sm">{value}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSaturationFilterModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={() => {
+              setSaturationFilters([...saturationFilters, { field: "Device Type", values: ["Server", "Workstation"] }]);
+              setSaturationFilterModalOpen(false);
+            }}>
+              Apply Filter
             </Button>
           </DialogFooter>
         </DialogContent>
