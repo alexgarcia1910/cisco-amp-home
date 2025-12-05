@@ -696,57 +696,58 @@ const SoftwareEntitlement = () => {
             SECTION 2: ENTITLEMENT TRACKER
          ============================================= */}
         {activeTab === "tracker" && <div className="space-y-4">
-            {/* Title & Add Button */}
-            <div className="flex items-center justify-between">
-              <h1 className="text-xl font-semibold text-card-foreground">
-                Entitlement Tracker: Dashboard
-              </h1>
+            {/* Title */}
+            <h1 className="text-xl font-semibold text-card-foreground">
+              Entitlement Tracker: Dashboard
+            </h1>
+
+            {/* Filters & Add Button */}
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex items-center gap-3 flex-wrap">
+                <SearchableDropdown
+                  label="S/W Publishers"
+                  options={[...new Set(trackerData.map(d => d.publisher))]}
+                  value={trackerFilters.publisher}
+                  onChange={(val) => setTrackerFilters(prev => ({ ...prev, publisher: val }))}
+                  placeholder="Search publishers..."
+                />
+
+                <SearchableDropdown
+                  label="Analyst"
+                  options={[...new Set(trackerData.map(d => d.analyst))]}
+                  value={trackerFilters.analyst}
+                  onChange={(val) => setTrackerFilters(prev => ({ ...prev, analyst: val }))}
+                  placeholder="Search analysts..."
+                />
+
+                <SearchableDropdown
+                  label="Engineer"
+                  options={[...new Set(trackerData.map(d => d.engineer))]}
+                  value={trackerFilters.engineer}
+                  onChange={(val) => setTrackerFilters(prev => ({ ...prev, engineer: val }))}
+                  placeholder="Search engineers..."
+                />
+
+                <SearchableDropdown
+                  label="ELP Required"
+                  options={["Yes", "No", "Pending"]}
+                  value={trackerFilters.elpRequired}
+                  onChange={(val) => setTrackerFilters(prev => ({ ...prev, elpRequired: val }))}
+                  placeholder="Search..."
+                />
+
+                {hasActiveTrackerFilters && (
+                  <Button variant="ghost" onClick={clearTrackerFilters} className="gap-2 text-destructive hover:text-destructive">
+                    <X className="h-4 w-4" />
+                    Clear Filters
+                  </Button>
+                )}
+              </div>
+
               <Button className="gap-2" onClick={() => setAddEntryModalOpen(true)}>
                 <Plus className="h-4 w-4" />
                 Add Entry
               </Button>
-            </div>
-
-            {/* Filters */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <SearchableDropdown
-                label="S/W Publishers"
-                options={[...new Set(trackerData.map(d => d.publisher))]}
-                value={trackerFilters.publisher}
-                onChange={(val) => setTrackerFilters(prev => ({ ...prev, publisher: val }))}
-                placeholder="Search publishers..."
-              />
-
-              <SearchableDropdown
-                label="Analyst"
-                options={[...new Set(trackerData.map(d => d.analyst))]}
-                value={trackerFilters.analyst}
-                onChange={(val) => setTrackerFilters(prev => ({ ...prev, analyst: val }))}
-                placeholder="Search analysts..."
-              />
-
-              <SearchableDropdown
-                label="Engineer"
-                options={[...new Set(trackerData.map(d => d.engineer))]}
-                value={trackerFilters.engineer}
-                onChange={(val) => setTrackerFilters(prev => ({ ...prev, engineer: val }))}
-                placeholder="Search engineers..."
-              />
-
-              <SearchableDropdown
-                label="ELP Required"
-                options={["Yes", "No", "Pending"]}
-                value={trackerFilters.elpRequired}
-                onChange={(val) => setTrackerFilters(prev => ({ ...prev, elpRequired: val }))}
-                placeholder="Search..."
-              />
-
-              {hasActiveTrackerFilters && (
-                <Button variant="ghost" onClick={clearTrackerFilters} className="gap-2 text-destructive hover:text-destructive">
-                  <X className="h-4 w-4" />
-                  Clear Filters
-                </Button>
-              )}
             </div>
 
             {/* Tracker Table with Grouped Headers */}
