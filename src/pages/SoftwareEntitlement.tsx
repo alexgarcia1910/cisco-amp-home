@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ArrowLeft, ExternalLink, ChevronDown, Plus, X, ChevronLeft, ChevronRight, Clock, User, FileText, AlertTriangle, AlertCircle, PieChart, BarChart3, Monitor, Download, Filter, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
+import { ArrowLeft, ExternalLink, ChevronDown, Plus, X, ChevronLeft, ChevronRight, Clock, User, FileText, AlertTriangle, AlertCircle, PieChart, BarChart3, Monitor, Download, Filter, ArrowUp, ArrowDown, ArrowUpDown, LayoutGrid } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from "recharts";
 import { Link } from "react-router-dom";
 import TopNav from "@/components/TopNav";
@@ -424,6 +424,22 @@ const logHistory = [{
   changes: "Created tracker entry"
 }];
 
+// Entry Logs data for Tracker Log view
+const entryLogsData = [
+  { date: "04/10/2025", publisher: "DATAENDURE", analyst: "Divya Yadiapally", entryType: "Baseline", dateDocsPulled: "04/10/2025", linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb1", dateCompleted: "04/24/2025", elpRequired: "Yes", startDate: "", linkToELP: "" },
+  { date: "02/15/2025", publisher: "DENODO TECHNOLOGIES, INC", analyst: "Linda Rodriguez", entryType: "Baseline", dateDocsPulled: "02/15/2025", linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb2", dateCompleted: "03/01/2025", elpRequired: "Yes", startDate: "03/12/2025", linkToELP: "https://cisco.sharepoint.com/sites/elp/2" },
+  { date: "03/02/2025", publisher: "DENODO TECHNOLOGIES, INC", analyst: "Linda Rodriguez", entryType: "Contracts", dateDocsPulled: "03/02/2025", linkToDocuments: "", dateCompleted: "03/10/2025", elpRequired: "", startDate: "", linkToELP: "" },
+  { date: "06/10/2025", publisher: "DEQUE SYSTEMS, INC.", analyst: "Divya Yadiapally", entryType: "Baseline", dateDocsPulled: "06/10/2025", linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb3", dateCompleted: "", elpRequired: "No", startDate: "", linkToELP: "" },
+  { date: "11/15/2025", publisher: "DIAMOND IT, LLC", analyst: "Mike Brown", entryType: "Baseline", dateDocsPulled: "11/15/2025", linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb4", dateCompleted: "11/28/2025", elpRequired: "Yes", startDate: "", linkToELP: "" },
+  { date: "11/29/2025", publisher: "DIAMOND IT, LLC", analyst: "Mike Brown", entryType: "Contracts", dateDocsPulled: "11/29/2025", linkToDocuments: "", dateCompleted: "12/05/2025", elpRequired: "", startDate: "", linkToELP: "" },
+  { date: "12/06/2025", publisher: "DIAMOND IT, LLC", analyst: "Mike Brown", entryType: "Refresh", dateDocsPulled: "12/06/2025", linkToDocuments: "https://cisco.sharepoint.com/sites/refresh/4", dateCompleted: "", elpRequired: "", startDate: "", linkToELP: "" },
+  { date: "03/20/2025", publisher: "DIGITAL.AI SOFTWARE, INC.", analyst: "Jane Doe", entryType: "Baseline", dateDocsPulled: "03/20/2025", linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb5", dateCompleted: "04/02/2025", elpRequired: "Yes", startDate: "04/22/2025", linkToELP: "https://cisco.sharepoint.com/sites/elp/5" },
+  { date: "04/03/2025", publisher: "DIGITAL.AI SOFTWARE, INC.", analyst: "Jane Doe", entryType: "Contracts", dateDocsPulled: "04/03/2025", linkToDocuments: "", dateCompleted: "04/10/2025", elpRequired: "", startDate: "", linkToELP: "" },
+  { date: "04/12/2025", publisher: "DIGITAL.AI SOFTWARE, INC.", analyst: "Jane Doe", entryType: "Refresh", dateDocsPulled: "04/12/2025", linkToDocuments: "https://cisco.sharepoint.com/sites/refresh/5", dateCompleted: "04/20/2025", elpRequired: "", startDate: "", linkToELP: "" },
+  { date: "10/01/2025", publisher: "DOCUSIGN, INC.", analyst: "Linda Rodriguez", entryType: "Baseline", dateDocsPulled: "10/01/2025", linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb6", dateCompleted: "10/15/2025", elpRequired: "Pending", startDate: "", linkToELP: "" },
+  { date: "10/16/2025", publisher: "DOCUSIGN, INC.", analyst: "Linda Rodriguez", entryType: "Contracts", dateDocsPulled: "10/16/2025", linkToDocuments: "", dateCompleted: "", elpRequired: "", startDate: "", linkToELP: "" },
+];
+
 // =============================================
 // COMPONENT
 // =============================================
@@ -441,12 +457,21 @@ const SoftwareEntitlement = () => {
   const [selectedTrackerRow, setSelectedTrackerRow] = useState<typeof trackerData[0] | null>(null);
   const [addEntryModalOpen, setAddEntryModalOpen] = useState(false);
   const [trackerRowsPerPage, setTrackerRowsPerPage] = useState(100);
+  const [trackerView, setTrackerView] = useState<"dashboard" | "log">("dashboard");
   const [trackerFilters, setTrackerFilters] = useState<{ publisher: string[]; analyst: string[]; engineer: string[]; elpRequired: string[] }>({
     publisher: [],
     analyst: [],
     engineer: [],
     elpRequired: []
   });
+
+  const filteredEntryLogs = useMemo(() => {
+    return entryLogsData.filter(row => {
+      if (trackerFilters.publisher.length > 0 && !trackerFilters.publisher.includes(row.publisher)) return false;
+      if (trackerFilters.analyst.length > 0 && !trackerFilters.analyst.includes(row.analyst)) return false;
+      return true;
+    });
+  }, [trackerFilters]);
 
   const filteredTrackerData = useMemo(() => {
     return trackerData.filter(row => {
@@ -696,17 +721,42 @@ const SoftwareEntitlement = () => {
             SECTION 2: ENTITLEMENT TRACKER
          ============================================= */}
         {activeTab === "tracker" && <div className="space-y-4">
-            {/* Title */}
-            <h1 className="text-xl font-semibold text-card-foreground">
-              Entitlement Tracker: Dashboard
-            </h1>
+            {/* Title with View Toggle */}
+            <div className="flex items-center justify-between">
+              <h1 className="text-xl font-semibold text-card-foreground">
+                Entitlement Tracker: {trackerView === "dashboard" ? "Dashboard" : "Log"}
+              </h1>
+              <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+                <Button
+                  variant={trackerView === "dashboard" ? "default" : "ghost"}
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setTrackerView("dashboard")}
+                  title="Dashboard View"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={trackerView === "log" ? "default" : "ghost"}
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setTrackerView("log")}
+                  title="Log View"
+                >
+                  <FileText className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
 
             {/* Filters & Add Button */}
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-3 flex-wrap">
                 <SearchableDropdown
                   label="S/W Publishers"
-                  options={[...new Set(trackerData.map(d => d.publisher))]}
+                  options={trackerView === "dashboard" 
+                    ? [...new Set(trackerData.map(d => d.publisher))]
+                    : [...new Set(entryLogsData.map(d => d.publisher))]
+                  }
                   value={trackerFilters.publisher}
                   onChange={(val) => setTrackerFilters(prev => ({ ...prev, publisher: val }))}
                   placeholder="Search publishers..."
@@ -714,27 +764,34 @@ const SoftwareEntitlement = () => {
 
                 <SearchableDropdown
                   label="Analyst"
-                  options={[...new Set(trackerData.map(d => d.analyst))]}
+                  options={trackerView === "dashboard"
+                    ? [...new Set(trackerData.map(d => d.analyst))]
+                    : [...new Set(entryLogsData.map(d => d.analyst))]
+                  }
                   value={trackerFilters.analyst}
                   onChange={(val) => setTrackerFilters(prev => ({ ...prev, analyst: val }))}
                   placeholder="Search analysts..."
                 />
 
-                <SearchableDropdown
-                  label="Engineer"
-                  options={[...new Set(trackerData.map(d => d.engineer))]}
-                  value={trackerFilters.engineer}
-                  onChange={(val) => setTrackerFilters(prev => ({ ...prev, engineer: val }))}
-                  placeholder="Search engineers..."
-                />
+                {trackerView === "dashboard" && (
+                  <>
+                    <SearchableDropdown
+                      label="Engineer"
+                      options={[...new Set(trackerData.map(d => d.engineer))]}
+                      value={trackerFilters.engineer}
+                      onChange={(val) => setTrackerFilters(prev => ({ ...prev, engineer: val }))}
+                      placeholder="Search engineers..."
+                    />
 
-                <SearchableDropdown
-                  label="ELP Required"
-                  options={["Yes", "No", "Pending"]}
-                  value={trackerFilters.elpRequired}
-                  onChange={(val) => setTrackerFilters(prev => ({ ...prev, elpRequired: val }))}
-                  placeholder="Search..."
-                />
+                    <SearchableDropdown
+                      label="ELP Required"
+                      options={["Yes", "No", "Pending"]}
+                      value={trackerFilters.elpRequired}
+                      onChange={(val) => setTrackerFilters(prev => ({ ...prev, elpRequired: val }))}
+                      placeholder="Search..."
+                    />
+                  </>
+                )}
 
                 {hasActiveTrackerFilters && (
                   <Button variant="ghost" onClick={clearTrackerFilters} className="gap-2 text-destructive hover:text-destructive">
@@ -744,13 +801,16 @@ const SoftwareEntitlement = () => {
                 )}
               </div>
 
-              <Button className="gap-2" onClick={() => setAddEntryModalOpen(true)}>
-                <Plus className="h-4 w-4" />
-                Add Entry
-              </Button>
+              {trackerView === "dashboard" && (
+                <Button className="gap-2" onClick={() => setAddEntryModalOpen(true)}>
+                  <Plus className="h-4 w-4" />
+                  Add Entry
+                </Button>
+              )}
             </div>
 
-            {/* Tracker Table with Grouped Headers */}
+            {/* Dashboard View - Tracker Table with Grouped Headers */}
+            {trackerView === "dashboard" && (
             <div className="border border-border rounded-lg bg-card overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm min-w-[1400px]">
@@ -882,6 +942,108 @@ const SoftwareEntitlement = () => {
                 </div>
               </div>
             </div>
+            )}
+
+            {/* Log View - Entry Logs Table */}
+            {trackerView === "log" && (
+            <div className="border border-border rounded-lg bg-card overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm min-w-[1200px]">
+                  <thead>
+                    <tr className="bg-purple-600">
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">Date</th>
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">Publisher</th>
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">S/W Entitlement Analyst</th>
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">Entry Type</th>
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">Date Documents Pulled</th>
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">Link to Documents</th>
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">Date Completed</th>
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">ELP Required</th>
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">Start Date</th>
+                      <th className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wide">Link to ELP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredEntryLogs.map((row, idx) => (
+                      <tr 
+                        key={`${row.publisher}-${row.date}-${idx}`} 
+                        className={`border-b border-border hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? "bg-card" : "bg-muted/10"}`}
+                      >
+                        <td className="px-3 py-2 whitespace-nowrap">{row.date}</td>
+                        <td className="px-3 py-2 font-medium text-primary whitespace-nowrap">{row.publisher}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{row.analyst}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          <Badge 
+                            variant="outline" 
+                            className={`text-xs ${
+                              row.entryType === "Baseline" ? "bg-green-600 text-white border-green-600" : 
+                              row.entryType === "Contracts" ? "bg-yellow-600 text-white border-yellow-600" : 
+                              row.entryType === "Refresh" ? "bg-teal-600 text-white border-teal-600" : ""
+                            }`}
+                          >
+                            {row.entryType}
+                          </Badge>
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">{row.dateDocsPulled || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {row.linkToDocuments ? (
+                            <a href={row.linkToDocuments} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1">
+                              View <ExternalLink className="h-3 w-3" />
+                            </a>
+                          ) : "-"}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">{row.dateCompleted || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {row.elpRequired ? (
+                            <Badge 
+                              variant={row.elpRequired === "No" ? "secondary" : "outline"} 
+                              className={`text-xs ${row.elpRequired === "Yes" ? "bg-green-600 text-white hover:bg-green-600" : ""}`}
+                            >
+                              {row.elpRequired}
+                            </Badge>
+                          ) : "-"}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">{row.startDate || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {row.linkToELP ? (
+                            <a href={row.linkToELP} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1">
+                              View <ExternalLink className="h-3 w-3" />
+                            </a>
+                          ) : "-"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/30">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Items per page:</span>
+                  <Select value={String(trackerRowsPerPage)} onValueChange={v => setTrackerRowsPerPage(Number(v))}>
+                    <SelectTrigger className="w-20 h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="100">100</SelectItem>
+                      <SelectItem value="200">200</SelectItem>
+                      <SelectItem value="500">500</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">1-{filteredEntryLogs.length} of {filteredEntryLogs.length}</span>
+                  <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            )}
           </div>}
 
         {/* =============================================
