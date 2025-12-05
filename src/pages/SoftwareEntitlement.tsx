@@ -741,76 +741,44 @@ const SoftwareEntitlement = () => {
                 ))}
               </div>
 
-              {/* Bottom Row: Scan Age Distribution + Trend Chart */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Scan Age Distribution Card */}
-                <div className="bg-card border border-border rounded-lg p-5">
-                  <h3 className="text-base font-medium text-card-foreground mb-4">
-                    Scan Age Distribution (All OS)
-                  </h3>
-                  <div className="space-y-3">
-                    {scanAgeDistribution.map((item) => (
-                      <button 
-                        key={item.range}
-                        onClick={() => handleDrilldown(`All OS — ${item.range}`, undefined, item.range)}
-                        className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors text-left"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ${item.color}`} />
-                          <span className="text-sm text-card-foreground">{item.range}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-medium text-card-foreground">
-                            {item.count.toLocaleString()}
-                          </span>
-                          <Badge variant="secondary" className={`${item.color} text-white text-xs`}>
-                            {item.percent}%
-                          </Badge>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Hosts/Servers Saturation Trend Chart */}
-                <div className="lg:col-span-2 bg-card border border-border rounded-lg p-5">
-                  <h3 className="text-base font-medium text-card-foreground mb-4">
-                    Hosts/Servers Saturation Trend
-                  </h3>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={hostsTrendData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                        <XAxis 
-                          dataKey="month" 
-                          stroke="hsl(var(--muted-foreground))" 
-                          fontSize={10}
-                          angle={-45}
-                          textAnchor="end"
-                          height={60}
-                        />
-                        <YAxis 
-                          domain={[0, 100]} 
-                          stroke="hsl(var(--muted-foreground))" 
-                          fontSize={12}
-                        />
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: "hsl(var(--card))", 
-                            border: "1px solid hsl(var(--border))",
-                            borderRadius: "8px"
-                          }}
-                          formatter={(value: number, name: string) => [name === "goal" ? `${value}%` : value, name === "goal" ? "90% Saturation Goal" : name]}
-                        />
-                        <Legend 
-                          formatter={(value) => value === "goal" ? "90% Saturation Goal" : value}
-                        />
-                        <Line type="monotone" dataKey="goal" name="90% Saturation Goal" stroke="#84cc16" strokeWidth={2} strokeDasharray="5 5" dot={{ fill: "#84cc16", r: 3 }} />
-                        <Line type="monotone" dataKey="Linux" stroke="#22d3ee" strokeWidth={2} dot={{ fill: "#22d3ee", r: 4 }} />
-                        <Line type="monotone" dataKey="Windows" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 4 }} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
+              {/* Hosts/Servers Saturation Trend Chart */}
+              <div className="bg-card border border-border rounded-lg p-5">
+                <h3 className="text-base font-medium text-card-foreground mb-4">
+                  Hosts/Servers Saturation Trend
+                </h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={hostsTrendData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis 
+                        dataKey="month" 
+                        stroke="hsl(var(--muted-foreground))" 
+                        fontSize={10}
+                        angle={-45}
+                        textAnchor="end"
+                        height={60}
+                      />
+                      <YAxis 
+                        domain={[0, 100]} 
+                        stroke="hsl(var(--muted-foreground))" 
+                        fontSize={12}
+                      />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: "hsl(var(--card))", 
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "8px"
+                        }}
+                        formatter={(value: number, name: string) => [name === "goal" ? `${value}%` : value, name === "goal" ? "90% Saturation Goal" : name]}
+                      />
+                      <Legend 
+                        formatter={(value) => value === "goal" ? "90% Saturation Goal" : value}
+                      />
+                      <Line type="monotone" dataKey="goal" name="90% Saturation Goal" stroke="#84cc16" strokeWidth={2} strokeDasharray="5 5" dot={{ fill: "#84cc16", r: 3 }} />
+                      <Line type="monotone" dataKey="Linux" stroke="#22d3ee" strokeWidth={2} dot={{ fill: "#22d3ee", r: 4 }} />
+                      <Line type="monotone" dataKey="Windows" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 4 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
 
