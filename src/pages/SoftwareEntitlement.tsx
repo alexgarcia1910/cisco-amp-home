@@ -108,61 +108,152 @@ const entitlementData = [{
   docLink: "https://terzo.example.com/doc/010",
   readyForUpload: false
 }];
-const trackerData = [{
-  publisher: "Microsoft",
-  baseline: "500",
-  elp: "520",
-  analyst: "John Smith",
-  engineer: "Sarah Lee",
-  completionDate: "2024-03-15",
-  notes: "Annual true-up complete",
-  lastUpdated: "2024-03-14"
-}, {
-  publisher: "Oracle",
-  baseline: "120",
-  elp: "118",
-  analyst: "Jane Doe",
-  engineer: "Mike Chen",
-  completionDate: "2024-03-20",
-  notes: "Pending contract review",
-  lastUpdated: "2024-03-12"
-}, {
-  publisher: "Adobe",
-  baseline: "300",
-  elp: "315",
-  analyst: "John Smith",
-  engineer: "Emily Wang",
-  completionDate: "2024-03-25",
-  notes: "Creative Cloud expansion",
-  lastUpdated: "2024-03-10"
-}, {
-  publisher: "SAP",
-  baseline: "50",
-  elp: "50",
-  analyst: "Mike Brown",
-  engineer: "Sarah Lee",
-  completionDate: "2024-04-01",
-  notes: "No changes",
-  lastUpdated: "2024-03-08"
-}, {
-  publisher: "Salesforce",
-  baseline: "200",
-  elp: "210",
-  analyst: "Jane Doe",
-  engineer: "Mike Chen",
-  completionDate: "2024-04-05",
-  notes: "New department licenses",
-  lastUpdated: "2024-03-05"
-}, {
-  publisher: "ServiceNow",
-  baseline: "80",
-  elp: "85",
-  analyst: "John Smith",
-  engineer: "Emily Wang",
-  completionDate: "2024-04-10",
-  notes: "ITSM module added",
-  lastUpdated: "2024-03-01"
-}];
+const trackerData = [
+  {
+    publisher: "DATAENDURE",
+    upcomingRenewal: "10/05/2026",
+    analyst: "Divya Yadiapally",
+    engineer: "Ryan Siegel",
+    eb_dateDocsPulled: "04/10/2025",
+    eb_linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb1",
+    eb_dateCompleted: "04/24/2025",
+    contracts_dateDocsPulled: "",
+    contracts_dateCompleted: "",
+    refresh_dateDocsPulled: "",
+    refresh_linkToDocuments: "",
+    refresh_dateCompleted: "",
+    elp_required: "Yes",
+    elp_startDate: "",
+    elp_linkToELP: "",
+    elp_dateCompleted: ""
+  },
+  {
+    publisher: "DENODO TECHNOLOGIES, INC",
+    upcomingRenewal: "03/15/2025",
+    analyst: "Linda Rodriguez",
+    engineer: "Ryan Siegel",
+    eb_dateDocsPulled: "02/15/2025",
+    eb_linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb2",
+    eb_dateCompleted: "03/01/2025",
+    contracts_dateDocsPulled: "03/02/2025",
+    contracts_dateCompleted: "03/10/2025",
+    refresh_dateDocsPulled: "",
+    refresh_linkToDocuments: "",
+    refresh_dateCompleted: "",
+    elp_required: "Yes",
+    elp_startDate: "03/12/2025",
+    elp_linkToELP: "https://cisco.sharepoint.com/sites/elp/2",
+    elp_dateCompleted: ""
+  },
+  {
+    publisher: "DEQUE SYSTEMS, INC.",
+    upcomingRenewal: "08/22/2025",
+    analyst: "Divya Yadiapally",
+    engineer: "Sarah Lee",
+    eb_dateDocsPulled: "06/10/2025",
+    eb_linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb3",
+    eb_dateCompleted: "",
+    contracts_dateDocsPulled: "",
+    contracts_dateCompleted: "",
+    refresh_dateDocsPulled: "",
+    refresh_linkToDocuments: "",
+    refresh_dateCompleted: "",
+    elp_required: "No",
+    elp_startDate: "",
+    elp_linkToELP: "",
+    elp_dateCompleted: ""
+  },
+  {
+    publisher: "DIAMOND IT, LLC",
+    upcomingRenewal: "01/31/2026",
+    analyst: "Mike Brown",
+    engineer: "Emily Wang",
+    eb_dateDocsPulled: "11/15/2025",
+    eb_linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb4",
+    eb_dateCompleted: "11/28/2025",
+    contracts_dateDocsPulled: "11/29/2025",
+    contracts_dateCompleted: "12/05/2025",
+    refresh_dateDocsPulled: "12/06/2025",
+    refresh_linkToDocuments: "https://cisco.sharepoint.com/sites/refresh/4",
+    refresh_dateCompleted: "",
+    elp_required: "Yes",
+    elp_startDate: "",
+    elp_linkToELP: "",
+    elp_dateCompleted: ""
+  },
+  {
+    publisher: "DIGITAL.AI SOFTWARE, INC.",
+    upcomingRenewal: "05/18/2025",
+    analyst: "Jane Doe",
+    engineer: "Mike Chen",
+    eb_dateDocsPulled: "03/20/2025",
+    eb_linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb5",
+    eb_dateCompleted: "04/02/2025",
+    contracts_dateDocsPulled: "04/03/2025",
+    contracts_dateCompleted: "04/10/2025",
+    refresh_dateDocsPulled: "04/12/2025",
+    refresh_linkToDocuments: "https://cisco.sharepoint.com/sites/refresh/5",
+    refresh_dateCompleted: "04/20/2025",
+    elp_required: "Yes",
+    elp_startDate: "04/22/2025",
+    elp_linkToELP: "https://cisco.sharepoint.com/sites/elp/5",
+    elp_dateCompleted: "05/01/2025"
+  },
+  {
+    publisher: "DOCUSIGN, INC.",
+    upcomingRenewal: "12/10/2025",
+    analyst: "Linda Rodriguez",
+    engineer: "Sarah Lee",
+    eb_dateDocsPulled: "10/01/2025",
+    eb_linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb6",
+    eb_dateCompleted: "10/15/2025",
+    contracts_dateDocsPulled: "10/16/2025",
+    contracts_dateCompleted: "",
+    refresh_dateDocsPulled: "",
+    refresh_linkToDocuments: "",
+    refresh_dateCompleted: "",
+    elp_required: "Pending",
+    elp_startDate: "",
+    elp_linkToELP: "",
+    elp_dateCompleted: ""
+  },
+  {
+    publisher: "DYNATRACE LLC",
+    upcomingRenewal: "07/25/2025",
+    analyst: "Divya Yadiapally",
+    engineer: "Ryan Siegel",
+    eb_dateDocsPulled: "05/15/2025",
+    eb_linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb7",
+    eb_dateCompleted: "05/28/2025",
+    contracts_dateDocsPulled: "05/30/2025",
+    contracts_dateCompleted: "06/08/2025",
+    refresh_dateDocsPulled: "06/10/2025",
+    refresh_linkToDocuments: "https://cisco.sharepoint.com/sites/refresh/7",
+    refresh_dateCompleted: "06/20/2025",
+    elp_required: "Yes",
+    elp_startDate: "06/22/2025",
+    elp_linkToELP: "",
+    elp_dateCompleted: ""
+  },
+  {
+    publisher: "ELASTIC N.V.",
+    upcomingRenewal: "09/30/2025",
+    analyst: "Mike Brown",
+    engineer: "Emily Wang",
+    eb_dateDocsPulled: "07/20/2025",
+    eb_linkToDocuments: "https://cisco.sharepoint.com/sites/docs/eb8",
+    eb_dateCompleted: "08/02/2025",
+    contracts_dateDocsPulled: "08/04/2025",
+    contracts_dateCompleted: "08/12/2025",
+    refresh_dateDocsPulled: "",
+    refresh_linkToDocuments: "",
+    refresh_dateCompleted: "",
+    elp_required: "No",
+    elp_startDate: "",
+    elp_linkToELP: "",
+    elp_dateCompleted: ""
+  }
+];
 // Agent Saturation - OS KPI Data
 const osKpiData = [
   {
@@ -348,6 +439,29 @@ const SoftwareEntitlement = () => {
   const [trackerDrawerOpen, setTrackerDrawerOpen] = useState(false);
   const [selectedTrackerRow, setSelectedTrackerRow] = useState<typeof trackerData[0] | null>(null);
   const [addEntryModalOpen, setAddEntryModalOpen] = useState(false);
+  const [trackerRowsPerPage, setTrackerRowsPerPage] = useState(100);
+  const [trackerFilters, setTrackerFilters] = useState<{ publisher: string; analyst: string; engineer: string; elpRequired: string }>({
+    publisher: "",
+    analyst: "",
+    engineer: "",
+    elpRequired: ""
+  });
+
+  const filteredTrackerData = useMemo(() => {
+    return trackerData.filter(row => {
+      if (trackerFilters.publisher && row.publisher !== trackerFilters.publisher) return false;
+      if (trackerFilters.analyst && row.analyst !== trackerFilters.analyst) return false;
+      if (trackerFilters.engineer && row.engineer !== trackerFilters.engineer) return false;
+      if (trackerFilters.elpRequired && row.elp_required !== trackerFilters.elpRequired) return false;
+      return true;
+    });
+  }, [trackerFilters]);
+
+  const clearTrackerFilters = () => {
+    setTrackerFilters({ publisher: "", analyst: "", engineer: "", elpRequired: "" });
+  };
+
+  const hasActiveTrackerFilters = Object.values(trackerFilters).some(v => v !== "");
 
   // Section 3: Agent Saturation state
   const [saturationView, setSaturationView] = useState<"dashboard" | "drilldown">("dashboard");
@@ -584,7 +698,7 @@ const SoftwareEntitlement = () => {
             {/* Title & Add Button */}
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-semibold text-card-foreground">
-                Entitlement Tracker
+                Entitlement Tracker: Dashboard
               </h1>
               <Button className="gap-2" onClick={() => setAddEntryModalOpen(true)}>
                 <Plus className="h-4 w-4" />
@@ -593,76 +707,206 @@ const SoftwareEntitlement = () => {
             </div>
 
             {/* Filters */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    Publisher
+                  <Button variant={trackerFilters.publisher ? "default" : "outline"} className="gap-2">
+                    S/W Publishers {trackerFilters.publisher && `(${trackerFilters.publisher})`}
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-popover">
-                  {["Microsoft", "Oracle", "Adobe", "SAP", "Salesforce", "ServiceNow"].map(pub => <DropdownMenuItem key={pub}>{pub}</DropdownMenuItem>)}
+                  {[...new Set(trackerData.map(d => d.publisher))].map(pub => (
+                    <DropdownMenuItem key={pub} onClick={() => setTrackerFilters(prev => ({ ...prev, publisher: pub }))}>
+                      {pub}
+                    </DropdownMenuItem>
+                  ))}
                 </DropdownMenuContent>
               </DropdownMenu>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    Analyst
+                  <Button variant={trackerFilters.analyst ? "default" : "outline"} className="gap-2">
+                    Analyst {trackerFilters.analyst && `(${trackerFilters.analyst.split(' ')[0]})`}
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-popover">
-                  {["John Smith", "Jane Doe", "Mike Brown"].map(analyst => <DropdownMenuItem key={analyst}>{analyst}</DropdownMenuItem>)}
+                  {[...new Set(trackerData.map(d => d.analyst))].map(analyst => (
+                    <DropdownMenuItem key={analyst} onClick={() => setTrackerFilters(prev => ({ ...prev, analyst }))}>
+                      {analyst}
+                    </DropdownMenuItem>
+                  ))}
                 </DropdownMenuContent>
               </DropdownMenu>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    Engineer
+                  <Button variant={trackerFilters.engineer ? "default" : "outline"} className="gap-2">
+                    Engineer {trackerFilters.engineer && `(${trackerFilters.engineer.split(' ')[0]})`}
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-popover">
-                  {["Sarah Lee", "Mike Chen", "Emily Wang"].map(eng => <DropdownMenuItem key={eng}>{eng}</DropdownMenuItem>)}
+                  {[...new Set(trackerData.map(d => d.engineer))].map(eng => (
+                    <DropdownMenuItem key={eng} onClick={() => setTrackerFilters(prev => ({ ...prev, engineer: eng }))}>
+                      {eng}
+                    </DropdownMenuItem>
+                  ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant={trackerFilters.elpRequired ? "default" : "outline"} className="gap-2">
+                    ELP Required {trackerFilters.elpRequired && `(${trackerFilters.elpRequired})`}
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-popover">
+                  {["Yes", "No", "Pending"].map(val => (
+                    <DropdownMenuItem key={val} onClick={() => setTrackerFilters(prev => ({ ...prev, elpRequired: val }))}>
+                      {val}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {hasActiveTrackerFilters && (
+                <Button variant="ghost" onClick={clearTrackerFilters} className="gap-2 text-destructive hover:text-destructive">
+                  <X className="h-4 w-4" />
+                  Clear Filters
+                </Button>
+              )}
             </div>
 
-            {/* Tracker Table */}
+            {/* Tracker Table with Grouped Headers */}
             <div className="border border-border rounded-lg bg-card overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-muted/50 border-b border-border sticky top-0">
-                    <tr>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Publisher</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Baseline</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">ELP</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Analyst</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Engineer</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Completion Date</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Notes</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Last Updated</th>
+                <table className="w-full text-sm min-w-[1400px]">
+                  {/* Category Header Row */}
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th colSpan={4} className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide bg-card border-r border-border"></th>
+                      <th colSpan={3} className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white bg-green-600 border-r border-border">
+                        Entitlement Baseline
+                      </th>
+                      <th colSpan={2} className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white bg-yellow-600 border-r border-border">
+                        Contracts
+                      </th>
+                      <th colSpan={3} className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white bg-primary border-r border-border">
+                        Entitlement Refresh
+                      </th>
+                      <th colSpan={4} className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white bg-purple-600">
+                        Effective License Position
+                      </th>
+                    </tr>
+                    {/* Column Header Row */}
+                    <tr className="bg-muted/50 border-b border-border">
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">S/W Publishers</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">Upcoming Renewal</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">Analyst</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap border-r border-border">Engineer</th>
+                      {/* Entitlement Baseline */}
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-green-50 dark:bg-green-950/30">Date Docs Pulled</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-green-50 dark:bg-green-950/30">Link To Documents</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-green-50 dark:bg-green-950/30 border-r border-border">Date Completed</th>
+                      {/* Contracts */}
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-yellow-50 dark:bg-yellow-950/30">Date Docs Pulled</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-yellow-50 dark:bg-yellow-950/30 border-r border-border">Date Completed</th>
+                      {/* Entitlement Refresh */}
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-blue-50 dark:bg-blue-950/30">Date Docs Pulled</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-blue-50 dark:bg-blue-950/30">Link To Documents</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-blue-50 dark:bg-blue-950/30 border-r border-border">Date Completed</th>
+                      {/* ELP */}
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-purple-50 dark:bg-purple-950/30">ELP Required</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-purple-50 dark:bg-purple-950/30">Start Date</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-purple-50 dark:bg-purple-950/30">Link To ELP</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-purple-50 dark:bg-purple-950/30">Date Completed</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {trackerData.map((row, idx) => <tr key={row.publisher} onClick={() => {
-                  setSelectedTrackerRow(row);
-                  setTrackerDrawerOpen(true);
-                }} className={`border-b border-border cursor-pointer hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? "bg-card" : "bg-muted/10"}`}>
-                        <td className="px-4 py-3 font-medium text-primary">{row.publisher}</td>
-                        <td className="px-4 py-3">{row.baseline}</td>
-                        <td className="px-4 py-3">{row.elp}</td>
-                        <td className="px-4 py-3">{row.analyst}</td>
-                        <td className="px-4 py-3">{row.engineer}</td>
-                        <td className="px-4 py-3">{row.completionDate}</td>
-                        <td className="px-4 py-3 max-w-[200px] truncate">{row.notes}</td>
-                        <td className="px-4 py-3 text-muted-foreground">{row.lastUpdated}</td>
-                      </tr>)}
+                    {filteredTrackerData.map((row, idx) => (
+                      <tr 
+                        key={row.publisher} 
+                        onClick={() => {
+                          setSelectedTrackerRow(row);
+                          setTrackerDrawerOpen(true);
+                        }} 
+                        className={`border-b border-border cursor-pointer hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? "bg-card" : "bg-muted/10"}`}
+                      >
+                        <td className="px-3 py-2 font-medium text-primary whitespace-nowrap">{row.publisher}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{row.upcomingRenewal || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{row.analyst}</td>
+                        <td className="px-3 py-2 whitespace-nowrap border-r border-border">{row.engineer}</td>
+                        {/* Entitlement Baseline */}
+                        <td className="px-3 py-2 whitespace-nowrap bg-green-50/50 dark:bg-green-950/20">{row.eb_dateDocsPulled || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-green-50/50 dark:bg-green-950/20">
+                          {row.eb_linkToDocuments ? (
+                            <a href={row.eb_linkToDocuments} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                              View <ExternalLink className="h-3 w-3" />
+                            </a>
+                          ) : "-"}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-green-50/50 dark:bg-green-950/20 border-r border-border">{row.eb_dateCompleted || "-"}</td>
+                        {/* Contracts */}
+                        <td className="px-3 py-2 whitespace-nowrap bg-yellow-50/50 dark:bg-yellow-950/20">{row.contracts_dateDocsPulled || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-yellow-50/50 dark:bg-yellow-950/20 border-r border-border">{row.contracts_dateCompleted || "-"}</td>
+                        {/* Entitlement Refresh */}
+                        <td className="px-3 py-2 whitespace-nowrap bg-blue-50/50 dark:bg-blue-950/20">{row.refresh_dateDocsPulled || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-blue-50/50 dark:bg-blue-950/20">
+                          {row.refresh_linkToDocuments ? (
+                            <a href={row.refresh_linkToDocuments} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                              View <ExternalLink className="h-3 w-3" />
+                            </a>
+                          ) : "-"}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-blue-50/50 dark:bg-blue-950/20 border-r border-border">{row.refresh_dateCompleted || "-"}</td>
+                        {/* ELP */}
+                        <td className="px-3 py-2 whitespace-nowrap bg-purple-50/50 dark:bg-purple-950/20">
+                          <Badge variant={row.elp_required === "Yes" ? "default" : row.elp_required === "No" ? "secondary" : "outline"} className="text-xs">
+                            {row.elp_required}
+                          </Badge>
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-purple-50/50 dark:bg-purple-950/20">{row.elp_startDate || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-purple-50/50 dark:bg-purple-950/20">
+                          {row.elp_linkToELP ? (
+                            <a href={row.elp_linkToELP} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                              View <ExternalLink className="h-3 w-3" />
+                            </a>
+                          ) : "-"}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-purple-50/50 dark:bg-purple-950/20">{row.elp_dateCompleted || "-"}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/30">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Items per page:</span>
+                  <Select value={String(trackerRowsPerPage)} onValueChange={v => setTrackerRowsPerPage(Number(v))}>
+                    <SelectTrigger className="w-20 h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="100">100</SelectItem>
+                      <SelectItem value="200">200</SelectItem>
+                      <SelectItem value="500">500</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">1-{filteredTrackerData.length} of {filteredTrackerData.length}</span>
+                  <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>}
@@ -1255,24 +1499,22 @@ const SoftwareEntitlement = () => {
         <SheetContent className="w-[450px] sm:max-w-[450px] overflow-y-auto">
           <SheetHeader>
             <SheetTitle className="text-lg font-semibold">
-              Entitlement History: {selectedTrackerRow?.publisher}
+              Entitlement Details: {selectedTrackerRow?.publisher}
             </SheetTitle>
           </SheetHeader>
           
           {selectedTrackerRow && <div className="mt-6 space-y-6">
-              {/* Current Values */}
+              {/* General Info */}
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-3">
-                  Current Values
-                </h4>
+                <h4 className="text-sm font-medium text-muted-foreground mb-3">General Information</h4>
                 <div className="space-y-3 bg-muted/30 rounded-lg p-4">
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Baseline</span>
-                    <span className="text-sm font-medium">{selectedTrackerRow.baseline}</span>
+                    <span className="text-sm text-muted-foreground">Publisher</span>
+                    <span className="text-sm font-medium">{selectedTrackerRow.publisher}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">ELP</span>
-                    <span className="text-sm font-medium">{selectedTrackerRow.elp}</span>
+                    <span className="text-sm text-muted-foreground">Upcoming Renewal</span>
+                    <span className="text-sm font-medium">{selectedTrackerRow.upcomingRenewal || "-"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Analyst</span>
@@ -1281,6 +1523,96 @@ const SoftwareEntitlement = () => {
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Engineer</span>
                     <span className="text-sm">{selectedTrackerRow.engineer}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Entitlement Baseline */}
+              <div>
+                <h4 className="text-sm font-medium text-green-600 mb-3">Entitlement Baseline</h4>
+                <div className="space-y-3 bg-green-50 dark:bg-green-950/30 rounded-lg p-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Date Docs Pulled</span>
+                    <span className="text-sm">{selectedTrackerRow.eb_dateDocsPulled || "-"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Link To Documents</span>
+                    {selectedTrackerRow.eb_linkToDocuments ? (
+                      <a href={selectedTrackerRow.eb_linkToDocuments} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-1">
+                        View <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ) : <span className="text-sm">-</span>}
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Date Completed</span>
+                    <span className="text-sm">{selectedTrackerRow.eb_dateCompleted || "-"}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contracts */}
+              <div>
+                <h4 className="text-sm font-medium text-yellow-600 mb-3">Contracts</h4>
+                <div className="space-y-3 bg-yellow-50 dark:bg-yellow-950/30 rounded-lg p-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Date Docs Pulled</span>
+                    <span className="text-sm">{selectedTrackerRow.contracts_dateDocsPulled || "-"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Date Completed</span>
+                    <span className="text-sm">{selectedTrackerRow.contracts_dateCompleted || "-"}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Entitlement Refresh */}
+              <div>
+                <h4 className="text-sm font-medium text-primary mb-3">Entitlement Refresh</h4>
+                <div className="space-y-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg p-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Date Docs Pulled</span>
+                    <span className="text-sm">{selectedTrackerRow.refresh_dateDocsPulled || "-"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Link To Documents</span>
+                    {selectedTrackerRow.refresh_linkToDocuments ? (
+                      <a href={selectedTrackerRow.refresh_linkToDocuments} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-1">
+                        View <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ) : <span className="text-sm">-</span>}
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Date Completed</span>
+                    <span className="text-sm">{selectedTrackerRow.refresh_dateCompleted || "-"}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Effective License Position */}
+              <div>
+                <h4 className="text-sm font-medium text-purple-600 mb-3">Effective License Position</h4>
+                <div className="space-y-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg p-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">ELP Required</span>
+                    <Badge variant={selectedTrackerRow.elp_required === "Yes" ? "default" : selectedTrackerRow.elp_required === "No" ? "secondary" : "outline"} className="text-xs">
+                      {selectedTrackerRow.elp_required}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Start Date</span>
+                    <span className="text-sm">{selectedTrackerRow.elp_startDate || "-"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Link To ELP</span>
+                    {selectedTrackerRow.elp_linkToELP ? (
+                      <a href={selectedTrackerRow.elp_linkToELP} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-1">
+                        View <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ) : <span className="text-sm">-</span>}
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Date Completed</span>
+                    <span className="text-sm">{selectedTrackerRow.elp_dateCompleted || "-"}</span>
                   </div>
                 </div>
               </div>
@@ -1309,31 +1641,19 @@ const SoftwareEntitlement = () => {
 
       {/* Add Entry Modal */}
       <Dialog open={addEntryModalOpen} onOpenChange={setAddEntryModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add New Entry</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Publisher</label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select publisher" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover">
-                  {["Microsoft", "Oracle", "Adobe", "SAP", "Salesforce", "ServiceNow"].map(pub => <SelectItem key={pub} value={pub}>{pub}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Baseline</label>
-                <Input placeholder="Enter baseline" />
+                <label className="text-sm font-medium">S/W Publisher</label>
+                <Input placeholder="Enter publisher name" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">ELP</label>
-                <Input placeholder="Enter ELP" />
+                <label className="text-sm font-medium">Upcoming Renewal</label>
+                <Input type="date" />
               </div>
             </div>
 
@@ -1345,7 +1665,7 @@ const SoftwareEntitlement = () => {
                     <SelectValue placeholder="Select analyst" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
-                    {["John Smith", "Jane Doe", "Mike Brown"].map(analyst => <SelectItem key={analyst} value={analyst}>{analyst}</SelectItem>)}
+                    {["Divya Yadiapally", "Linda Rodriguez", "Mike Brown", "Jane Doe"].map(analyst => <SelectItem key={analyst} value={analyst}>{analyst}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -1356,15 +1676,72 @@ const SoftwareEntitlement = () => {
                     <SelectValue placeholder="Select engineer" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
-                    {["Sarah Lee", "Mike Chen", "Emily Wang"].map(eng => <SelectItem key={eng} value={eng}>{eng}</SelectItem>)}
+                    {["Ryan Siegel", "Sarah Lee", "Mike Chen", "Emily Wang"].map(eng => <SelectItem key={eng} value={eng}>{eng}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Notes</label>
-              <Textarea placeholder="Add notes..." rows={3} />
+            {/* Entitlement Baseline Section */}
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium text-green-600 mb-3">Entitlement Baseline</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Date Docs Pulled</label>
+                  <Input type="date" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Date Completed</label>
+                  <Input type="date" />
+                </div>
+              </div>
+              <div className="space-y-2 mt-3">
+                <label className="text-sm font-medium">Link To Documents</label>
+                <Input placeholder="https://..." />
+              </div>
+            </div>
+
+            {/* Contracts Section */}
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium text-yellow-600 mb-3">Contracts</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Date Docs Pulled</label>
+                  <Input type="date" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Date Completed</label>
+                  <Input type="date" />
+                </div>
+              </div>
+            </div>
+
+            {/* ELP Section */}
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium text-purple-600 mb-3">Effective License Position</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">ELP Required</label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="Yes">Yes</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="Pending">Pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Start Date</label>
+                  <Input type="date" />
+                </div>
+              </div>
+              <div className="space-y-2 mt-3">
+                <label className="text-sm font-medium">Link To ELP</label>
+                <Input placeholder="https://..." />
+              </div>
             </div>
           </div>
           <DialogFooter>
