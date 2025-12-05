@@ -441,28 +441,28 @@ const SoftwareEntitlement = () => {
   const [selectedTrackerRow, setSelectedTrackerRow] = useState<typeof trackerData[0] | null>(null);
   const [addEntryModalOpen, setAddEntryModalOpen] = useState(false);
   const [trackerRowsPerPage, setTrackerRowsPerPage] = useState(100);
-  const [trackerFilters, setTrackerFilters] = useState<{ publisher: string; analyst: string; engineer: string; elpRequired: string }>({
-    publisher: "",
-    analyst: "",
-    engineer: "",
-    elpRequired: ""
+  const [trackerFilters, setTrackerFilters] = useState<{ publisher: string[]; analyst: string[]; engineer: string[]; elpRequired: string[] }>({
+    publisher: [],
+    analyst: [],
+    engineer: [],
+    elpRequired: []
   });
 
   const filteredTrackerData = useMemo(() => {
     return trackerData.filter(row => {
-      if (trackerFilters.publisher && row.publisher !== trackerFilters.publisher) return false;
-      if (trackerFilters.analyst && row.analyst !== trackerFilters.analyst) return false;
-      if (trackerFilters.engineer && row.engineer !== trackerFilters.engineer) return false;
-      if (trackerFilters.elpRequired && row.elp_required !== trackerFilters.elpRequired) return false;
+      if (trackerFilters.publisher.length > 0 && !trackerFilters.publisher.includes(row.publisher)) return false;
+      if (trackerFilters.analyst.length > 0 && !trackerFilters.analyst.includes(row.analyst)) return false;
+      if (trackerFilters.engineer.length > 0 && !trackerFilters.engineer.includes(row.engineer)) return false;
+      if (trackerFilters.elpRequired.length > 0 && !trackerFilters.elpRequired.includes(row.elp_required)) return false;
       return true;
     });
   }, [trackerFilters]);
 
   const clearTrackerFilters = () => {
-    setTrackerFilters({ publisher: "", analyst: "", engineer: "", elpRequired: "" });
+    setTrackerFilters({ publisher: [], analyst: [], engineer: [], elpRequired: [] });
   };
 
-  const hasActiveTrackerFilters = Object.values(trackerFilters).some(v => v !== "");
+  const hasActiveTrackerFilters = Object.values(trackerFilters).some(v => v.length > 0);
 
   // Section 3: Agent Saturation state
   const [saturationView, setSaturationView] = useState<"dashboard" | "drilldown">("dashboard");

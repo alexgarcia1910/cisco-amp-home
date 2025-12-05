@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ChevronDown, Search, X } from "lucide-react";
+import { ChevronDown, Search, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 interface SearchableDropdownProps {
   label: string;
   options: string[];
-  value: string | null;
-  onChange: (value: string) => void;
+  value: string[];
+  onChange: (value: string[]) => void;
   placeholder?: string;
 }
 
@@ -34,22 +34,38 @@ export function SearchableDropdown({
     );
   }, [options, search]);
 
-  const displayValue = value
-    ? value.length > 15
-      ? `${value.substring(0, 15)}...`
-      : value
-    : null;
+  const toggleOption = (option: string) => {
+    if (value.includes(option)) {
+      onChange(value.filter((v) => v !== option));
+    } else {
+      onChange([...value, option]);
+    }
+  };
+
+  const removeOption = (option: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange(value.filter((v) => v !== option));
+  };
+
+  const displayCount = value.length;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant={value ? "default" : "outline"}
-          className="gap-2"
+          variant={displayCount > 0 ? "default" : "outline"}
+          className="gap-2 h-auto min-h-[36px] py-1.5"
           role="combobox"
           aria-expanded={open}
         >
-          {label} {displayValue && `(${displayValue})`}
+          <span className="flex items-center gap-1.5 flex-wrap">
+            {label}
+            {displayCount > 0 && (
+              <span className="bg-background/20 text-xs px-1.5 py-0.5 rounded">
+                {displayCount}
+              </span>
+            )}
+          </span>
           <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -73,7 +89,25 @@ export function SearchableDropdown({
             )}
           </div>
         </div>
-        <div className="max-h-[280px] overflow-y-auto">
+        {value.length > 0 && (
+          <div className="p-2 border-b border-border flex flex-wrap gap-1">
+            {value.map((v) => (
+              <span
+                key={v}
+                className="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs px-2 py-1 rounded"
+              >
+                {v.length > 12 ? `${v.substring(0, 12)}...` : v}
+                <button
+                  onClick={(e) => removeOption(v, e)}
+                  className="hover:text-destructive"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="max-h-[240px] overflow-y-auto">
           {filteredOptions.length === 0 ? (
             <div className="px-3 py-6 text-center text-sm text-muted-foreground">
               No results found.
@@ -82,16 +116,24 @@ export function SearchableDropdown({
             filteredOptions.map((option) => (
               <button
                 key={option}
-                onClick={() => {
-                  onChange(option);
-                  setOpen(false);
-                  setSearch("");
-                }}
+                onClick={() => toggleOption(option)}
                 className={cn(
-                  "w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors",
-                  value === option && "bg-muted font-medium"
+                  "w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors flex items-center gap-2",
+                  value.includes(option) && "bg-muted"
                 )}
               >
+                <div
+                  className={cn(
+                    "h-4 w-4 border rounded flex items-center justify-center shrink-0",
+                    value.includes(option)
+                      ? "bg-primary border-primary"
+                      : "border-border"
+                  )}
+                >
+                  {value.includes(option) && (
+                    <Check className="h-3 w-3 text-primary-foreground" />
+                  )}
+                </div>
                 {option}
               </button>
             ))
