@@ -219,7 +219,8 @@ const scanAgeDistribution = [
   { range: "90+ Days", count: 410, percent: 3, color: "bg-destructive" }
 ];
 
-const saturationTrendData = [
+// Hosts/Servers trend data
+const hostsTrendData = [
   { month: "2024-12-04", Linux: 45, Windows: 85, goal: 90 },
   { month: "2025-01-30", Linux: 58, Windows: 84, goal: 90 },
   { month: "2025-02-01", Linux: 60, Windows: 85, goal: 90 },
@@ -233,6 +234,72 @@ const saturationTrendData = [
   { month: "2025-10-31", Linux: 75, Windows: 79, goal: 90 },
   { month: "2025-11-30", Linux: 72, Windows: 82, goal: 90 },
   { month: "2025-12-02", Linux: 72, Windows: 80, goal: 90 }
+];
+
+// Laptop/Desktop KPI data (Mac, Windows, Linux)
+const laptopKpiData = [
+  {
+    os: "Mac",
+    saturationPercent: 100,
+    espRecords: 9260,
+    flexeraRecords: 75810,
+    gap: -66550,
+    agentsWithoutEsp: 69176,
+    espWithoutAgent: 2969,
+    scanAge: { 
+      "0-30": { count: 68967, percent: 90.97 }, 
+      "31-60": { count: 3810, percent: 5.03 }, 
+      "61-90": { count: 2811, percent: 3.71 }, 
+      "90+": { count: 222, percent: 0.29 } 
+    }
+  },
+  {
+    os: "Windows",
+    saturationPercent: 100,
+    espRecords: 6082,
+    flexeraRecords: 67448,
+    gap: -61366,
+    agentsWithoutEsp: 63164,
+    espWithoutAgent: 1897,
+    scanAge: { 
+      "0-30": { count: 59509, percent: 88.23 }, 
+      "31-60": { count: 4307, percent: 6.39 }, 
+      "61-90": { count: 3471, percent: 5.15 }, 
+      "90+": { count: 161, percent: 0.24 } 
+    }
+  },
+  {
+    os: "Linux",
+    saturationPercent: null,
+    espRecords: 0,
+    flexeraRecords: 396,
+    gap: -396,
+    agentsWithoutEsp: 377,
+    espWithoutAgent: 0,
+    scanAge: { 
+      "0-30": { count: 19, percent: 4.80 }, 
+      "31-60": { count: 331, percent: 83.59 }, 
+      "61-90": { count: 44, percent: 11.11 }, 
+      "90+": { count: 2, percent: 0.51 } 
+    }
+  }
+];
+
+// Laptop/Desktop trend data
+const laptopTrendData = [
+  { month: "2024-12-04", Mac: 95, Windows: 92, goal: 90 },
+  { month: "2025-01-30", Mac: 96, Windows: 91, goal: 90 },
+  { month: "2025-02-01", Mac: 97, Windows: 90, goal: 90 },
+  { month: "2025-03-01", Mac: 96, Windows: 89, goal: 90 },
+  { month: "2025-04-01", Mac: 95, Windows: 88, goal: 90 },
+  { month: "2025-05-01", Mac: 97, Windows: 90, goal: 90 },
+  { month: "2025-06-10", Mac: 98, Windows: 91, goal: 90 },
+  { month: "2025-07-01", Mac: 99, Windows: 89, goal: 90 },
+  { month: "2025-08-31", Mac: 98, Windows: 85, goal: 90 },
+  { month: "2025-09-09", Mac: 97, Windows: 84, goal: 90 },
+  { month: "2025-10-31", Mac: 99, Windows: 88, goal: 90 },
+  { month: "2025-11-30", Mac: 100, Windows: 90, goal: 90 },
+  { month: "2025-12-02", Mac: 100, Windows: 89, goal: 90 }
 ];
 
 const agentDrilldownData = [
@@ -561,9 +628,16 @@ const SoftwareEntitlement = () => {
                 Agent Saturation Dashboard
               </h1>
 
-              {/* OS KPI Cards */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {osKpiData.map((osData) => (
+              {/* HOSTS/SERVERS SECTION */}
+              <div className="border-b border-border pb-2">
+                <h2 className="text-lg font-semibold text-card-foreground">
+                  Hosts/Servers: <span className="text-primary">75.19%</span> Saturation
+                </h2>
+              </div>
+
+              {/* Host/Server OS KPI Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {osKpiData.filter(os => os.os !== "Mac").map((osData) => (
                   <div key={osData.os} className="bg-card border border-border rounded-lg p-5 hover:border-primary/50 transition-colors">
                     <div className="flex items-center gap-3 mb-4">
                       <div className={`p-2 rounded-lg ${osData.os === "Linux" ? "bg-orange-500/10" : osData.os === "Windows" ? "bg-primary/10" : "bg-gray-500/10"}`}>
@@ -698,14 +772,14 @@ const SoftwareEntitlement = () => {
                   </div>
                 </div>
 
-                {/* Saturation Trend Chart */}
+                {/* Hosts/Servers Saturation Trend Chart */}
                 <div className="lg:col-span-2 bg-card border border-border rounded-lg p-5">
                   <h3 className="text-base font-medium text-card-foreground mb-4">
-                    Saturation Trend (6 Months)
+                    Hosts/Servers Saturation Trend
                   </h3>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={saturationTrendData}>
+                      <LineChart data={hostsTrendData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                         <XAxis 
                           dataKey="month" 
@@ -737,6 +811,160 @@ const SoftwareEntitlement = () => {
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
+                </div>
+              </div>
+
+              {/* LAPTOP/DESKTOP SECTION */}
+              <div className="border-b border-border pb-2 mt-8">
+                <h2 className="text-lg font-semibold text-card-foreground">
+                  Laptop/Desktop: <span className="text-primary">936.34%</span> Saturation
+                </h2>
+              </div>
+
+              {/* Laptop/Desktop OS KPI Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {laptopKpiData.map((osData) => (
+                  <div key={osData.os} className="bg-card border border-border rounded-lg p-5 hover:border-primary/50 transition-colors">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`p-2 rounded-lg ${osData.os === "Mac" ? "bg-cyan-500/10" : osData.os === "Windows" ? "bg-cyan-500/10" : "bg-gray-500/10"}`}>
+                        <Monitor className={`h-5 w-5 ${osData.os === "Mac" ? "text-cyan-500" : osData.os === "Windows" ? "text-cyan-500" : "text-gray-500"}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-card-foreground">{osData.os}</h3>
+                        <span className={`text-lg font-bold ${osData.saturationPercent === null ? "text-gray-500" : osData.saturationPercent >= 90 ? "text-green-600" : osData.saturationPercent >= 75 ? "text-primary" : "text-yellow-600"}`}>
+                          {osData.saturationPercent === null ? "N/A" : `${osData.saturationPercent}%`} Saturation
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">ESP Records</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — ESP Records`, osData.os, "esp")}
+                          className="text-primary hover:underline font-medium"
+                        >
+                          {osData.espRecords.toLocaleString()}
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">Flexera Records</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — Flexera Records`, osData.os, "flexera")}
+                          className="text-primary hover:underline font-medium"
+                        >
+                          {osData.flexeraRecords.toLocaleString()}
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">GAP</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — GAP Analysis`, osData.os, "gap")}
+                          className={`hover:underline font-medium ${osData.gap < 0 ? "text-destructive" : "text-destructive"}`}
+                        >
+                          {osData.gap.toLocaleString()}
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">Agents w/o ESP Record</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — Agents without ESP Record`, osData.os, "noEsp")}
+                          className="text-yellow-600 hover:underline font-medium"
+                        >
+                          {osData.agentsWithoutEsp.toLocaleString()}
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center py-1 border-b border-border/50">
+                        <span className="text-muted-foreground">ESP Record w/o Agent</span>
+                        <button 
+                          onClick={() => handleDrilldown(`${osData.os} — ESP Records without Agent`, osData.os, "noAgent")}
+                          className="text-yellow-600 hover:underline font-medium"
+                        >
+                          {osData.espWithoutAgent.toLocaleString()}
+                        </button>
+                      </div>
+
+                      {/* Scan Age Buckets - Mini Cards */}
+                      <div className="pt-3 mt-3 border-t border-border">
+                        <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Scanned Age</span>
+                        <div className="grid grid-cols-4 gap-2 mt-2">
+                          <button 
+                            onClick={() => handleDrilldown(`${osData.os} — Scanned 0-30 days`, osData.os, "scan0-30")}
+                            className="bg-green-500/10 hover:bg-green-500/20 rounded-lg p-2 text-center transition-colors"
+                          >
+                            <div className="text-xs text-muted-foreground">0-30</div>
+                            <div className="text-sm font-semibold text-green-600">{osData.scanAge["0-30"].count.toLocaleString()}</div>
+                            <div className="text-xs text-muted-foreground">{osData.scanAge["0-30"].percent}%</div>
+                          </button>
+                          <button 
+                            onClick={() => handleDrilldown(`${osData.os} — Scanned 31-60 days`, osData.os, "scan31-60")}
+                            className="bg-yellow-500/10 hover:bg-yellow-500/20 rounded-lg p-2 text-center transition-colors"
+                          >
+                            <div className="text-xs text-muted-foreground">31-60</div>
+                            <div className="text-sm font-semibold text-yellow-600">{osData.scanAge["31-60"].count.toLocaleString()}</div>
+                            <div className="text-xs text-muted-foreground">{osData.scanAge["31-60"].percent}%</div>
+                          </button>
+                          <button 
+                            onClick={() => handleDrilldown(`${osData.os} — Scanned 61-90 days`, osData.os, "scan61-90")}
+                            className="bg-orange-500/10 hover:bg-orange-500/20 rounded-lg p-2 text-center transition-colors"
+                          >
+                            <div className="text-xs text-muted-foreground">61-90</div>
+                            <div className="text-sm font-semibold text-orange-600">{osData.scanAge["61-90"].count.toLocaleString()}</div>
+                            <div className="text-xs text-muted-foreground">{osData.scanAge["61-90"].percent}%</div>
+                          </button>
+                          <button 
+                            onClick={() => handleDrilldown(`${osData.os} — Scanned 90+ days`, osData.os, "scan90+")}
+                            className="bg-red-500/10 hover:bg-red-500/20 rounded-lg p-2 text-center transition-colors"
+                          >
+                            <div className="text-xs text-muted-foreground">90+</div>
+                            <div className="text-sm font-semibold text-red-600">{osData.scanAge["90+"].count.toLocaleString()}</div>
+                            <div className="text-xs text-muted-foreground">{osData.scanAge["90+"].percent}%</div>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Laptop/Desktop Saturation Trend Chart */}
+              <div className="bg-card border border-border rounded-lg p-5">
+                <h3 className="text-base font-medium text-card-foreground mb-4">
+                  Laptop/Desktop Saturation Trend
+                </h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={laptopTrendData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis 
+                        dataKey="month" 
+                        stroke="hsl(var(--muted-foreground))" 
+                        fontSize={10}
+                        angle={-45}
+                        textAnchor="end"
+                        height={60}
+                      />
+                      <YAxis 
+                        domain={[0, 100]} 
+                        stroke="hsl(var(--muted-foreground))" 
+                        fontSize={12}
+                      />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: "hsl(var(--card))", 
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "8px"
+                        }}
+                        formatter={(value: number, name: string) => [name === "goal" ? `${value}%` : value, name === "goal" ? "90% Saturation Goal" : name]}
+                      />
+                      <Legend 
+                        formatter={(value) => value === "goal" ? "90% Saturation Goal" : value}
+                      />
+                      <Line type="monotone" dataKey="goal" name="90% Saturation Goal" stroke="#84cc16" strokeWidth={2} strokeDasharray="5 5" dot={{ fill: "#84cc16", r: 3 }} />
+                      <Line type="monotone" dataKey="Mac" stroke="#22d3ee" strokeWidth={2} dot={{ fill: "#22d3ee", r: 4 }} />
+                      <Line type="monotone" dataKey="Windows" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 4 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </>}
