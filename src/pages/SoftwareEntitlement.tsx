@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowLeft, ExternalLink, ChevronDown, Plus, X, ChevronLeft, ChevronRight, Clock, User, FileText, AlertTriangle, AlertCircle, PieChart, BarChart3, Monitor, Download, Filter } from "lucide-react";
+import { useState, useMemo } from "react";
+import { ArrowLeft, ExternalLink, ChevronDown, Plus, X, ChevronLeft, ChevronRight, Clock, User, FileText, AlertTriangle, AlertCircle, PieChart, BarChart3, Monitor, Download, Filter, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from "recharts";
 import { Link } from "react-router-dom";
 import TopNav from "@/components/TopNav";
@@ -355,6 +355,56 @@ const SoftwareEntitlement = () => {
   const [saturationFilters, setSaturationFilters] = useState<{ field: string; values: string[] }[]>([]);
   const [saturationFilterModalOpen, setSaturationFilterModalOpen] = useState(false);
   const [saturationRowsPerPage, setSaturationRowsPerPage] = useState(100);
+  const [drilldownSortColumn, setDrilldownSortColumn] = useState<string | null>(null);
+  const [drilldownSortDirection, setDrilldownSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  // Column to key mapping for drilldown table
+  const drilldownColumnToKeyMap: Record<string, keyof typeof agentDrilldownData[0]> = {
+    "Name": "name",
+    "Device Type": "deviceType",
+    "Status": "status",
+    "IP Address": "ipAddress",
+    "Serial Number": "serialNumber",
+    "Operating System": "os",
+    "MAC Address": "macAddress",
+    "Computer ID": "computerId",
+    "Asset ID": "assetId"
+  };
+
+  // Sort drilldown data
+  const sortedDrilldownData = useMemo(() => {
+    if (!drilldownSortColumn) return agentDrilldownData;
+    
+    const key = drilldownColumnToKeyMap[drilldownSortColumn];
+    if (!key) return agentDrilldownData;
+    
+    return [...agentDrilldownData].sort((a, b) => {
+      const aVal = a[key];
+      const bVal = b[key];
+      
+      return drilldownSortDirection === 'asc' 
+        ? String(aVal).localeCompare(String(bVal))
+        : String(bVal).localeCompare(String(aVal));
+    });
+  }, [drilldownSortColumn, drilldownSortDirection]);
+
+  const handleDrilldownSort = (col: string) => {
+    if (drilldownSortColumn === col) {
+      setDrilldownSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setDrilldownSortColumn(col);
+      setDrilldownSortDirection('asc');
+    }
+  };
+
+  const getDrilldownSortIcon = (col: string) => {
+    if (drilldownSortColumn !== col) {
+      return <ArrowUpDown className="h-4 w-4 opacity-0 group-hover:opacity-50" />;
+    }
+    return drilldownSortDirection === 'asc' 
+      ? <ArrowUp className="h-4 w-4" />
+      : <ArrowDown className="h-4 w-4" />;
+  };
 
   const handleDrilldown = (title: string, os?: string, metric?: string) => {
     setDrilldownContext({ title, os, metric });
@@ -1015,19 +1065,22 @@ const SoftwareEntitlement = () => {
                   <table className="w-full text-sm">
                     <thead className="bg-muted/50 border-b border-border sticky top-0">
                       <tr>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Name</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Device Type</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">IP Address</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Serial Number</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Operating System</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">MAC Address</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Computer ID</th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Asset ID</th>
+                        {["Name", "Device Type", "Status", "IP Address", "Serial Number", "Operating System", "MAC Address", "Computer ID", "Asset ID"].map((col) => (
+                          <th 
+                            key={col}
+                            className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:bg-muted/70 transition-colors group"
+                            onClick={() => handleDrilldownSort(col)}
+                          >
+                            <div className="flex items-center gap-2">
+                              {col}
+                              {getDrilldownSortIcon(col)}
+                            </div>
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {agentDrilldownData.map((row, idx) => (
+                      {sortedDrilldownData.map((row, idx) => (
                         <tr 
                           key={row.computerId} 
                           className={`border-b border-border hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? "bg-card" : "bg-muted/10"}`}
