@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableDropdown } from "@/components/SearchableDropdown";
 
 // =============================================
 // STATIC DATA
@@ -708,69 +709,37 @@ const SoftwareEntitlement = () => {
 
             {/* Filters */}
             <div className="flex items-center gap-3 flex-wrap">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={trackerFilters.publisher ? "default" : "outline"} className="gap-2">
-                    S/W Publishers {trackerFilters.publisher && `(${trackerFilters.publisher})`}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-popover">
-                  {[...new Set(trackerData.map(d => d.publisher))].map(pub => (
-                    <DropdownMenuItem key={pub} onClick={() => setTrackerFilters(prev => ({ ...prev, publisher: pub }))}>
-                      {pub}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <SearchableDropdown
+                label="S/W Publishers"
+                options={[...new Set(trackerData.map(d => d.publisher))]}
+                value={trackerFilters.publisher}
+                onChange={(val) => setTrackerFilters(prev => ({ ...prev, publisher: val }))}
+                placeholder="Search publishers..."
+              />
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={trackerFilters.analyst ? "default" : "outline"} className="gap-2">
-                    Analyst {trackerFilters.analyst && `(${trackerFilters.analyst.split(' ')[0]})`}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-popover">
-                  {[...new Set(trackerData.map(d => d.analyst))].map(analyst => (
-                    <DropdownMenuItem key={analyst} onClick={() => setTrackerFilters(prev => ({ ...prev, analyst }))}>
-                      {analyst}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <SearchableDropdown
+                label="Analyst"
+                options={[...new Set(trackerData.map(d => d.analyst))]}
+                value={trackerFilters.analyst}
+                onChange={(val) => setTrackerFilters(prev => ({ ...prev, analyst: val }))}
+                placeholder="Search analysts..."
+              />
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={trackerFilters.engineer ? "default" : "outline"} className="gap-2">
-                    Engineer {trackerFilters.engineer && `(${trackerFilters.engineer.split(' ')[0]})`}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-popover">
-                  {[...new Set(trackerData.map(d => d.engineer))].map(eng => (
-                    <DropdownMenuItem key={eng} onClick={() => setTrackerFilters(prev => ({ ...prev, engineer: eng }))}>
-                      {eng}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <SearchableDropdown
+                label="Engineer"
+                options={[...new Set(trackerData.map(d => d.engineer))]}
+                value={trackerFilters.engineer}
+                onChange={(val) => setTrackerFilters(prev => ({ ...prev, engineer: val }))}
+                placeholder="Search engineers..."
+              />
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={trackerFilters.elpRequired ? "default" : "outline"} className="gap-2">
-                    ELP Required {trackerFilters.elpRequired && `(${trackerFilters.elpRequired})`}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-popover">
-                  {["Yes", "No", "Pending"].map(val => (
-                    <DropdownMenuItem key={val} onClick={() => setTrackerFilters(prev => ({ ...prev, elpRequired: val }))}>
-                      {val}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <SearchableDropdown
+                label="ELP Required"
+                options={["Yes", "No", "Pending"]}
+                value={trackerFilters.elpRequired}
+                onChange={(val) => setTrackerFilters(prev => ({ ...prev, elpRequired: val }))}
+                placeholder="Search..."
+              />
 
               {hasActiveTrackerFilters && (
                 <Button variant="ghost" onClick={clearTrackerFilters} className="gap-2 text-destructive hover:text-destructive">
