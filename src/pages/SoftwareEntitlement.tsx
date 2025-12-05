@@ -220,12 +220,19 @@ const scanAgeDistribution = [
 ];
 
 const saturationTrendData = [
-  { month: "Jul", Linux: 82, Windows: 88, Mac: 72 },
-  { month: "Aug", Linux: 84, Windows: 89, Mac: 74 },
-  { month: "Sep", Linux: 85, Windows: 90, Mac: 75 },
-  { month: "Oct", Linux: 86, Windows: 91, Mac: 76 },
-  { month: "Nov", Linux: 87, Windows: 92, Mac: 78 },
-  { month: "Dec", Linux: 87, Windows: 92, Mac: 78 }
+  { month: "2024-12-04", Linux: 45, Windows: 85, goal: 90 },
+  { month: "2025-01-30", Linux: 58, Windows: 84, goal: 90 },
+  { month: "2025-02-01", Linux: 60, Windows: 85, goal: 90 },
+  { month: "2025-03-01", Linux: 55, Windows: 84, goal: 90 },
+  { month: "2025-04-01", Linux: 52, Windows: 83, goal: 90 },
+  { month: "2025-05-01", Linux: 68, Windows: 85, goal: 90 },
+  { month: "2025-06-10", Linux: 82, Windows: 84, goal: 90 },
+  { month: "2025-07-01", Linux: 84, Windows: 82, goal: 90 },
+  { month: "2025-08-31", Linux: 80, Windows: 78, goal: 90 },
+  { month: "2025-09-09", Linux: 78, Windows: 80, goal: 90 },
+  { month: "2025-10-31", Linux: 75, Windows: 79, goal: 90 },
+  { month: "2025-11-30", Linux: 72, Windows: 82, goal: 90 },
+  { month: "2025-12-02", Linux: 72, Windows: 80, goal: 90 }
 ];
 
 const agentDrilldownData = [
@@ -703,13 +710,15 @@ const SoftwareEntitlement = () => {
                         <XAxis 
                           dataKey="month" 
                           stroke="hsl(var(--muted-foreground))" 
-                          fontSize={12}
+                          fontSize={10}
+                          angle={-45}
+                          textAnchor="end"
+                          height={60}
                         />
                         <YAxis 
-                          domain={[60, 100]} 
+                          domain={[0, 100]} 
                           stroke="hsl(var(--muted-foreground))" 
                           fontSize={12}
-                          tickFormatter={(value) => `${value}%`}
                         />
                         <Tooltip 
                           contentStyle={{ 
@@ -717,13 +726,14 @@ const SoftwareEntitlement = () => {
                             border: "1px solid hsl(var(--border))",
                             borderRadius: "8px"
                           }}
-                          formatter={(value: number) => [`${value}%`, ""]}
+                          formatter={(value: number, name: string) => [name === "goal" ? `${value}%` : value, name === "goal" ? "90% Saturation Goal" : name]}
                         />
-                        <Legend />
-                        <ReferenceLine y={90} stroke="hsl(var(--destructive))" strokeDasharray="5 5" label={{ value: "90% Goal", position: "right", fill: "hsl(var(--destructive))", fontSize: 10 }} />
-                        <Line type="monotone" dataKey="Linux" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316" }} />
-                        <Line type="monotone" dataKey="Windows" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: "hsl(195, 96%, 43%)" }} />
-                        <Line type="monotone" dataKey="Mac" stroke="#6b7280" strokeWidth={2} dot={{ fill: "#6b7280" }} />
+                        <Legend 
+                          formatter={(value) => value === "goal" ? "90% Saturation Goal" : value}
+                        />
+                        <Line type="monotone" dataKey="goal" name="90% Saturation Goal" stroke="#84cc16" strokeWidth={2} strokeDasharray="5 5" dot={{ fill: "#84cc16", r: 3 }} />
+                        <Line type="monotone" dataKey="Linux" stroke="#22d3ee" strokeWidth={2} dot={{ fill: "#22d3ee", r: 4 }} />
+                        <Line type="monotone" dataKey="Windows" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 4 }} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
