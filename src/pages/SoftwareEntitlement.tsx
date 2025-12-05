@@ -764,7 +764,7 @@ const SoftwareEntitlement = () => {
                       <th colSpan={2} className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white bg-yellow-600 border-r border-border">
                         Contracts
                       </th>
-                      <th colSpan={3} className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white bg-primary border-r border-border">
+                      <th colSpan={3} className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white bg-teal-600 border-r border-border">
                         Entitlement Refresh
                       </th>
                       <th colSpan={4} className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white bg-purple-600">
@@ -785,9 +785,9 @@ const SoftwareEntitlement = () => {
                       <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-yellow-50 dark:bg-yellow-950/30">Date Docs Pulled</th>
                       <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-yellow-50 dark:bg-yellow-950/30 border-r border-border">Date Completed</th>
                       {/* Entitlement Refresh */}
-                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-blue-50 dark:bg-blue-950/30">Date Docs Pulled</th>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-blue-50 dark:bg-blue-950/30">Link To Documents</th>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-blue-50 dark:bg-blue-950/30 border-r border-border">Date Completed</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-teal-50 dark:bg-teal-950/30">Date Docs Pulled</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-teal-50 dark:bg-teal-950/30">Link To Documents</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-teal-50 dark:bg-teal-950/30 border-r border-border">Date Completed</th>
                       {/* ELP */}
                       <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-purple-50 dark:bg-purple-950/30">ELP Required</th>
                       <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground whitespace-nowrap bg-purple-50 dark:bg-purple-950/30">Start Date</th>
@@ -823,18 +823,21 @@ const SoftwareEntitlement = () => {
                         <td className="px-3 py-2 whitespace-nowrap bg-yellow-50/50 dark:bg-yellow-950/20">{row.contracts_dateDocsPulled || "-"}</td>
                         <td className="px-3 py-2 whitespace-nowrap bg-yellow-50/50 dark:bg-yellow-950/20 border-r border-border">{row.contracts_dateCompleted || "-"}</td>
                         {/* Entitlement Refresh */}
-                        <td className="px-3 py-2 whitespace-nowrap bg-blue-50/50 dark:bg-blue-950/20">{row.refresh_dateDocsPulled || "-"}</td>
-                        <td className="px-3 py-2 whitespace-nowrap bg-blue-50/50 dark:bg-blue-950/20">
+                        <td className="px-3 py-2 whitespace-nowrap bg-teal-50/50 dark:bg-teal-950/20">{row.refresh_dateDocsPulled || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-teal-50/50 dark:bg-teal-950/20">
                           {row.refresh_linkToDocuments ? (
                             <a href={row.refresh_linkToDocuments} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1" onClick={e => e.stopPropagation()}>
                               View <ExternalLink className="h-3 w-3" />
                             </a>
                           ) : "-"}
                         </td>
-                        <td className="px-3 py-2 whitespace-nowrap bg-blue-50/50 dark:bg-blue-950/20 border-r border-border">{row.refresh_dateCompleted || "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap bg-teal-50/50 dark:bg-teal-950/20 border-r border-border">{row.refresh_dateCompleted || "-"}</td>
                         {/* ELP */}
                         <td className="px-3 py-2 whitespace-nowrap bg-purple-50/50 dark:bg-purple-950/20">
-                          <Badge variant={row.elp_required === "Yes" ? "default" : row.elp_required === "No" ? "secondary" : "outline"} className="text-xs">
+                          <Badge 
+                            variant={row.elp_required === "No" ? "secondary" : "outline"} 
+                            className={`text-xs ${row.elp_required === "Yes" ? "bg-green-600 text-white hover:bg-green-600" : ""}`}
+                          >
                             {row.elp_required}
                           </Badge>
                         </td>
