@@ -445,10 +445,19 @@ const FinancialAnalystPO = () => {
             </Select>
           </div>
           
-          <div className="mb-4">
+          <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-semibold text-card-foreground">
               Financial Analyst PO Portfolio: Fiscal Year {fiscalYear.replace("FY", "")}
             </h1>
+            {hasUnsavedChanges && (
+              <Button 
+                onClick={handleSaveChanges}
+                className="gap-2"
+              >
+                <Save className="h-4 w-4" />
+                Save Changes
+              </Button>
+            )}
           </div>
 
           {/* Toggle Pills */}
@@ -679,19 +688,6 @@ const FinancialAnalystPO = () => {
             </div>
           </div>
 
-        {/* Floating Save Changes Button */}
-        {hasUnsavedChanges && (
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={handleSaveChanges}
-              className="gap-2 shadow-lg"
-              size="lg"
-            >
-              <Save className="h-4 w-4" />
-              Save Changes
-            </Button>
-          </div>
-        )}
 
         {/* Monthly Forecast Modal */}
         <Dialog open={showMonthlyForecastModal} onOpenChange={setShowMonthlyForecastModal}>
