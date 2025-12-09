@@ -360,6 +360,8 @@ const FinancialAnalystPO = () => {
   const [columnSearches, setColumnSearches] = useState<Record<string, string>>({});
   const [attestationChecked, setAttestationChecked] = useState(false);
   const [exploreSearch, setExploreSearch] = useState("");
+  const [activeView, setActiveView] = useState<"all" | "summarized">("all");
+  const [activeFilters, setActiveFilters] = useState<Array<{column: string, value: string}>>([]);
 
   // Filter portfolio data based on column searches
   const filteredPortfolioData = portfolioData.filter(row => {
@@ -518,6 +520,70 @@ const FinancialAnalystPO = () => {
               </Button>
               <Button variant="outline" size="icon">
                 <LayoutGrid className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* View Toggle and Filter Bar */}
+          <div className="flex items-center gap-3 mt-4">
+            <span className="text-sm text-muted-foreground">View:</span>
+            <div className="flex border border-border rounded-md overflow-hidden">
+              <button 
+                onClick={() => setActiveView("all")}
+                className={`px-4 py-1.5 text-sm transition-colors ${
+                  activeView === "all" 
+                    ? "bg-primary text-primary-foreground" 
+                    : "bg-card text-card-foreground hover:bg-muted"
+                }`}
+              >
+                All Fields
+              </button>
+              <button 
+                onClick={() => setActiveView("summarized")}
+                className={`px-4 py-1.5 text-sm transition-colors ${
+                  activeView === "summarized" 
+                    ? "bg-primary text-primary-foreground" 
+                    : "bg-card text-card-foreground hover:bg-muted"
+                }`}
+              >
+                Summarized Fields
+              </button>
+            </div>
+          </div>
+
+          {/* Filter Bar */}
+          <div className="flex items-center justify-between mt-4 px-4 py-3 bg-muted/30 border border-border rounded-md">
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">Filtered:</span>
+              {activeFilters.length === 0 ? (
+                <span className="text-muted-foreground">No Filters</span>
+              ) : (
+                <div className="flex items-center gap-2">
+                  {activeFilters.map((filter, index) => (
+                    <Badge key={index} variant="secondary" className="gap-1">
+                      {filter.column}: {filter.value}
+                      <X 
+                        className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                        onClick={() => setActiveFilters(prev => prev.filter((_, i) => i !== index))}
+                      />
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-muted-foreground"
+                onClick={() => setActiveFilters([])}
+                disabled={activeFilters.length === 0}
+              >
+                Clear All Filters
+              </Button>
+              <Button variant="outline" size="sm" className="gap-2 border-primary text-primary hover:bg-primary/10">
+                <Plus className="h-4 w-4" />
+                Add Filter
               </Button>
             </div>
           </div>
