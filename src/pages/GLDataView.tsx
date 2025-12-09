@@ -14,11 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -29,7 +24,6 @@ import { SearchableDropdown } from "@/components/SearchableDropdown";
 import {
   RefreshCw,
   Download,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   X,
@@ -111,7 +105,6 @@ const GLDataView = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(100);
   const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
-  const [openFilterPopover, setOpenFilterPopover] = useState<string | null>(null);
   const [filterSearch, setFilterSearch] = useState("");
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [selectedFilterField, setSelectedFilterField] = useState<string>("");
@@ -417,7 +410,7 @@ const GLDataView = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                {/* Column headers with dropdown filters */}
+                {/* Column headers */}
                 <tr className="bg-muted/50 border-b border-border">
                   <th className="p-3 text-left w-12">
                     <Checkbox
@@ -426,59 +419,11 @@ const GLDataView = () => {
                     />
                   </th>
                   {columns.map((column) => (
-                    <th key={column.key} className="p-3 text-left font-medium text-card-foreground whitespace-nowrap">
-                      <Popover
-                        open={openFilterPopover === column.key}
-                        onOpenChange={(open) => {
-                          setOpenFilterPopover(open ? column.key : null);
-                          if (!open) setFilterSearch("");
-                        }}
-                      >
-                        <PopoverTrigger asChild>
-                          <button className="flex items-center gap-1 hover:text-primary">
-                            {column.label}
-                            <ChevronDown className="h-4 w-4" />
-                            {(activeFilters[column.key]?.length || 0) > 0 && (
-                              <span className="ml-1 px-1.5 py-0.5 text-xs bg-primary text-primary-foreground rounded-full">
-                                {activeFilters[column.key].length}
-                              </span>
-                            )}
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-64 p-0" align="start">
-                          <div className="p-2 border-b border-border">
-                            <div className="relative">
-                              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                placeholder="Search..."
-                                value={filterSearch}
-                                onChange={(e) => setFilterSearch(e.target.value)}
-                                className="pl-8 h-8"
-                              />
-                            </div>
-                          </div>
-                          <ScrollArea className="h-[200px]">
-                            <div className="p-2 space-y-1">
-                              {getColumnOptions(column.key)
-                                .filter((opt) =>
-                                  opt.toLowerCase().includes(filterSearch.toLowerCase())
-                                )
-                                .map((option) => (
-                                  <label
-                                    key={option}
-                                    className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-muted/50 cursor-pointer"
-                                  >
-                                    <Checkbox
-                                      checked={activeFilters[column.key]?.includes(option) || false}
-                                      onCheckedChange={() => toggleFilter(column.key, option)}
-                                    />
-                                    <span className="text-sm">{option}</span>
-                                  </label>
-                                ))}
-                            </div>
-                          </ScrollArea>
-                        </PopoverContent>
-                      </Popover>
+                    <th 
+                      key={column.key} 
+                      className={`p-3 font-medium text-card-foreground whitespace-nowrap ${column.key === 'usdNet' ? 'text-right' : 'text-left'}`}
+                    >
+                      {column.label}
                     </th>
                   ))}
                 </tr>
