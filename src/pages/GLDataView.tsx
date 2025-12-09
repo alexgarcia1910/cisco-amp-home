@@ -99,6 +99,8 @@ const GLDataView = () => {
   const [openFilterPopover, setOpenFilterPopover] = useState<string | null>(null);
   const [filterSearch, setFilterSearch] = useState("");
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [selectedFilterField, setSelectedFilterField] = useState<string>("");
+  const [pendingFilterValues, setPendingFilterValues] = useState<string[]>([]);
 
   // Get unique values for each column
   const getColumnOptions = (columnKey: string) => {
@@ -276,41 +278,120 @@ const GLDataView = () => {
         </div>
 
         {/* Filter Modal */}
-        <Dialog open={filterModalOpen} onOpenChange={setFilterModalOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
+        <Dialog open={filterModalOpen} onOpenChange={(open) => {
+          setFilterModalOpen(open);
+          if (!open) {
+            setSelectedFilterField("");
+            setPendingFilterValues([]);
+          }
+        }}>
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Filter Data</DialogTitle>
+              <DialogTitle>Add Filter</DialogTitle>
             </DialogHeader>
-            <ScrollArea className="max-h-[60vh] pr-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 py-4">
-                {columns.map((column) => (
-                  <div key={column.key} className="space-y-1.5">
-                    <label className="text-sm font-medium text-card-foreground">
-                      {column.label}
-                    </label>
-                    <SearchableDropdown
-                      label={`Select ${column.label}`}
-                      options={getColumnOptions(column.key)}
-                      value={activeFilters[column.key] || []}
-                      onChange={(values) => {
-                        setActiveFilters((prev) => ({
-                          ...prev,
-                          [column.key]: values,
-                        }));
-                        setCurrentPage(1);
-                      }}
-                      placeholder={`Search ${column.label}...`}
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select Field</label>
+                <Select 
+                  value={selectedFilterField} 
+                  onValueChange={(value) => {
+                    setSelectedFilterField(value);
+                    setPendingFilterValues(activeFilters[value] || []);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a field" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {columns.map((column) => (
+                      <SelectItem key={column.key} value={column.key}>
+                        {column.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {selectedFilterField && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Select Value(s)</label>
+                  <div className="relative mb-2">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search values..."
+                      value={filterSearch}
+                      onChange={(e) => setFilterSearch(e.target.value)}
+                      className="pl-8"
                     />
                   </div>
-                ))}
-              </div>
-            </ScrollArea>
-            <div className="flex justify-between pt-4 border-t border-border">
-              <Button variant="outline" onClick={clearAllFilters}>
-                Clear All Filters
+                  <ScrollArea className="border border-border rounded-lg h-48">
+                    <div className="p-2 space-y-1">
+                      {getColumnOptions(selectedFilterField)
+                        .filter((opt) => opt.toLowerCase().includes(filterSearch.toLowerCase()))
+                        .map((value) => (
+                          <label 
+                            key={value} 
+                            className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded"
+                          >
+                            <Checkbox 
+                              checked={pendingFilterValues.includes(value)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setPendingFilterValues([...pendingFilterValues, value]);
+                                } else {
+                                  setPendingFilterValues(pendingFilterValues.filter(v => v !== value));
+                                }
+                              }}
+                            />
+                            <span className="text-sm">{value}</span>
+                          </label>
+                        ))}
+                    </div>
+                  </ScrollArea>
+                  {pendingFilterValues.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {pendingFilterValues.map((value) => (
+                        <Badge
+                          key={value}
+                          variant="secondary"
+                          className="gap-1 bg-primary/10 text-primary"
+                        >
+                          {value}
+                          <X
+                            className="h-3 w-3 cursor-pointer"
+                            onClick={() => setPendingFilterValues(pendingFilterValues.filter(v => v !== value))}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex justify-end gap-2 pt-4 border-t border-border">
+              <Button variant="outline" onClick={() => {
+                setFilterModalOpen(false);
+                setSelectedFilterField("");
+                setPendingFilterValues([]);
+              }}>
+                Cancel
               </Button>
-              <Button onClick={() => setFilterModalOpen(false)}>
-                Apply Filters
+              <Button 
+                onClick={() => {
+                  if (selectedFilterField && pendingFilterValues.length > 0) {
+                    setActiveFilters(prev => ({
+                      ...prev,
+                      [selectedFilterField]: pendingFilterValues
+                    }));
+                    setCurrentPage(1);
+                  }
+                  setFilterModalOpen(false);
+                  setSelectedFilterField("");
+                  setPendingFilterValues([]);
+                }}
+                disabled={!selectedFilterField || pendingFilterValues.length === 0}
+              >
+                Apply Filter
               </Button>
             </div>
           </DialogContent>
