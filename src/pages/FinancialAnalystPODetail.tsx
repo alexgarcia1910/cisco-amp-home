@@ -204,7 +204,7 @@ const FinancialAnalystPODetail = () => {
     label,
     percentValue,
     values,
-    headerBg = "bg-teal-600"
+    headerBg = "bg-cyan-600"
   }: {
     label: string;
     percentValue: number;
@@ -240,7 +240,7 @@ const FinancialAnalystPODetail = () => {
           <div className="text-xs text-muted-foreground mb-1">Q4</div>
           <div className="font-medium">{formatCurrency(values.q4)}</div>
         </div>
-        <div className="px-3 py-2 text-center bg-teal-50">
+        <div className="px-3 py-2 text-center bg-cyan-50">
           <div className="text-xs text-muted-foreground mb-1">Total</div>
           <div className="font-semibold">{formatCurrency(values.total)}</div>
         </div>
@@ -279,7 +279,7 @@ const FinancialAnalystPODetail = () => {
                 <Badge className="bg-[#032D4D] text-white hover:bg-[#032D4D]/90 text-xs">
                   Main/Signed PO Fields
                 </Badge>
-                <Badge className="bg-teal-600 text-white hover:bg-teal-600/90 text-xs">
+                <Badge className="bg-cyan-600 text-white hover:bg-cyan-600/90 text-xs">
                   Renewal Period Fields
                 </Badge>
                 <Badge className="bg-gray-500 text-white hover:bg-gray-500/90 text-xs">
@@ -422,7 +422,7 @@ const FinancialAnalystPODetail = () => {
             {/* Renewal PO Data Section */}
             <Collapsible open={expandedSections.renewal} onOpenChange={() => toggleSection('renewal')}>
               <Card>
-                <CardHeader className="bg-teal-600 text-white rounded-t-lg py-3">
+                <CardHeader className="bg-cyan-600 text-white rounded-t-lg py-3">
                   <CollapsibleTrigger className="flex items-center justify-between w-full">
                     <CardTitle className="text-base font-medium">Renewal PO Data</CardTitle>
                     {expandedSections.renewal ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
@@ -558,7 +558,7 @@ const FinancialAnalystPODetail = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Uplifts for Renewal Period Header */}
             <Collapsible open={expandedSections.uplifts} onOpenChange={() => toggleSection('uplifts')}>
-              <div className="bg-teal-600 text-white rounded-lg">
+              <div className="bg-cyan-600 text-white rounded-lg">
                 <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3">
                   <span className="font-semibold">Uplifts for Renewal Period</span>
                   {expandedSections.uplifts ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
@@ -605,10 +605,10 @@ const FinancialAnalystPODetail = () => {
                 />
 
                 {/* Total Uplift */}
-                <div className="border-2 border-teal-600 rounded-lg p-3 bg-teal-50">
+                <div className="border-2 border-cyan-600 rounded-lg p-3 bg-cyan-50">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-teal-800">Total Uplift</span>
-                    <span className="text-2xl font-bold text-teal-600">{data.totalUpliftPercent}%</span>
+                    <span className="font-semibold text-cyan-800">Total Uplift</span>
+                    <span className="text-2xl font-bold text-cyan-600">{data.totalUpliftPercent}%</span>
                   </div>
                 </div>
               </CollapsibleContent>
