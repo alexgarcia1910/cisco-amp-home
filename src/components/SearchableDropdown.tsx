@@ -54,7 +54,7 @@ export function SearchableDropdown({
       <PopoverTrigger asChild>
         <Button
           variant={displayCount > 0 ? "default" : "outline"}
-          className="gap-2 h-auto min-h-[36px] py-1.5"
+          className="w-full justify-between gap-2 h-auto min-h-[36px] py-1.5"
           role="combobox"
           aria-expanded={open}
         >
