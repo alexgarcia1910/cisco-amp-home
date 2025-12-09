@@ -10,6 +10,7 @@ import EnterpriseSoftwarePortfolioNew from "./pages/EnterpriseSoftwarePortfolioN
 import SoftwareEntitlement from "./pages/SoftwareEntitlement";
 import FinancialAnalystPO from "./pages/FinancialAnalystPO";
 import FinancialAnalystPODetail from "./pages/FinancialAnalystPODetail";
+import GLDataView from "./pages/GLDataView";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/softwareentitlement" element={<SoftwareEntitlement />} />
           <Route path="/financialanalystpo" element={<FinancialAnalystPO />} />
           <Route path="/financialanalystpo/:id" element={<FinancialAnalystPODetail />} />
+          <Route path="/gldataview" element={<GLDataView />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

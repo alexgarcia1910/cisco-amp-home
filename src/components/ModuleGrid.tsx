@@ -10,7 +10,7 @@ const modules = [{
   title: "GL Data View Page",
   description: "Access and review general ledger data entries",
   icon: Database,
-  path: undefined
+  path: "/gldataview"
 }, {
   title: "Department-wise GL Reconciliation View",
   description: "Reconcile GL data organized by department",
