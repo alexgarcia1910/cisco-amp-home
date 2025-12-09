@@ -419,15 +419,6 @@ const FinancialAnalystPO = () => {
     <div className="min-h-screen bg-background">
       <TopNav />
       
-      {/* Back Button */}
-      <div className="border-b border-border bg-card">
-        <div className="px-6 py-4">
-          <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Home</span>
-          </Link>
-        </div>
-      </div>
 
       {/* Main Content */}
       <main className="p-6 pt-4">
