@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import EnterpriseSoftwarePortfolioNew from "./pages/EnterpriseSoftwarePortfolioNew";
 import SoftwareEntitlement from "./pages/SoftwareEntitlement";
 import FinancialAnalystPO from "./pages/FinancialAnalystPO";
+import FinancialAnalystPODetail from "./pages/FinancialAnalystPODetail";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/enterprisesoftwareportfolionew" element={<EnterpriseSoftwarePortfolioNew />} />
           <Route path="/softwareentitlement" element={<SoftwareEntitlement />} />
           <Route path="/financialanalystpo" element={<FinancialAnalystPO />} />
+          <Route path="/financialanalystpo/:id" element={<FinancialAnalystPODetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
