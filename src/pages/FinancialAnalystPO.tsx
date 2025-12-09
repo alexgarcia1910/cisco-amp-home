@@ -16,7 +16,8 @@ import {
   X, 
   RotateCcw,
   Check,
-  XCircle
+  XCircle,
+  Save
 } from "lucide-react";
 import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
@@ -325,6 +326,8 @@ const portfolioData = [
 const FinancialAnalystPO = () => {
   // State Management
   const [fiscalYear, setFiscalYear] = useState("FY2026");
+  const [tableData, setTableData] = useState(portfolioData);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   
   const [showMonthlyForecastModal, setShowMonthlyForecastModal] = useState(false);
   const [showPODetailModal, setShowPODetailModal] = useState(false);
@@ -342,8 +345,43 @@ const FinancialAnalystPO = () => {
   const [activeView, setActiveView] = useState<"all" | "summarized">("all");
   const [activeFilters, setActiveFilters] = useState<Array<{column: string, value: string}>>([]);
 
+  // Add new row function
+  const handleAddRow = (sourceRow: typeof portfolioData[0]) => {
+    const newRow = {
+      id: `new-${Date.now()}`,
+      expenseCategory: sourceRow.expenseCategory,
+      costPool: sourceRow.costPool,
+      swUsageCategory: "",
+      swCategory: "",
+      deptNumber: "",
+      poNumber: "",
+      poNumberSecondary: "",
+      cogsOpex: "",
+      level2Leader: "",
+      level3Leader: "",
+      q1Commit: 0,
+      q2Commit: 0,
+      q3Commit: 0,
+      q4Commit: 0,
+      totalForecast: 0
+    };
+    
+    // Find the index of the source row and insert new row after it
+    const sourceIndex = tableData.findIndex(row => row.id === sourceRow.id);
+    const newData = [...tableData];
+    newData.splice(sourceIndex + 1, 0, newRow);
+    setTableData(newData);
+    setHasUnsavedChanges(true);
+  };
+
+  // Save changes function
+  const handleSaveChanges = () => {
+    // In a real app, this would save to a backend
+    setHasUnsavedChanges(false);
+  };
+
   // Filter portfolio data based on column searches
-  const filteredPortfolioData = portfolioData.filter(row => {
+  const filteredPortfolioData = tableData.filter(row => {
     return Object.entries(columnSearches).every(([key, value]) => {
       if (!value) return true;
       const rowValue = String(row[key as keyof typeof row] || "").toLowerCase();
@@ -588,7 +626,15 @@ const FinancialAnalystPO = () => {
                           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => e.stopPropagation()}>
                             <ExternalLink className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => e.stopPropagation()}>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-7 w-7" 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddRow(row);
+                            }}
+                          >
                             <Plus className="h-3.5 w-3.5" />
                           </Button>
                           <Button 
@@ -632,6 +678,20 @@ const FinancialAnalystPO = () => {
               </table>
             </div>
           </div>
+
+        {/* Floating Save Changes Button */}
+        {hasUnsavedChanges && (
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={handleSaveChanges}
+              className="gap-2 shadow-lg"
+              size="lg"
+            >
+              <Save className="h-4 w-4" />
+              Save Changes
+            </Button>
+          </div>
+        )}
 
         {/* Monthly Forecast Modal */}
         <Dialog open={showMonthlyForecastModal} onOpenChange={setShowMonthlyForecastModal}>
