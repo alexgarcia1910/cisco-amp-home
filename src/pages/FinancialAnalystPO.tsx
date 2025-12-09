@@ -1,24 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { 
-  ArrowLeft, 
-  ChevronDown, 
-  Columns, 
-  RefreshCw, 
-  FileSpreadsheet, 
-  Camera, 
-  Upload, 
-  LayoutGrid, 
-  Pencil, 
-  Calendar, 
-  Trash2, 
-  Plus, 
-  Search, 
-  X, 
-  RotateCcw,
-  Check,
-  XCircle
-} from "lucide-react";
+import { ArrowLeft, ChevronDown, Columns, RefreshCw, FileSpreadsheet, Camera, Upload, LayoutGrid, Pencil, Calendar, Trash2, Plus, Search, X, RotateCcw, Check, XCircle } from "lucide-react";
 import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,302 +13,282 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
 // Mock Data
-const portfolioData = [
-  {
-    id: "1",
-    expenseCategory: "Hardware",
-    costPool: "IT Infrastructure",
-    swUsageCategory: "Enterprise",
-    swCategory: "ELA",
-    deptNumber: "D1000",
-    poNumber: "PO-2026-0001",
-    poNumberSecondary: "",
-    cogsOpex: "OPEX",
-    level2Leader: "John Smith",
-    level3Leader: "Jane Doe",
-    q1Commit: 125000,
-    q2Commit: 135000,
-    q3Commit: 145000,
-    q4Commit: 155000,
-    totalForecast: 560000
-  },
-  {
-    id: "2",
-    expenseCategory: "Software",
-    costPool: "Cloud Services",
-    swUsageCategory: "Departmental",
-    swCategory: "SaaS",
-    deptNumber: "D1001",
-    poNumber: "PO-2026-0002",
-    poNumberSecondary: "PO-2026-0002-B",
-    cogsOpex: "COGS",
-    level2Leader: "Mike Johnson",
-    level3Leader: "Sarah Williams",
-    q1Commit: 85000,
-    q2Commit: 90000,
-    q3Commit: 95000,
-    q4Commit: 100000,
-    totalForecast: 370000
-  },
-  {
-    id: "3",
-    expenseCategory: "Services",
-    costPool: "Security",
-    swUsageCategory: "Individual",
-    swCategory: "Perpetual",
-    deptNumber: "D1002",
-    poNumber: "PO-2026-0003",
-    poNumberSecondary: "",
-    cogsOpex: "OPEX",
-    level2Leader: "David Brown",
-    level3Leader: "Emily Davis",
-    q1Commit: 45000,
-    q2Commit: 50000,
-    q3Commit: 55000,
-    q4Commit: 60000,
-    totalForecast: 210000
-  },
-  {
-    id: "4",
-    expenseCategory: "Maintenance",
-    costPool: "Development",
-    swUsageCategory: "Shared",
-    swCategory: "Subscription",
-    deptNumber: "D1003",
-    poNumber: "PO-2026-0004",
-    poNumberSecondary: "",
-    cogsOpex: "OPEX",
-    level2Leader: "Robert Wilson",
-    level3Leader: "Lisa Anderson",
-    q1Commit: 75000,
-    q2Commit: 80000,
-    q3Commit: 85000,
-    q4Commit: 90000,
-    totalForecast: 330000
-  },
-  {
-    id: "5",
-    expenseCategory: "Hardware",
-    costPool: "IT Infrastructure",
-    swUsageCategory: "Enterprise",
-    swCategory: "ELA",
-    deptNumber: "D1004",
-    poNumber: "PO-2026-0005",
-    poNumberSecondary: "PO-2026-0005-A",
-    cogsOpex: "COGS",
-    level2Leader: "James Taylor",
-    level3Leader: "Maria Garcia",
-    q1Commit: 200000,
-    q2Commit: 210000,
-    q3Commit: 220000,
-    q4Commit: 230000,
-    totalForecast: 860000
-  },
-  {
-    id: "6",
-    expenseCategory: "Software",
-    costPool: "Cloud Services",
-    swUsageCategory: "Departmental",
-    swCategory: "SaaS",
-    deptNumber: "D1005",
-    poNumber: "PO-2026-0006",
-    poNumberSecondary: "",
-    cogsOpex: "OPEX",
-    level2Leader: "Christopher Lee",
-    level3Leader: "Jennifer Martinez",
-    q1Commit: 110000,
-    q2Commit: 115000,
-    q3Commit: 120000,
-    q4Commit: 125000,
-    totalForecast: 470000
-  },
-  {
-    id: "7",
-    expenseCategory: "Services",
-    costPool: "Security",
-    swUsageCategory: "Individual",
-    swCategory: "Perpetual",
-    deptNumber: "D1006",
-    poNumber: "PO-2026-0007",
-    poNumberSecondary: "",
-    cogsOpex: "OPEX",
-    level2Leader: "Daniel White",
-    level3Leader: "Patricia Harris",
-    q1Commit: 60000,
-    q2Commit: 65000,
-    q3Commit: 70000,
-    q4Commit: 75000,
-    totalForecast: 270000
-  },
-  {
-    id: "8",
-    expenseCategory: "Maintenance",
-    costPool: "Development",
-    swUsageCategory: "Shared",
-    swCategory: "Subscription",
-    deptNumber: "D1007",
-    poNumber: "PO-2026-0008",
-    poNumberSecondary: "PO-2026-0008-B",
-    cogsOpex: "COGS",
-    level2Leader: "Matthew Clark",
-    level3Leader: "Linda Lewis",
-    q1Commit: 95000,
-    q2Commit: 100000,
-    q3Commit: 105000,
-    q4Commit: 110000,
-    totalForecast: 410000
-  },
-  {
-    id: "9",
-    expenseCategory: "Hardware",
-    costPool: "IT Infrastructure",
-    swUsageCategory: "Enterprise",
-    swCategory: "ELA",
-    deptNumber: "D1008",
-    poNumber: "PO-2026-0009",
-    poNumberSecondary: "",
-    cogsOpex: "OPEX",
-    level2Leader: "Andrew Walker",
-    level3Leader: "Barbara Hall",
-    q1Commit: 150000,
-    q2Commit: 160000,
-    q3Commit: 170000,
-    q4Commit: 180000,
-    totalForecast: 660000
-  },
-  {
-    id: "10",
-    expenseCategory: "Software",
-    costPool: "Cloud Services",
-    swUsageCategory: "Departmental",
-    swCategory: "SaaS",
-    deptNumber: "D1009",
-    poNumber: "PO-2026-0010",
-    poNumberSecondary: "",
-    cogsOpex: "OPEX",
-    level2Leader: "Kevin Young",
-    level3Leader: "Nancy King",
-    q1Commit: 70000,
-    q2Commit: 75000,
-    q3Commit: 80000,
-    q4Commit: 85000,
-    totalForecast: 310000
-  },
-  {
-    id: "11",
-    expenseCategory: "Services",
-    costPool: "Security",
-    swUsageCategory: "Individual",
-    swCategory: "Perpetual",
-    deptNumber: "D1010",
-    poNumber: "PO-2026-0011",
-    poNumberSecondary: "PO-2026-0011-C",
-    cogsOpex: "COGS",
-    level2Leader: "Steven Wright",
-    level3Leader: "Betty Lopez",
-    q1Commit: 50000,
-    q2Commit: 55000,
-    q3Commit: 60000,
-    q4Commit: 65000,
-    totalForecast: 230000
-  },
-  {
-    id: "12",
-    expenseCategory: "Maintenance",
-    costPool: "Development",
-    swUsageCategory: "Shared",
-    swCategory: "Subscription",
-    deptNumber: "D1011",
-    poNumber: "PO-2026-0012",
-    poNumberSecondary: "",
-    cogsOpex: "OPEX",
-    level2Leader: "Edward Hill",
-    level3Leader: "Sandra Scott",
-    q1Commit: 80000,
-    q2Commit: 85000,
-    q3Commit: 90000,
-    q4Commit: 95000,
-    totalForecast: 350000
-  },
-  {
-    id: "13",
-    expenseCategory: "Hardware",
-    costPool: "IT Infrastructure",
-    swUsageCategory: "Enterprise",
-    swCategory: "ELA",
-    deptNumber: "D1012",
-    poNumber: "PO-2026-0013",
-    poNumberSecondary: "",
-    cogsOpex: "COGS",
-    level2Leader: "Joseph Green",
-    level3Leader: "Donna Adams",
-    q1Commit: 175000,
-    q2Commit: 185000,
-    q3Commit: 195000,
-    q4Commit: 205000,
-    totalForecast: 760000
-  },
-  {
-    id: "14",
-    expenseCategory: "Software",
-    costPool: "Cloud Services",
-    swUsageCategory: "Departmental",
-    swCategory: "SaaS",
-    deptNumber: "D1013",
-    poNumber: "PO-2026-0014",
-    poNumberSecondary: "PO-2026-0014-D",
-    cogsOpex: "OPEX",
-    level2Leader: "Thomas Baker",
-    level3Leader: "Carol Nelson",
-    q1Commit: 105000,
-    q2Commit: 110000,
-    q3Commit: 115000,
-    q4Commit: 120000,
-    totalForecast: 450000
-  },
-  {
-    id: "15",
-    expenseCategory: "Services",
-    costPool: "Security",
-    swUsageCategory: "Individual",
-    swCategory: "Perpetual",
-    deptNumber: "D1014",
-    poNumber: "PO-2026-0015",
-    poNumberSecondary: "",
-    cogsOpex: "OPEX",
-    level2Leader: "Richard Carter",
-    level3Leader: "Michelle Mitchell",
-    q1Commit: 55000,
-    q2Commit: 60000,
-    q3Commit: 65000,
-    q4Commit: 70000,
-    totalForecast: 250000
-  },
-  {
-    id: "16",
-    expenseCategory: "Maintenance",
-    costPool: "Development",
-    swUsageCategory: "Shared",
-    swCategory: "Subscription",
-    deptNumber: "D1015",
-    poNumber: "PO-2026-0016",
-    poNumberSecondary: "",
-    cogsOpex: "COGS",
-    level2Leader: "Charles Perez",
-    level3Leader: "Laura Roberts",
-    q1Commit: 90000,
-    q2Commit: 95000,
-    q3Commit: 100000,
-    q4Commit: 105000,
-    totalForecast: 390000
-  }
-];
-
-
+const portfolioData = [{
+  id: "1",
+  expenseCategory: "Hardware",
+  costPool: "IT Infrastructure",
+  swUsageCategory: "Enterprise",
+  swCategory: "ELA",
+  deptNumber: "D1000",
+  poNumber: "PO-2026-0001",
+  poNumberSecondary: "",
+  cogsOpex: "OPEX",
+  level2Leader: "John Smith",
+  level3Leader: "Jane Doe",
+  q1Commit: 125000,
+  q2Commit: 135000,
+  q3Commit: 145000,
+  q4Commit: 155000,
+  totalForecast: 560000
+}, {
+  id: "2",
+  expenseCategory: "Software",
+  costPool: "Cloud Services",
+  swUsageCategory: "Departmental",
+  swCategory: "SaaS",
+  deptNumber: "D1001",
+  poNumber: "PO-2026-0002",
+  poNumberSecondary: "PO-2026-0002-B",
+  cogsOpex: "COGS",
+  level2Leader: "Mike Johnson",
+  level3Leader: "Sarah Williams",
+  q1Commit: 85000,
+  q2Commit: 90000,
+  q3Commit: 95000,
+  q4Commit: 100000,
+  totalForecast: 370000
+}, {
+  id: "3",
+  expenseCategory: "Services",
+  costPool: "Security",
+  swUsageCategory: "Individual",
+  swCategory: "Perpetual",
+  deptNumber: "D1002",
+  poNumber: "PO-2026-0003",
+  poNumberSecondary: "",
+  cogsOpex: "OPEX",
+  level2Leader: "David Brown",
+  level3Leader: "Emily Davis",
+  q1Commit: 45000,
+  q2Commit: 50000,
+  q3Commit: 55000,
+  q4Commit: 60000,
+  totalForecast: 210000
+}, {
+  id: "4",
+  expenseCategory: "Maintenance",
+  costPool: "Development",
+  swUsageCategory: "Shared",
+  swCategory: "Subscription",
+  deptNumber: "D1003",
+  poNumber: "PO-2026-0004",
+  poNumberSecondary: "",
+  cogsOpex: "OPEX",
+  level2Leader: "Robert Wilson",
+  level3Leader: "Lisa Anderson",
+  q1Commit: 75000,
+  q2Commit: 80000,
+  q3Commit: 85000,
+  q4Commit: 90000,
+  totalForecast: 330000
+}, {
+  id: "5",
+  expenseCategory: "Hardware",
+  costPool: "IT Infrastructure",
+  swUsageCategory: "Enterprise",
+  swCategory: "ELA",
+  deptNumber: "D1004",
+  poNumber: "PO-2026-0005",
+  poNumberSecondary: "PO-2026-0005-A",
+  cogsOpex: "COGS",
+  level2Leader: "James Taylor",
+  level3Leader: "Maria Garcia",
+  q1Commit: 200000,
+  q2Commit: 210000,
+  q3Commit: 220000,
+  q4Commit: 230000,
+  totalForecast: 860000
+}, {
+  id: "6",
+  expenseCategory: "Software",
+  costPool: "Cloud Services",
+  swUsageCategory: "Departmental",
+  swCategory: "SaaS",
+  deptNumber: "D1005",
+  poNumber: "PO-2026-0006",
+  poNumberSecondary: "",
+  cogsOpex: "OPEX",
+  level2Leader: "Christopher Lee",
+  level3Leader: "Jennifer Martinez",
+  q1Commit: 110000,
+  q2Commit: 115000,
+  q3Commit: 120000,
+  q4Commit: 125000,
+  totalForecast: 470000
+}, {
+  id: "7",
+  expenseCategory: "Services",
+  costPool: "Security",
+  swUsageCategory: "Individual",
+  swCategory: "Perpetual",
+  deptNumber: "D1006",
+  poNumber: "PO-2026-0007",
+  poNumberSecondary: "",
+  cogsOpex: "OPEX",
+  level2Leader: "Daniel White",
+  level3Leader: "Patricia Harris",
+  q1Commit: 60000,
+  q2Commit: 65000,
+  q3Commit: 70000,
+  q4Commit: 75000,
+  totalForecast: 270000
+}, {
+  id: "8",
+  expenseCategory: "Maintenance",
+  costPool: "Development",
+  swUsageCategory: "Shared",
+  swCategory: "Subscription",
+  deptNumber: "D1007",
+  poNumber: "PO-2026-0008",
+  poNumberSecondary: "PO-2026-0008-B",
+  cogsOpex: "COGS",
+  level2Leader: "Matthew Clark",
+  level3Leader: "Linda Lewis",
+  q1Commit: 95000,
+  q2Commit: 100000,
+  q3Commit: 105000,
+  q4Commit: 110000,
+  totalForecast: 410000
+}, {
+  id: "9",
+  expenseCategory: "Hardware",
+  costPool: "IT Infrastructure",
+  swUsageCategory: "Enterprise",
+  swCategory: "ELA",
+  deptNumber: "D1008",
+  poNumber: "PO-2026-0009",
+  poNumberSecondary: "",
+  cogsOpex: "OPEX",
+  level2Leader: "Andrew Walker",
+  level3Leader: "Barbara Hall",
+  q1Commit: 150000,
+  q2Commit: 160000,
+  q3Commit: 170000,
+  q4Commit: 180000,
+  totalForecast: 660000
+}, {
+  id: "10",
+  expenseCategory: "Software",
+  costPool: "Cloud Services",
+  swUsageCategory: "Departmental",
+  swCategory: "SaaS",
+  deptNumber: "D1009",
+  poNumber: "PO-2026-0010",
+  poNumberSecondary: "",
+  cogsOpex: "OPEX",
+  level2Leader: "Kevin Young",
+  level3Leader: "Nancy King",
+  q1Commit: 70000,
+  q2Commit: 75000,
+  q3Commit: 80000,
+  q4Commit: 85000,
+  totalForecast: 310000
+}, {
+  id: "11",
+  expenseCategory: "Services",
+  costPool: "Security",
+  swUsageCategory: "Individual",
+  swCategory: "Perpetual",
+  deptNumber: "D1010",
+  poNumber: "PO-2026-0011",
+  poNumberSecondary: "PO-2026-0011-C",
+  cogsOpex: "COGS",
+  level2Leader: "Steven Wright",
+  level3Leader: "Betty Lopez",
+  q1Commit: 50000,
+  q2Commit: 55000,
+  q3Commit: 60000,
+  q4Commit: 65000,
+  totalForecast: 230000
+}, {
+  id: "12",
+  expenseCategory: "Maintenance",
+  costPool: "Development",
+  swUsageCategory: "Shared",
+  swCategory: "Subscription",
+  deptNumber: "D1011",
+  poNumber: "PO-2026-0012",
+  poNumberSecondary: "",
+  cogsOpex: "OPEX",
+  level2Leader: "Edward Hill",
+  level3Leader: "Sandra Scott",
+  q1Commit: 80000,
+  q2Commit: 85000,
+  q3Commit: 90000,
+  q4Commit: 95000,
+  totalForecast: 350000
+}, {
+  id: "13",
+  expenseCategory: "Hardware",
+  costPool: "IT Infrastructure",
+  swUsageCategory: "Enterprise",
+  swCategory: "ELA",
+  deptNumber: "D1012",
+  poNumber: "PO-2026-0013",
+  poNumberSecondary: "",
+  cogsOpex: "COGS",
+  level2Leader: "Joseph Green",
+  level3Leader: "Donna Adams",
+  q1Commit: 175000,
+  q2Commit: 185000,
+  q3Commit: 195000,
+  q4Commit: 205000,
+  totalForecast: 760000
+}, {
+  id: "14",
+  expenseCategory: "Software",
+  costPool: "Cloud Services",
+  swUsageCategory: "Departmental",
+  swCategory: "SaaS",
+  deptNumber: "D1013",
+  poNumber: "PO-2026-0014",
+  poNumberSecondary: "PO-2026-0014-D",
+  cogsOpex: "OPEX",
+  level2Leader: "Thomas Baker",
+  level3Leader: "Carol Nelson",
+  q1Commit: 105000,
+  q2Commit: 110000,
+  q3Commit: 115000,
+  q4Commit: 120000,
+  totalForecast: 450000
+}, {
+  id: "15",
+  expenseCategory: "Services",
+  costPool: "Security",
+  swUsageCategory: "Individual",
+  swCategory: "Perpetual",
+  deptNumber: "D1014",
+  poNumber: "PO-2026-0015",
+  poNumberSecondary: "",
+  cogsOpex: "OPEX",
+  level2Leader: "Richard Carter",
+  level3Leader: "Michelle Mitchell",
+  q1Commit: 55000,
+  q2Commit: 60000,
+  q3Commit: 65000,
+  q4Commit: 70000,
+  totalForecast: 250000
+}, {
+  id: "16",
+  expenseCategory: "Maintenance",
+  costPool: "Development",
+  swUsageCategory: "Shared",
+  swCategory: "Subscription",
+  deptNumber: "D1015",
+  poNumber: "PO-2026-0016",
+  poNumberSecondary: "",
+  cogsOpex: "COGS",
+  level2Leader: "Charles Perez",
+  level3Leader: "Laura Roberts",
+  q1Commit: 90000,
+  q2Commit: 95000,
+  q3Commit: 100000,
+  q4Commit: 105000,
+  totalForecast: 390000
+}];
 const FinancialAnalystPO = () => {
   // State Management
   const [fiscalYear, setFiscalYear] = useState("FY2026");
-  
   const [showMonthlyForecastModal, setShowMonthlyForecastModal] = useState(false);
   const [showPODetailModal, setShowPODetailModal] = useState(false);
   const [showSnapshotModal, setShowSnapshotModal] = useState(false);
@@ -339,9 +301,11 @@ const FinancialAnalystPO = () => {
   });
   const [columnSearches, setColumnSearches] = useState<Record<string, string>>({});
   const [attestationChecked, setAttestationChecked] = useState(false);
-  
   const [activeView, setActiveView] = useState<"all" | "summarized">("all");
-  const [activeFilters, setActiveFilters] = useState<Array<{column: string, value: string}>>([]);
+  const [activeFilters, setActiveFilters] = useState<Array<{
+    column: string;
+    value: string;
+  }>>([]);
 
   // Filter portfolio data based on column searches
   const filteredPortfolioData = portfolioData.filter(row => {
@@ -359,12 +323,22 @@ const FinancialAnalystPO = () => {
     q3Commit: acc.q3Commit + row.q3Commit,
     q4Commit: acc.q4Commit + row.q4Commit,
     totalForecast: acc.totalForecast + row.totalForecast
-  }), { q1Commit: 0, q2Commit: 0, q3Commit: 0, q4Commit: 0, totalForecast: 0 });
-
+  }), {
+    q1Commit: 0,
+    q2Commit: 0,
+    q3Commit: 0,
+    q4Commit: 0,
+    totalForecast: 0
+  });
 
   // Format currency
   const formatCurrency = (amount: number) => {
-    return amount.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return amount.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
   };
 
   // Handle double-click on portfolio row
@@ -384,9 +358,7 @@ const FinancialAnalystPO = () => {
     }
     return labels;
   };
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <TopNav />
       
 
@@ -417,27 +389,24 @@ const FinancialAnalystPO = () => {
           {/* Toggle Pills */}
           <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center gap-2">
-              <Checkbox 
-                id="mainSigned"
-                checked={legendFilters.mainSigned}
-                onCheckedChange={(checked) => setLegendFilters(prev => ({ ...prev, mainSigned: checked as boolean }))}
-              />
+              <Checkbox id="mainSigned" checked={legendFilters.mainSigned} onCheckedChange={checked => setLegendFilters(prev => ({
+              ...prev,
+              mainSigned: checked as boolean
+            }))} />
               <Label htmlFor="mainSigned" className="text-sm font-normal cursor-pointer">Main/Signed PO</Label>
             </div>
             <div className="flex items-center gap-2">
-              <Checkbox 
-                id="renewalPeriod"
-                checked={legendFilters.renewalPeriod}
-                onCheckedChange={(checked) => setLegendFilters(prev => ({ ...prev, renewalPeriod: checked as boolean }))}
-              />
+              <Checkbox id="renewalPeriod" checked={legendFilters.renewalPeriod} onCheckedChange={checked => setLegendFilters(prev => ({
+              ...prev,
+              renewalPeriod: checked as boolean
+            }))} />
               <Label htmlFor="renewalPeriod" className="text-sm font-normal cursor-pointer">Renewal Period</Label>
             </div>
             <div className="flex items-center gap-2">
-              <Checkbox 
-                id="commonFinancial"
-                checked={legendFilters.commonFinancial}
-                onCheckedChange={(checked) => setLegendFilters(prev => ({ ...prev, commonFinancial: checked as boolean }))}
-              />
+              <Checkbox id="commonFinancial" checked={legendFilters.commonFinancial} onCheckedChange={checked => setLegendFilters(prev => ({
+              ...prev,
+              commonFinancial: checked as boolean
+            }))} />
               <Label htmlFor="commonFinancial" className="text-sm font-normal cursor-pointer">Common Financial</Label>
             </div>
           </div>
@@ -487,60 +456,21 @@ const FinancialAnalystPO = () => {
           </div>
 
           {/* View Toggle and Filter Bar */}
-          <div className="flex items-center gap-3 mt-4">
-            <span className="text-sm text-muted-foreground">View:</span>
-            <div className="flex border border-border rounded-md overflow-hidden">
-              <button 
-                onClick={() => setActiveView("all")}
-                className={`px-4 py-1.5 text-sm transition-colors ${
-                  activeView === "all" 
-                    ? "bg-primary text-primary-foreground" 
-                    : "bg-card text-card-foreground hover:bg-muted"
-                }`}
-              >
-                All Fields
-              </button>
-              <button 
-                onClick={() => setActiveView("summarized")}
-                className={`px-4 py-1.5 text-sm transition-colors ${
-                  activeView === "summarized" 
-                    ? "bg-primary text-primary-foreground" 
-                    : "bg-card text-card-foreground hover:bg-muted"
-                }`}
-              >
-                Summarized Fields
-              </button>
-            </div>
-          </div>
+          
 
           {/* Filter Bar */}
           <div className="flex items-center justify-between mt-4 px-4 py-3 bg-muted/30 border border-border rounded-md">
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Filtered:</span>
-              {activeFilters.length === 0 ? (
-                <span className="text-muted-foreground">No Filters</span>
-              ) : (
-                <div className="flex items-center gap-2">
-                  {activeFilters.map((filter, index) => (
-                    <Badge key={index} variant="secondary" className="gap-1">
+              {activeFilters.length === 0 ? <span className="text-muted-foreground">No Filters</span> : <div className="flex items-center gap-2">
+                  {activeFilters.map((filter, index) => <Badge key={index} variant="secondary" className="gap-1">
                       {filter.column}: {filter.value}
-                      <X 
-                        className="h-3 w-3 cursor-pointer hover:text-destructive" 
-                        onClick={() => setActiveFilters(prev => prev.filter((_, i) => i !== index))}
-                      />
-                    </Badge>
-                  ))}
-                </div>
-              )}
+                      <X className="h-3 w-3 cursor-pointer hover:text-destructive" onClick={() => setActiveFilters(prev => prev.filter((_, i) => i !== index))} />
+                    </Badge>)}
+                </div>}
             </div>
             <div className="flex items-center gap-3">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-muted-foreground"
-                onClick={() => setActiveFilters([])}
-                disabled={activeFilters.length === 0}
-              >
+              <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setActiveFilters([])} disabled={activeFilters.length === 0}>
                 Clear All Filters
               </Button>
               <Button variant="outline" size="sm" className="gap-2 border-primary text-primary hover:bg-primary/10">
@@ -576,40 +506,23 @@ const FinancialAnalystPO = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredPortfolioData.map((row, idx) => (
-                    <tr
-                      key={row.id}
-                      onDoubleClick={() => handleRowDoubleClick(row.poNumber)}
-                      className={`border-b border-border cursor-pointer hover:bg-muted/30 transition-colors ${
-                        idx % 2 === 0 ? "bg-card" : "bg-muted/10"
-                      }`}
-                    >
+                  {filteredPortfolioData.map((row, idx) => <tr key={row.id} onDoubleClick={() => handleRowDoubleClick(row.poNumber)} className={`border-b border-border cursor-pointer hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? "bg-card" : "bg-muted/10"}`}>
                       <td className="px-4 py-3 sticky left-0 bg-inherit z-10">
                         <div className="flex items-center gap-1">
                           <Button variant="ghost" size="icon" className="h-7 w-7">
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-7 w-7"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedPO(row.poNumber);
-                              setShowMonthlyForecastModal(true);
-                            }}
-                          >
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={e => {
+                      e.stopPropagation();
+                      setSelectedPO(row.poNumber);
+                      setShowMonthlyForecastModal(true);
+                    }}>
                             <Calendar className="h-3.5 w-3.5" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-7 w-7 hover:text-destructive"
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                          <Button variant="ghost" size="icon" className="h-7 w-7 hover:text-destructive" onClick={e => e.stopPropagation()}>
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => e.stopPropagation()}>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={e => e.stopPropagation()}>
                             <Plus className="h-3.5 w-3.5" />
                           </Button>
                         </div>
@@ -629,8 +542,7 @@ const FinancialAnalystPO = () => {
                       <td className="px-4 py-3 text-right">{formatCurrency(row.q3Commit)}</td>
                       <td className="px-4 py-3 text-right">{formatCurrency(row.q4Commit)}</td>
                       <td className="px-4 py-3 text-right font-semibold">{formatCurrency(row.totalForecast)}</td>
-                    </tr>
-                  ))}
+                    </tr>)}
                 </tbody>
                 <tfoot className="bg-muted/50 border-t-2 border-border">
                   <tr>
@@ -697,12 +609,10 @@ const FinancialAnalystPO = () => {
                 </div>
               </div>
               <div className="grid grid-cols-12 gap-2">
-                {generateMonthLabels().map((label, idx) => (
-                  <div key={idx} className="space-y-1">
+                {generateMonthLabels().map((label, idx) => <div key={idx} className="space-y-1">
                     <Label className="text-xs text-muted-foreground">{label}</Label>
                     <Input type="number" className="h-8 text-xs" placeholder="0" />
-                  </div>
-                ))}
+                  </div>)}
               </div>
               <div className="flex items-center gap-4 pt-4 border-t">
                 <Button variant="link" className="p-0 h-auto">Create Cross-Charge Row</Button>
@@ -805,40 +715,27 @@ const FinancialAnalystPO = () => {
                       <tbody>
                         <tr className="border-b border-border">
                           <td className="px-4 py-3 font-medium">Commit</td>
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
-                            <td key={q} className="px-4 py-3">
+                          {[1, 2, 3, 4, 5, 6, 7, 8].map(q => <td key={q} className="px-4 py-3">
                               <Input type="number" className="h-8 text-right" placeholder="0" />
-                            </td>
-                          ))}
+                            </td>)}
                         </tr>
                         <tr className="border-b border-border">
                           <td className="px-4 py-3 font-medium">Forecast</td>
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
-                            <td key={q} className="px-4 py-3">
+                          {[1, 2, 3, 4, 5, 6, 7, 8].map(q => <td key={q} className="px-4 py-3">
                               <Input type="number" className="h-8 text-right" disabled placeholder="0" />
-                            </td>
-                          ))}
+                            </td>)}
                         </tr>
                         <tr className="border-b border-border">
                           <td className="px-4 py-3 font-medium">Actual</td>
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
-                            <td key={q} className="px-4 py-3">
+                          {[1, 2, 3, 4, 5, 6, 7, 8].map(q => <td key={q} className="px-4 py-3">
                               <Input type="number" className="h-8 text-right" disabled placeholder="0" />
-                            </td>
-                          ))}
+                            </td>)}
                         </tr>
                         <tr>
                           <td className="px-4 py-3 font-medium">Uplift %</td>
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
-                            <td key={q} className="px-4 py-3">
-                              <Input 
-                                type="number" 
-                                className="h-8 text-right" 
-                                disabled={q > 4}
-                                placeholder="0.00" 
-                              />
-                            </td>
-                          ))}
+                          {[1, 2, 3, 4, 5, 6, 7, 8].map(q => <td key={q} className="px-4 py-3">
+                              <Input type="number" className="h-8 text-right" disabled={q > 4} placeholder="0.00" />
+                            </td>)}
                         </tr>
                       </tbody>
                     </table>
@@ -965,11 +862,7 @@ const FinancialAnalystPO = () => {
               </div>
               <div className="bg-muted/30 p-4 rounded-lg">
                 <div className="flex items-start gap-3">
-                  <Checkbox
-                    id="attestation"
-                    checked={attestationChecked}
-                    onCheckedChange={(checked) => setAttestationChecked(checked as boolean)}
-                  />
+                  <Checkbox id="attestation" checked={attestationChecked} onCheckedChange={checked => setAttestationChecked(checked as boolean)} />
                   <div className="flex-1">
                     <Label htmlFor="attestation" className="font-semibold cursor-pointer">Works Council Attestation</Label>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -990,9 +883,6 @@ const FinancialAnalystPO = () => {
           </DialogContent>
         </Dialog>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default FinancialAnalystPO;
-
