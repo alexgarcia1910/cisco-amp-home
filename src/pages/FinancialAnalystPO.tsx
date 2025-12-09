@@ -19,8 +19,10 @@ import {
   XCircle,
   Save,
   Edit,
-  Filter
+  Filter,
+  Download
 } from "lucide-react";
+import { SearchableDropdown } from "@/components/SearchableDropdown";
 import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -351,6 +353,50 @@ const FinancialAnalystPO = () => {
   });
   const [columnSearches, setColumnSearches] = useState<Record<string, string>>({});
   const [attestationChecked, setAttestationChecked] = useState(false);
+  
+  // Leader filter state for bulk modal
+  const [level2Leaders, setLevel2Leaders] = useState<string[]>([]);
+  const [level3Leaders, setLevel3Leaders] = useState<string[]>([]);
+  const [level4Leaders, setLevel4Leaders] = useState<string[]>([]);
+  const [level5Leaders, setLevel5Leaders] = useState<string[]>([]);
+  
+  // Mock leader data for bulk modal dropdowns
+  const leaderOptions = {
+    level2: [
+      "(hdickins)",
+      "Jeetu Patel (jeetup)",
+      "Liz Centoni (lrajaram)",
+      "Mark A Patterson (markpatt)",
+      "Martin Lund (martini)",
+      "Oliver Tuszik (otuszik)",
+      "Scott Herren (rsherren)",
+      "Thimaya Subaiya (tsubaiya)"
+    ],
+    level3: [
+      "John Smith (jsmith)",
+      "Jane Doe (jdoe)",
+      "Sarah Williams (swilliams)",
+      "Emily Davis (edavis)",
+      "Michael Brown (mbrown)",
+      "Lisa Anderson (landerson)"
+    ],
+    level4: [
+      "Robert Wilson (rwilson)",
+      "James Taylor (jtaylor)",
+      "Patricia Harris (pharris)",
+      "Christopher Lee (clee)",
+      "Daniel White (dwhite)",
+      "Nancy King (nking)"
+    ],
+    level5: [
+      "Kevin Young (kyoung)",
+      "Steven Wright (swright)",
+      "Betty Lopez (blopez)",
+      "Thomas Baker (tbaker)",
+      "Carol Nelson (cnelson)",
+      "Edward Hill (ehill)"
+    ]
+  };
   
   const [activeView, setActiveView] = useState<"all" | "summarized">("all");
   const [activeFilters, setActiveFilters] = useState<Array<{column: string, value: string}>>([]);
@@ -1124,90 +1170,88 @@ const FinancialAnalystPO = () => {
 
         {/* Bulk Upload / Download Modal */}
         <Dialog open={showBulkModal} onOpenChange={setShowBulkModal}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Bulk Upload / Download</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-semibold mb-4">Leader Hierarchy Filters</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Level 2 Leader</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Leader" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="John Smith">John Smith</SelectItem>
-                        <SelectItem value="Mike Johnson">Mike Johnson</SelectItem>
-                        <SelectItem value="David Brown">David Brown</SelectItem>
-                      </SelectContent>
-                    </Select>
+          <DialogContent className="max-w-4xl p-0 bg-muted/30">
+            {/* Header with back button */}
+            <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-card rounded-t-lg">
+              <button 
+                onClick={() => setShowBulkModal(false)}
+                className="p-1 hover:bg-muted rounded transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5 text-muted-foreground" />
+              </button>
+              <h2 className="text-lg font-semibold">Bulk Upload / Download</h2>
+            </div>
+            
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              {/* Download Section */}
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">Select leaders for bulk download</p>
+                
+                {/* 4 Column Leader Dropdowns */}
+                <div className="grid grid-cols-4 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-muted-foreground">Level 2 Leader</Label>
+                    <SearchableDropdown
+                      label={level2Leaders.length === 0 ? "All" : `${level2Leaders.length} selected`}
+                      options={leaderOptions.level2}
+                      value={level2Leaders}
+                      onChange={setLevel2Leaders}
+                      placeholder="Search leaders..."
+                    />
                   </div>
-                  <div>
-                    <Label>Level 3 Leader</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Leader" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Jane Doe">Jane Doe</SelectItem>
-                        <SelectItem value="Sarah Williams">Sarah Williams</SelectItem>
-                        <SelectItem value="Emily Davis">Emily Davis</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-muted-foreground">Level 3 Leader</Label>
+                    <SearchableDropdown
+                      label={level3Leaders.length === 0 ? "All" : `${level3Leaders.length} selected`}
+                      options={leaderOptions.level3}
+                      value={level3Leaders}
+                      onChange={setLevel3Leaders}
+                      placeholder="Search leaders..."
+                    />
                   </div>
-                  <div>
-                    <Label>Level 4 Leader</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Leader" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Leader 1">Leader 1</SelectItem>
-                        <SelectItem value="Leader 2">Leader 2</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-muted-foreground">Level 4 Leader</Label>
+                    <SearchableDropdown
+                      label={level4Leaders.length === 0 ? "All" : `${level4Leaders.length} selected`}
+                      options={leaderOptions.level4}
+                      value={level4Leaders}
+                      onChange={setLevel4Leaders}
+                      placeholder="Search leaders..."
+                    />
                   </div>
-                  <div>
-                    <Label>Level 5 Leader</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Leader" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Leader 1">Leader 1</SelectItem>
-                        <SelectItem value="Leader 2">Leader 2</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-muted/30 p-4 rounded-lg">
-                <div className="flex items-start gap-3">
-                  <Checkbox
-                    id="attestation"
-                    checked={attestationChecked}
-                    onCheckedChange={(checked) => setAttestationChecked(checked as boolean)}
-                  />
-                  <div className="flex-1">
-                    <Label htmlFor="attestation" className="font-semibold cursor-pointer">Works Council Attestation</Label>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      By checking this box, you attest that you have reviewed and approved the data for bulk operations 
-                      in accordance with Works Council requirements.
-                    </p>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-muted-foreground">Level 5 Leader</Label>
+                    <SearchableDropdown
+                      label={level5Leaders.length === 0 ? "All" : `${level5Leaders.length} selected`}
+                      options={leaderOptions.level5}
+                      value={level5Leaders}
+                      onChange={setLevel5Leaders}
+                      placeholder="Search leaders..."
+                    />
                   </div>
                 </div>
+                
+                {/* Download Button */}
+                <div className="flex justify-center pt-2">
+                  <Button className="gap-2 min-w-[200px]">
+                    <Download className="h-4 w-4" />
+                    Download
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <Button disabled={!attestationChecked} className="flex-1">Download</Button>
-                <Button disabled={!attestationChecked} variant="outline" className="flex-1">Upload</Button>
+              
+              {/* Separator */}
+              <Separator />
+              
+              {/* Upload Section */}
+              <div className="flex justify-center">
+                <Button variant="outline" className="gap-2 min-w-[200px]">
+                  <Upload className="h-4 w-4" />
+                  Upload
+                </Button>
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowBulkModal(false)}>Close</Button>
-            </DialogFooter>
           </DialogContent>
         </Dialog>
       </main>
