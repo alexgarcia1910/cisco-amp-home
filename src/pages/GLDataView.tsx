@@ -18,7 +18,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { SearchableDropdown } from "@/components/SearchableDropdown";
 import {
   RefreshCw,
   Download,
@@ -28,6 +35,7 @@ import {
   X,
   Search,
   ArrowLeft,
+  Filter,
 } from "lucide-react";
 
 // Mock data for GL transactions
@@ -90,6 +98,7 @@ const GLDataView = () => {
   const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
   const [openFilterPopover, setOpenFilterPopover] = useState<string | null>(null);
   const [filterSearch, setFilterSearch] = useState("");
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
 
   // Get unique values for each column
   const getColumnOptions = (columnKey: string) => {
@@ -221,8 +230,22 @@ const GLDataView = () => {
         {/* Filter bar */}
         <div className="flex items-center justify-between mb-4 p-3 bg-card rounded-lg border border-border">
           <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setFilterModalOpen(true)}
+              className="gap-1.5"
+            >
+              <Filter className="h-4 w-4" />
+              Filters
+              {getActiveFilterCount() > 0 && (
+                <span className="ml-1 px-1.5 py-0.5 text-xs bg-primary text-primary-foreground rounded-full">
+                  {getActiveFilterCount()}
+                </span>
+              )}
+            </Button>
             <span className="text-sm text-muted-foreground">
-              Filtered: {hasActiveFilters ? `${getActiveFilterCount()} filter(s)` : "No Filters"}
+              {hasActiveFilters ? `${getActiveFilterCount()} filter(s) applied` : "No Filters"}
             </span>
             {Object.entries(activeFilters).map(([key, values]) =>
               values.map((value) => (
@@ -251,6 +274,47 @@ const GLDataView = () => {
             </Button>
           )}
         </div>
+
+        {/* Filter Modal */}
+        <Dialog open={filterModalOpen} onOpenChange={setFilterModalOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
+            <DialogHeader>
+              <DialogTitle>Filter Data</DialogTitle>
+            </DialogHeader>
+            <ScrollArea className="max-h-[60vh] pr-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 py-4">
+                {columns.map((column) => (
+                  <div key={column.key} className="space-y-1.5">
+                    <label className="text-sm font-medium text-card-foreground">
+                      {column.label}
+                    </label>
+                    <SearchableDropdown
+                      label={`Select ${column.label}`}
+                      options={getColumnOptions(column.key)}
+                      value={activeFilters[column.key] || []}
+                      onChange={(values) => {
+                        setActiveFilters((prev) => ({
+                          ...prev,
+                          [column.key]: values,
+                        }));
+                        setCurrentPage(1);
+                      }}
+                      placeholder={`Search ${column.label}...`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+            <div className="flex justify-between pt-4 border-t border-border">
+              <Button variant="outline" onClick={clearAllFilters}>
+                Clear All Filters
+              </Button>
+              <Button onClick={() => setFilterModalOpen(false)}>
+                Apply Filters
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Data Table */}
         <div className="bg-card rounded-lg border border-border overflow-hidden">
