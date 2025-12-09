@@ -52,9 +52,21 @@ const generateMockData = () => {
   const accounts = ["50100", "50200", "50300", "60100", "60200", "70100"];
   const deptNames = ["CX EMEA Sales", "CX EMEA Engineering", "CX Americas Ops", "CX APJC Finance", "CX Global Marketing"];
   const accountDescs = ["Software License", "Hardware Maintenance", "Electronically Delivered", "Cloud Services", "Professional Services"];
+  const softwarePublishers = ["UNKNOWN", "GENUA GMBH", "MICROSOFT", "ORACLE", "SAP", "ADOBE", "SALESFORCE"];
+  const glDescriptions = [
+    "ESP900EP6215791|EKAHAU OY|Wireless tool to perform activities",
+    "AUT350EP5246311|SHI INTERNATIONAL BV|Techsmith Camtasia 2024",
+    "DEU000EP6101864|SHI INTERNATIONAL BV|Smartcard Middleware",
+    "GBR000EP5764291|GITLAB INC|GitLab SaaS - Premium - 1 Year",
+    "ESP900EP6258021|EKAHAU OY|Renewal of my Ekahau Subscription",
+    "DEU000EP6322201|SHI INTERNATIONAL BV|PyCharm Professional - License",
+  ];
 
   return Array.from({ length: 100 }, (_, i) => ({
     id: `gl-${i + 1}`,
+    softwarePublisher: softwarePublishers[Math.floor(Math.random() * softwarePublishers.length)],
+    usdNet: Math.round((Math.random() * 10000 - 5000) * 100) / 100,
+    glDescription: glDescriptions[Math.floor(Math.random() * glDescriptions.length)],
     nodeLevel2: nodeLevel2Options[Math.floor(Math.random() * nodeLevel2Options.length)],
     nodeLevel3: nodeLevel3Options[Math.floor(Math.random() * nodeLevel3Options.length)],
     nodeLevel4: nodeLevel4Options[Math.floor(Math.random() * nodeLevel4Options.length)],
@@ -73,6 +85,9 @@ const generateMockData = () => {
 const mockData = generateMockData();
 
 const columns = [
+  { key: "softwarePublisher", label: "Software Publisher" },
+  { key: "usdNet", label: "USD Net", isNumeric: true },
+  { key: "glDescription", label: "GL Description" },
   { key: "nodeLevel2", label: "Node Level 2" },
   { key: "nodeLevel3", label: "Node Level 3" },
   { key: "nodeLevel4", label: "Node Level 4" },
@@ -102,9 +117,9 @@ const GLDataView = () => {
   const [selectedFilterField, setSelectedFilterField] = useState<string>("");
   const [pendingFilterValues, setPendingFilterValues] = useState<string[]>([]);
 
-  // Get unique values for each column
-  const getColumnOptions = (columnKey: string) => {
-    const values = mockData.map((row) => row[columnKey as keyof typeof row]);
+  // Get unique values for each column (as strings for filtering)
+  const getColumnOptions = (columnKey: string): string[] => {
+    const values = mockData.map((row) => String(row[columnKey as keyof typeof row]));
     return [...new Set(values)].sort();
   };
 
@@ -484,19 +499,34 @@ const GLDataView = () => {
                     </td>
                     {columns.map((column) => {
                       const cellValue = row[column.key as keyof typeof row];
+                      const isNumeric = column.key === 'usdNet';
                       
                       return (
                         <td
                           key={column.key}
-                          className="p-3 whitespace-nowrap"
+                          className={`p-3 whitespace-nowrap ${isNumeric ? 'text-right' : ''}`}
                         >
-                          {cellValue}
+                          {isNumeric && typeof cellValue === 'number'
+                            ? cellValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : cellValue}
                         </td>
                       );
                     })}
                   </tr>
                 ))}
               </tbody>
+              {/* Sticky footer row with total */}
+              <tfoot className="sticky bottom-0 bg-primary/10 border-t-2 border-primary">
+                <tr>
+                  <td className="p-3 font-semibold text-card-foreground" colSpan={2}>
+                    Total Amount
+                  </td>
+                  <td className="p-3 font-semibold text-card-foreground">
+                    ${filteredData.reduce((sum, row) => sum + row.usdNet, 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </td>
+                  <td colSpan={columns.length - 2}></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
 
