@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
   ArrowLeft, 
@@ -33,6 +33,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -407,6 +409,44 @@ const FinancialAnalystPO = () => {
   
   const [activeView, setActiveView] = useState<"all" | "summarized">("all");
   const [activeFilters, setActiveFilters] = useState<Array<{column: string, value: string}>>([]);
+  const [columnSearch, setColumnSearch] = useState("");
+  const [selectColumnsOpen, setSelectColumnsOpen] = useState(false);
+
+  // All available columns
+  const allColumns = [
+    { key: "expenseCategory", label: "Expense Category" },
+    { key: "costPool", label: "Cost Pool" },
+    { key: "swUsageCategory", label: "SW Usage Category" },
+    { key: "swCategory", label: "SW Category" },
+    { key: "deptNumber", label: "Dept Number" },
+    { key: "poNumber", label: "PO#" },
+    { key: "poNumberSecondary", label: "PO# (Secondary)" },
+    { key: "cogsOpex", label: "COGS / OPEX" },
+    { key: "level2Leader", label: "Level 2 Leader" },
+    { key: "level3Leader", label: "Level 3 Leader" },
+    { key: "q1Commit", label: "Q1 Commit" },
+    { key: "q2Commit", label: "Q2 Commit" },
+    { key: "q3Commit", label: "Q3 Commit" },
+    { key: "q4Commit", label: "Q4 Commit" },
+    { key: "totalForecast", label: "Total Forecast" }
+  ];
+
+  const [visibleColumns, setVisibleColumns] = useState<string[]>(allColumns.map(c => c.key));
+
+  const filteredColumns = useMemo(() => {
+    if (!columnSearch) return allColumns;
+    return allColumns.filter(col => 
+      col.label.toLowerCase().includes(columnSearch.toLowerCase())
+    );
+  }, [columnSearch]);
+
+  const toggleColumn = (columnKey: string) => {
+    setVisibleColumns(prev => 
+      prev.includes(columnKey) 
+        ? prev.filter(k => k !== columnKey)
+        : [...prev, columnKey]
+    );
+  };
 
   // Add new row function
   const handleAddRow = (sourceRow: typeof portfolioData[0]) => {
@@ -585,10 +625,45 @@ const FinancialAnalystPO = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-muted-foreground">Financial Analyst UI</span>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Columns className="h-4 w-4" />
-                Select Columns
-              </Button>
+              <Popover open={selectColumnsOpen} onOpenChange={setSelectColumnsOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Columns className="h-4 w-4" />
+                    Select Columns
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-0 bg-background border border-border shadow-lg" align="start">
+                  <div className="p-2 border-b border-border">
+                    <div className="relative">
+                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search columns..."
+                        value={columnSearch}
+                        onChange={(e) => setColumnSearch(e.target.value)}
+                        className="pl-8 h-8"
+                      />
+                    </div>
+                  </div>
+                  <ScrollArea className="h-64">
+                    <div className="p-2 space-y-1">
+                      {filteredColumns.map((column) => (
+                        <div
+                          key={column.key}
+                          className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted cursor-pointer"
+                          onClick={() => toggleColumn(column.key)}
+                        >
+                          <Checkbox
+                            checked={visibleColumns.includes(column.key)}
+                            onCheckedChange={() => toggleColumn(column.key)}
+                          />
+                          <span className="text-sm">{column.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </PopoverContent>
+              </Popover>
               <Button variant="outline" size="sm" className="gap-2">
                 <RefreshCw className="h-4 w-4" />
                 Refresh Data
@@ -695,21 +770,21 @@ const FinancialAnalystPO = () => {
                 <thead className="bg-muted/50 border-b border-border sticky top-0">
                   <tr>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground sticky left-0 bg-muted/50 z-10">Action</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Expense Category</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Cost Pool</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">SW Usage Category</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">SW Category</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Dept Number</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">PO#</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">PO# (Secondary)</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">COGS / OPEX</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Level 2 Leader</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Level 3 Leader</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q1 Commit</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q2 Commit</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q3 Commit</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q4 Commit</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Total Forecast</th>
+                    {visibleColumns.includes("expenseCategory") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">Expense Category</th>}
+                    {visibleColumns.includes("costPool") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">Cost Pool</th>}
+                    {visibleColumns.includes("swUsageCategory") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">SW Usage Category</th>}
+                    {visibleColumns.includes("swCategory") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">SW Category</th>}
+                    {visibleColumns.includes("deptNumber") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">Dept Number</th>}
+                    {visibleColumns.includes("poNumber") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">PO#</th>}
+                    {visibleColumns.includes("poNumberSecondary") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">PO# (Secondary)</th>}
+                    {visibleColumns.includes("cogsOpex") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">COGS / OPEX</th>}
+                    {visibleColumns.includes("level2Leader") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">Level 2 Leader</th>}
+                    {visibleColumns.includes("level3Leader") && <th className="px-4 py-3 text-left font-medium text-muted-foreground">Level 3 Leader</th>}
+                    {visibleColumns.includes("q1Commit") && <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q1 Commit</th>}
+                    {visibleColumns.includes("q2Commit") && <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q2 Commit</th>}
+                    {visibleColumns.includes("q3Commit") && <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q3 Commit</th>}
+                    {visibleColumns.includes("q4Commit") && <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q4 Commit</th>}
+                    {visibleColumns.includes("totalForecast") && <th className="px-4 py-3 text-right font-medium text-muted-foreground">Total Forecast</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -758,32 +833,32 @@ const FinancialAnalystPO = () => {
                           </Button>
                         </div>
                       </td>
-                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.expenseCategory}</td>
-                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.costPool}</td>
-                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.swUsageCategory}</td>
-                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.swCategory}</td>
-                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.deptNumber}</td>
-                      <td className="px-4 py-3 font-medium cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.poNumber}</td>
-                      <td className="px-4 py-3 text-muted-foreground cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.poNumberSecondary || "-"}</td>
-                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.cogsOpex}</td>
-                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.level2Leader}</td>
-                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.level3Leader}</td>
-                      <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q1Commit)}</td>
-                      <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q2Commit)}</td>
-                      <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q3Commit)}</td>
-                      <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q4Commit)}</td>
-                      <td className="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.totalForecast)}</td>
+                      {visibleColumns.includes("expenseCategory") && <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.expenseCategory}</td>}
+                      {visibleColumns.includes("costPool") && <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.costPool}</td>}
+                      {visibleColumns.includes("swUsageCategory") && <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.swUsageCategory}</td>}
+                      {visibleColumns.includes("swCategory") && <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.swCategory}</td>}
+                      {visibleColumns.includes("deptNumber") && <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.deptNumber}</td>}
+                      {visibleColumns.includes("poNumber") && <td className="px-4 py-3 font-medium cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.poNumber}</td>}
+                      {visibleColumns.includes("poNumberSecondary") && <td className="px-4 py-3 text-muted-foreground cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.poNumberSecondary || "-"}</td>}
+                      {visibleColumns.includes("cogsOpex") && <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.cogsOpex}</td>}
+                      {visibleColumns.includes("level2Leader") && <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.level2Leader}</td>}
+                      {visibleColumns.includes("level3Leader") && <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.level3Leader}</td>}
+                      {visibleColumns.includes("q1Commit") && <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q1Commit)}</td>}
+                      {visibleColumns.includes("q2Commit") && <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q2Commit)}</td>}
+                      {visibleColumns.includes("q3Commit") && <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q3Commit)}</td>}
+                      {visibleColumns.includes("q4Commit") && <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q4Commit)}</td>}
+                      {visibleColumns.includes("totalForecast") && <td className="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.totalForecast)}</td>}
                     </tr>
                   ))}
                 </tbody>
                 <tfoot className="bg-muted/50 border-t-2 border-border">
                   <tr>
-                    <td colSpan={11} className="px-4 py-3 font-semibold text-right">Page Total:</td>
-                    <td className="px-4 py-3 text-right font-semibold">{formatCurrency(pageTotals.q1Commit)}</td>
-                    <td className="px-4 py-3 text-right font-semibold">{formatCurrency(pageTotals.q2Commit)}</td>
-                    <td className="px-4 py-3 text-right font-semibold">{formatCurrency(pageTotals.q3Commit)}</td>
-                    <td className="px-4 py-3 text-right font-semibold">{formatCurrency(pageTotals.q4Commit)}</td>
-                    <td className="px-4 py-3 text-right font-bold">{formatCurrency(pageTotals.totalForecast)}</td>
+                    <td colSpan={1 + ["expenseCategory", "costPool", "swUsageCategory", "swCategory", "deptNumber", "poNumber", "poNumberSecondary", "cogsOpex", "level2Leader", "level3Leader"].filter(c => visibleColumns.includes(c)).length} className="px-4 py-3 font-semibold text-right">Page Total:</td>
+                    {visibleColumns.includes("q1Commit") && <td className="px-4 py-3 text-right font-semibold">{formatCurrency(pageTotals.q1Commit)}</td>}
+                    {visibleColumns.includes("q2Commit") && <td className="px-4 py-3 text-right font-semibold">{formatCurrency(pageTotals.q2Commit)}</td>}
+                    {visibleColumns.includes("q3Commit") && <td className="px-4 py-3 text-right font-semibold">{formatCurrency(pageTotals.q3Commit)}</td>}
+                    {visibleColumns.includes("q4Commit") && <td className="px-4 py-3 text-right font-semibold">{formatCurrency(pageTotals.q4Commit)}</td>}
+                    {visibleColumns.includes("totalForecast") && <td className="px-4 py-3 text-right font-bold">{formatCurrency(pageTotals.totalForecast)}</td>}
                   </tr>
                 </tfoot>
               </table>
