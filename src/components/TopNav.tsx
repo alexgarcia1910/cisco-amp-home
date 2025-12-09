@@ -1,4 +1,5 @@
 import { User } from "lucide-react";
+import { Link } from "react-router-dom";
 import ciscoLogo from "@/assets/cisco-logo.png";
 
 const TopNav = () => {
@@ -7,7 +8,7 @@ const TopNav = () => {
       <div className="px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo / Brand */}
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer">
             <img
               src={ciscoLogo}
               alt="Cisco"
@@ -21,7 +22,7 @@ const TopNav = () => {
                 Asset Management Platform
               </span>
             </div>
-          </div>
+          </Link>
 
           {/* User Profile */}
           <div className="flex items-center">
