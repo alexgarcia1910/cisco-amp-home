@@ -17,7 +17,9 @@ import {
   RotateCcw,
   Check,
   XCircle,
-  Save
+  Save,
+  Edit,
+  Filter
 } from "lucide-react";
 import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
@@ -29,6 +31,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 // Mock Data
 const portfolioData = [
@@ -334,6 +338,10 @@ const FinancialAnalystPO = () => {
   const [showSnapshotModal, setShowSnapshotModal] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [selectedPO, setSelectedPO] = useState<string | null>(null);
+  const [selectedRowData, setSelectedRowData] = useState<typeof portfolioData[0] | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [monthlyForecast, setMonthlyForecast] = useState<Record<string, string>>({});
   const [legendFilters, setLegendFilters] = useState({
     mainSigned: false,
     renewalPeriod: false,
@@ -416,6 +424,15 @@ const FinancialAnalystPO = () => {
     setShowPODetailModal(true);
   };
 
+  // Handle opening PO Detail Modal
+  const handleOpenPODetail = (row: typeof portfolioData[0]) => {
+    setSelectedPO(row.poNumber);
+    setSelectedRowData(row);
+    setIsEditMode(false);
+    setMonthlyForecast({});
+    setShowPODetailModal(true);
+  };
+
   // Generate month labels for Monthly Forecast Modal
   const generateMonthLabels = () => {
     const labels = [];
@@ -427,6 +444,19 @@ const FinancialAnalystPO = () => {
     }
     return labels;
   };
+
+  // Generate fiscal year months
+  const getFiscalYearMonths = (fyIndex: number) => {
+    const months = ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"];
+    const baseYear = 26 + fyIndex;
+    return months.map((month, idx) => ({
+      label: month,
+      key: `FY${baseYear}-${month}`,
+      fullLabel: `${month} FY${baseYear}`
+    }));
+  };
+
+  const fiscalYears = ["FY26", "FY27", "FY28", "FY29", "FY30", "FY31"];
 
   return (
     <div className="min-h-screen bg-background">
@@ -638,7 +668,15 @@ const FinancialAnalystPO = () => {
                     >
                       <td className="px-4 py-3 sticky left-0 bg-inherit z-10">
                         <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => e.stopPropagation()}>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-7 w-7" 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenPODetail(row);
+                            }}
+                          >
                             <ExternalLink className="h-3.5 w-3.5" />
                           </Button>
                           <Button 
@@ -770,144 +808,269 @@ const FinancialAnalystPO = () => {
         </Dialog>
 
         {/* PO Detail Modal */}
-        <Dialog open={showPODetailModal} onOpenChange={setShowPODetailModal}>
-          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>PO Detail – {selectedPO}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6">
-              {/* Main/Signed PO Fields */}
-              <div className="bg-muted/30 p-4 rounded-lg">
-                <h3 className="font-semibold mb-4">Main/Signed PO Fields</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label>PO Number</Label>
-                    <Input value={selectedPO || ""} readOnly />
+        <Dialog open={showPODetailModal} onOpenChange={(open) => {
+          setShowPODetailModal(open);
+          if (!open) {
+            setIsEditMode(false);
+            setShowFilters(false);
+          }
+        }}>
+          <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col p-0">
+            {/* Sticky Header */}
+            <div className="sticky top-0 bg-card border-b border-border px-6 py-4 z-10">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-xl font-semibold">
+                  {selectedRowData?.poNumber || selectedPO}
+                </DialogTitle>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant={isEditMode ? "default" : "outline"} 
+                    size="sm" 
+                    className="gap-2"
+                    onClick={() => setIsEditMode(!isEditMode)}
+                  >
+                    <Edit className="h-4 w-4" />
+                    {isEditMode ? "Editing" : "Edit"}
+                  </Button>
+                  <Collapsible open={showFilters} onOpenChange={setShowFilters}>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <Filter className="h-4 w-4" />
+                        Filters
+                        <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
+                      </Button>
+                    </CollapsibleTrigger>
+                  </Collapsible>
+                </div>
+              </div>
+              
+              {/* Collapsible Filters Section */}
+              <Collapsible open={showFilters} onOpenChange={setShowFilters}>
+                <CollapsibleContent className="mt-4">
+                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        placeholder="Search fields..." 
+                        className="pl-9 h-9"
+                      />
+                    </div>
+                    <Button variant="outline" size="sm">Jump to Section</Button>
                   </div>
-                  <div>
-                    <Label>Vendor</Label>
-                    <Input placeholder="Enter vendor" />
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+              {/* Core PO Information */}
+              <div className="bg-muted/20 p-5 rounded-lg border border-border">
+                <h3 className="text-sm font-semibold text-primary mb-4 uppercase tracking-wide">Core PO Information</h3>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Expense Category</Label>
+                    <Input 
+                      value={selectedRowData?.expenseCategory || ""} 
+                      readOnly={!isEditMode}
+                      className={!isEditMode ? "bg-muted/30" : ""}
+                    />
                   </div>
-                  <div>
-                    <Label>Amount</Label>
-                    <Input type="number" placeholder="0.00" />
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Cost Pool</Label>
+                    <Input 
+                      value={selectedRowData?.costPool || ""} 
+                      readOnly={!isEditMode}
+                      className={!isEditMode ? "bg-muted/30" : ""}
+                    />
                   </div>
-                  <div>
-                    <Label>Start Date</Label>
-                    <Input type="date" />
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">SW Usage Category</Label>
+                    <Input 
+                      value={selectedRowData?.swUsageCategory || ""} 
+                      readOnly={!isEditMode}
+                      className={!isEditMode ? "bg-muted/30" : ""}
+                    />
                   </div>
-                  <div>
-                    <Label>End Date</Label>
-                    <Input type="date" />
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">SW Category</Label>
+                    <Input 
+                      value={selectedRowData?.swCategory || ""} 
+                      readOnly={!isEditMode}
+                      className={!isEditMode ? "bg-muted/30" : ""}
+                    />
                   </div>
-                  <div>
-                    <Label>Status</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Active">Active</SelectItem>
-                        <SelectItem value="Approved">Approved</SelectItem>
-                        <SelectItem value="Pending">Pending</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Dept Number</Label>
+                    <Input 
+                      value={selectedRowData?.deptNumber || ""} 
+                      readOnly={!isEditMode}
+                      className={!isEditMode ? "bg-muted/30" : ""}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">PO Number</Label>
+                    <Input 
+                      value={selectedRowData?.poNumber || ""} 
+                      readOnly
+                      className="bg-muted/30 font-medium"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">PO Number (Secondary)</Label>
+                    <Input 
+                      value={selectedRowData?.poNumberSecondary || ""} 
+                      readOnly={!isEditMode}
+                      className={!isEditMode ? "bg-muted/30" : ""}
+                      placeholder={isEditMode ? "Enter secondary PO#" : "-"}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">COGS / OPEX</Label>
+                    <Input 
+                      value={selectedRowData?.cogsOpex || ""} 
+                      readOnly={!isEditMode}
+                      className={!isEditMode ? "bg-muted/30" : ""}
+                    />
                   </div>
                 </div>
               </div>
 
-              {/* Renewal Period Fields */}
-              <div className="bg-muted/20 p-4 rounded-lg">
-                <h3 className="font-semibold mb-4">Renewal Period Fields</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label>Renewal PO#</Label>
-                    <Input placeholder="Enter renewal PO#" />
+              {/* Leadership Section */}
+              <div className="bg-muted/20 p-5 rounded-lg border border-border">
+                <h3 className="text-sm font-semibold text-primary mb-4 uppercase tracking-wide">Leadership</h3>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Level 2 Leader</Label>
+                    <Input 
+                      value={selectedRowData?.level2Leader || ""} 
+                      readOnly={!isEditMode}
+                      className={!isEditMode ? "bg-muted/30" : ""}
+                    />
                   </div>
-                  <div>
-                    <Label>Renewal Amount</Label>
-                    <Input type="number" placeholder="0.00" />
-                  </div>
-                  <div>
-                    <Label>Uplift %</Label>
-                    <Input type="number" placeholder="0.00" />
-                  </div>
-                </div>
-              </div>
-
-              {/* 8-Quarter View Table */}
-              <div>
-                <h3 className="font-semibold mb-4">8-Quarter View</h3>
-                <div className="border border-border rounded-lg overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="bg-muted/50 border-b border-border">
-                        <tr>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">Type</th>
-                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q1 FY26</th>
-                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q2 FY26</th>
-                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q3 FY26</th>
-                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q4 FY26</th>
-                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q1 FY27</th>
-                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q2 FY27</th>
-                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q3 FY27</th>
-                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">Q4 FY27</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="border-b border-border">
-                          <td className="px-4 py-3 font-medium">Commit</td>
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
-                            <td key={q} className="px-4 py-3">
-                              <Input type="number" className="h-8 text-right" placeholder="0" />
-                            </td>
-                          ))}
-                        </tr>
-                        <tr className="border-b border-border">
-                          <td className="px-4 py-3 font-medium">Forecast</td>
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
-                            <td key={q} className="px-4 py-3">
-                              <Input type="number" className="h-8 text-right" disabled placeholder="0" />
-                            </td>
-                          ))}
-                        </tr>
-                        <tr className="border-b border-border">
-                          <td className="px-4 py-3 font-medium">Actual</td>
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
-                            <td key={q} className="px-4 py-3">
-                              <Input type="number" className="h-8 text-right" disabled placeholder="0" />
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="px-4 py-3 font-medium">Uplift %</td>
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
-                            <td key={q} className="px-4 py-3">
-                              <Input 
-                                type="number" 
-                                className="h-8 text-right" 
-                                disabled={q > 4}
-                                placeholder="0.00" 
-                              />
-                            </td>
-                          ))}
-                        </tr>
-                      </tbody>
-                    </table>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Level 3 Leader</Label>
+                    <Input 
+                      value={selectedRowData?.level3Leader || ""} 
+                      readOnly={!isEditMode}
+                      className={!isEditMode ? "bg-muted/30" : ""}
+                    />
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 pt-4 border-t">
-                <Button variant="link" className="p-0 h-auto">History Log</Button>
-                <span>|</span>
-                <Button variant="link" className="p-0 h-auto">Comments</Button>
+              {/* Financial Summary */}
+              <div className="bg-muted/20 p-5 rounded-lg border border-border">
+                <h3 className="text-sm font-semibold text-primary mb-4 uppercase tracking-wide">Financial Summary</h3>
+                <div className="grid grid-cols-5 gap-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Q1 Commit</Label>
+                    <Input 
+                      value={selectedRowData ? formatCurrency(selectedRowData.q1Commit) : ""} 
+                      readOnly={!isEditMode}
+                      className={`text-right ${!isEditMode ? "bg-muted/30" : ""}`}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Q2 Commit</Label>
+                    <Input 
+                      value={selectedRowData ? formatCurrency(selectedRowData.q2Commit) : ""} 
+                      readOnly={!isEditMode}
+                      className={`text-right ${!isEditMode ? "bg-muted/30" : ""}`}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Q3 Commit</Label>
+                    <Input 
+                      value={selectedRowData ? formatCurrency(selectedRowData.q3Commit) : ""} 
+                      readOnly={!isEditMode}
+                      className={`text-right ${!isEditMode ? "bg-muted/30" : ""}`}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Q4 Commit</Label>
+                    <Input 
+                      value={selectedRowData ? formatCurrency(selectedRowData.q4Commit) : ""} 
+                      readOnly={!isEditMode}
+                      className={`text-right ${!isEditMode ? "bg-muted/30" : ""}`}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground font-semibold">Total Forecast</Label>
+                    <Input 
+                      value={selectedRowData ? formatCurrency(selectedRowData.totalForecast) : ""} 
+                      readOnly
+                      className="bg-primary/10 text-right font-semibold border-primary/30"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 72-Month Forecast Section with Tabs */}
+              <div className="bg-muted/20 p-5 rounded-lg border border-border">
+                <h3 className="text-sm font-semibold text-primary mb-4 uppercase tracking-wide">72-Month Forecast</h3>
+                <Tabs defaultValue="FY26" className="w-full">
+                  <TabsList className="w-full justify-start bg-muted/50 p-1 h-auto flex-wrap">
+                    {fiscalYears.map((fy) => (
+                      <TabsTrigger 
+                        key={fy} 
+                        value={fy}
+                        className="px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                      >
+                        {fy}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  
+                  {fiscalYears.map((fy, fyIndex) => (
+                    <TabsContent key={fy} value={fy} className="mt-4">
+                      <div className="grid grid-cols-4 gap-3">
+                        {getFiscalYearMonths(fyIndex).map((month) => (
+                          <div key={month.key} className="space-y-1.5">
+                            <Label className="text-xs text-muted-foreground">{month.fullLabel}</Label>
+                            <Input 
+                              type="number"
+                              value={monthlyForecast[month.key] || ""}
+                              onChange={(e) => setMonthlyForecast(prev => ({ ...prev, [month.key]: e.target.value }))}
+                              readOnly={!isEditMode}
+                              className={`text-right ${!isEditMode ? "bg-muted/30" : ""}`}
+                              placeholder="0"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Fiscal Year Summary */}
+                      <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">{fy} Total:</span>
+                        <span className="font-semibold">
+                          {formatCurrency(
+                            getFiscalYearMonths(fyIndex).reduce((sum, month) => {
+                              return sum + (Number(monthlyForecast[month.key]) || 0);
+                            }, 0)
+                          )}
+                        </span>
+                      </div>
+                    </TabsContent>
+                  ))}
+                </Tabs>
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowPODetailModal(false)}>Close</Button>
-              <Button onClick={() => setShowPODetailModal(false)}>Save Changes</Button>
-            </DialogFooter>
+
+            {/* Sticky Footer */}
+            <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex items-center justify-end gap-3">
+              <Button variant="outline" onClick={() => setShowPODetailModal(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => {
+                  setHasUnsavedChanges(true);
+                  setShowPODetailModal(false);
+                }}
+                disabled={!isEditMode}
+              >
+                Save Changes
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
 
