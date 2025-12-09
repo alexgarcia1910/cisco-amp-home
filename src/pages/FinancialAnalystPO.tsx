@@ -22,6 +22,8 @@ import {
   Filter,
   Download
 } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SearchableDropdown } from "@/components/SearchableDropdown";
 import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
@@ -359,6 +361,11 @@ const FinancialAnalystPO = () => {
   const [level3Leaders, setLevel3Leaders] = useState<string[]>([]);
   const [level4Leaders, setLevel4Leaders] = useState<string[]>([]);
   const [level5Leaders, setLevel5Leaders] = useState<string[]>([]);
+  
+  // Snapshot modal state
+  const [snapshotQuarter, setSnapshotQuarter] = useState("Q2FY26");
+  const [approvalAction, setApprovalAction] = useState("approve");
+  const [downloadState, setDownloadState] = useState("approved");
   
   // Mock leader data for bulk modal dropdowns
   const leaderOptions = {
@@ -1128,43 +1135,87 @@ const FinancialAnalystPO = () => {
 
         {/* Snapshot Actions Modal */}
         <Dialog open={showSnapshotModal} onOpenChange={setShowSnapshotModal}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-3xl bg-background">
             <DialogHeader>
-              <DialogTitle>Snapshot Actions</DialogTitle>
+              <DialogTitle className="text-lg font-semibold">Snapshot Actions</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label>Quarter</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Quarter" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Q1 FY2026">Q1 FY2026</SelectItem>
-                    <SelectItem value="Q2 FY2026">Q2 FY2026</SelectItem>
-                    <SelectItem value="Q3 FY2026">Q3 FY2026</SelectItem>
-                    <SelectItem value="Q4 FY2026">Q4 FY2026</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="bg-muted/30 p-4 rounded-lg">
-                <p className="text-sm text-muted-foreground">
-                  Snapshots allow you to capture the current state of your portfolio at a specific point in time. 
-                  You can create, download, approve, or reject snapshots as needed.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <Button>Create Snapshot</Button>
-                <Button variant="outline">Download Snapshot</Button>
-              </div>
-              <div className="flex items-center gap-2 pt-4 border-t">
-                <Button variant="outline" className="flex-1">Approve</Button>
-                <Button variant="destructive" className="flex-1">Reject</Button>
-              </div>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Row 1: Capture Snapshot & Fiscal Quarter */}
+              <Card className="border border-border">
+                <CardContent className="pt-6 flex flex-col items-center justify-center gap-3">
+                  <Button className="w-full">
+                    <Camera className="h-4 w-4 mr-2" />
+                    Capture Snapshot
+                  </Button>
+                  <p className="text-xs text-muted-foreground">*Snapshots of Current Live Data</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-border">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Fiscal Quarter</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Select value={snapshotQuarter} onValueChange={setSnapshotQuarter}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Quarter" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Q1FY26">Q1 FY26</SelectItem>
+                      <SelectItem value="Q2FY26">Q2 FY26</SelectItem>
+                      <SelectItem value="Q3FY26">Q3 FY26</SelectItem>
+                      <SelectItem value="Q4FY26">Q4 FY26</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+
+              {/* Row 2: Snapshot Approval & Bulk Download */}
+              <Card className="border border-border">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Snapshot Approval for Selected Quarter</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <RadioGroup value={approvalAction} onValueChange={setApprovalAction} className="flex gap-6">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="approve" id="approve" />
+                      <Label htmlFor="approve" className="cursor-pointer">Approve</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="reject" id="reject" />
+                      <Label htmlFor="reject" className="cursor-pointer">Reject</Label>
+                    </div>
+                  </RadioGroup>
+                  <Button className="w-full">Submit</Button>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-border">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Snapshot State Bulk Download for Selected Quarter</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <RadioGroup value={downloadState} onValueChange={setDownloadState} className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="approved" id="approved" />
+                      <Label htmlFor="approved" className="cursor-pointer">Approved</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="rejected" id="rejected" />
+                      <Label htmlFor="rejected" className="cursor-pointer">Rejected</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="pending" id="pending" />
+                      <Label htmlFor="pending" className="cursor-pointer">Pending</Label>
+                    </div>
+                  </RadioGroup>
+                  <Button className="w-full">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowSnapshotModal(false)}>Close</Button>
-            </DialogFooter>
           </DialogContent>
         </Dialog>
 
