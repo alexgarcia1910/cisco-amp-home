@@ -20,7 +20,7 @@ const modules = [{
   title: "Financial Analysts PO Portfolio",
   description: "Purchase order portfolio management for analysts",
   icon: Briefcase,
-  path: undefined
+  path: "/financialanalystpo"
 }, {
   title: "Enterprise Software Portfolio New",
   description: "Comprehensive view of enterprise software assets",
