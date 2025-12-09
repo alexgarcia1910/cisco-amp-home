@@ -9,8 +9,7 @@ import {
   Camera, 
   Upload, 
   LayoutGrid, 
-  Pencil, 
-  Calendar, 
+  ExternalLink, 
   Trash2, 
   Plus, 
   Search, 
@@ -586,20 +585,11 @@ const FinancialAnalystPO = () => {
                     >
                       <td className="px-4 py-3 sticky left-0 bg-inherit z-10">
                         <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="icon" className="h-7 w-7">
-                            <Pencil className="h-3.5 w-3.5" />
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => e.stopPropagation()}>
+                            <ExternalLink className="h-3.5 w-3.5" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-7 w-7"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedPO(row.poNumber);
-                              setShowMonthlyForecastModal(true);
-                            }}
-                          >
-                            <Calendar className="h-3.5 w-3.5" />
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => e.stopPropagation()}>
+                            <Plus className="h-3.5 w-3.5" />
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -608,9 +598,6 @@ const FinancialAnalystPO = () => {
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => e.stopPropagation()}>
-                            <Plus className="h-3.5 w-3.5" />
                           </Button>
                         </div>
                       </td>
