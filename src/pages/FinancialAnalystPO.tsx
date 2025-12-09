@@ -1170,28 +1170,21 @@ const FinancialAnalystPO = () => {
 
         {/* Bulk Upload / Download Modal */}
         <Dialog open={showBulkModal} onOpenChange={setShowBulkModal}>
-          <DialogContent className="max-w-4xl p-0 bg-muted/30">
-            {/* Header with back button */}
-            <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-card rounded-t-lg">
-              <button 
-                onClick={() => setShowBulkModal(false)}
-                className="p-1 hover:bg-muted rounded transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5 text-muted-foreground" />
-              </button>
-              <h2 className="text-lg font-semibold">Bulk Upload / Download</h2>
-            </div>
+          <DialogContent className="max-w-4xl bg-background">
+            <DialogHeader>
+              <DialogTitle>Bulk Upload / Download</DialogTitle>
+            </DialogHeader>
             
             {/* Content */}
-            <div className="p-6 space-y-6">
+            <div className="space-y-6">
               {/* Download Section */}
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Select leaders for bulk download</p>
                 
                 {/* 4 Column Leader Dropdowns */}
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-4 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-xs font-medium text-muted-foreground">Level 2 Leader</Label>
+                    <Label className="text-sm font-medium">Level 2 Leader</Label>
                     <SearchableDropdown
                       label={level2Leaders.length === 0 ? "All" : `${level2Leaders.length} selected`}
                       options={leaderOptions.level2}
@@ -1201,7 +1194,7 @@ const FinancialAnalystPO = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-medium text-muted-foreground">Level 3 Leader</Label>
+                    <Label className="text-sm font-medium">Level 3 Leader</Label>
                     <SearchableDropdown
                       label={level3Leaders.length === 0 ? "All" : `${level3Leaders.length} selected`}
                       options={leaderOptions.level3}
@@ -1211,7 +1204,7 @@ const FinancialAnalystPO = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-medium text-muted-foreground">Level 4 Leader</Label>
+                    <Label className="text-sm font-medium">Level 4 Leader</Label>
                     <SearchableDropdown
                       label={level4Leaders.length === 0 ? "All" : `${level4Leaders.length} selected`}
                       options={leaderOptions.level4}
@@ -1221,7 +1214,7 @@ const FinancialAnalystPO = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-medium text-muted-foreground">Level 5 Leader</Label>
+                    <Label className="text-sm font-medium">Level 5 Leader</Label>
                     <SearchableDropdown
                       label={level5Leaders.length === 0 ? "All" : `${level5Leaders.length} selected`}
                       options={leaderOptions.level5}
