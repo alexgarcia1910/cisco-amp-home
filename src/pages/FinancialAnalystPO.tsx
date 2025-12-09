@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   ArrowLeft, 
   ChevronDown, 
@@ -328,6 +328,8 @@ const portfolioData = [
 
 
 const FinancialAnalystPO = () => {
+  const navigate = useNavigate();
+  
   // State Management
   const [fiscalYear, setFiscalYear] = useState("FY2026");
   const [tableData, setTableData] = useState(portfolioData);
@@ -703,21 +705,21 @@ const FinancialAnalystPO = () => {
                           </Button>
                         </div>
                       </td>
-                      <td className="px-4 py-3">{row.expenseCategory}</td>
-                      <td className="px-4 py-3">{row.costPool}</td>
-                      <td className="px-4 py-3">{row.swUsageCategory}</td>
-                      <td className="px-4 py-3">{row.swCategory}</td>
-                      <td className="px-4 py-3">{row.deptNumber}</td>
-                      <td className="px-4 py-3 font-medium">{row.poNumber}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{row.poNumberSecondary || "-"}</td>
-                      <td className="px-4 py-3">{row.cogsOpex}</td>
-                      <td className="px-4 py-3">{row.level2Leader}</td>
-                      <td className="px-4 py-3">{row.level3Leader}</td>
-                      <td className="px-4 py-3 text-right">{formatCurrency(row.q1Commit)}</td>
-                      <td className="px-4 py-3 text-right">{formatCurrency(row.q2Commit)}</td>
-                      <td className="px-4 py-3 text-right">{formatCurrency(row.q3Commit)}</td>
-                      <td className="px-4 py-3 text-right">{formatCurrency(row.q4Commit)}</td>
-                      <td className="px-4 py-3 text-right font-semibold">{formatCurrency(row.totalForecast)}</td>
+                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.expenseCategory}</td>
+                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.costPool}</td>
+                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.swUsageCategory}</td>
+                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.swCategory}</td>
+                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.deptNumber}</td>
+                      <td className="px-4 py-3 font-medium cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.poNumber}</td>
+                      <td className="px-4 py-3 text-muted-foreground cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.poNumberSecondary || "-"}</td>
+                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.cogsOpex}</td>
+                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.level2Leader}</td>
+                      <td className="px-4 py-3 cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{row.level3Leader}</td>
+                      <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q1Commit)}</td>
+                      <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q2Commit)}</td>
+                      <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q3Commit)}</td>
+                      <td className="px-4 py-3 text-right cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.q4Commit)}</td>
+                      <td className="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-primary/5" onClick={() => navigate(`/financialanalystpo/${row.id}`)}>{formatCurrency(row.totalForecast)}</td>
                     </tr>
                   ))}
                 </tbody>
