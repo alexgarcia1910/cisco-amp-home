@@ -1056,21 +1056,25 @@ const FinancialAnalystPO = () => {
               </div>
             </div>
 
-            {/* Sticky Footer */}
-            <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex items-center justify-end gap-3">
-              <Button variant="outline" onClick={() => setShowPODetailModal(false)}>
-                Cancel
-              </Button>
-              <Button 
-                onClick={() => {
-                  setHasUnsavedChanges(true);
-                  setShowPODetailModal(false);
-                }}
-                disabled={!isEditMode}
-              >
-                Save Changes
-              </Button>
-            </div>
+            {/* Sticky Footer - Only visible in Edit Mode */}
+            {isEditMode && (
+              <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex items-center justify-end gap-3">
+                <Button variant="outline" onClick={() => {
+                  setIsEditMode(false);
+                }}>
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={() => {
+                    setHasUnsavedChanges(true);
+                    setIsEditMode(false);
+                    setShowPODetailModal(false);
+                  }}
+                >
+                  Save Changes
+                </Button>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 
