@@ -322,31 +322,11 @@ const portfolioData = [
   }
 ];
 
-const explorePOData = [
-  { id: "1", poNumber: "PO-2026-0001", vendor: "Microsoft", amount: 560000, status: "Active", createdDate: "01/15/2026", forecast: true },
-  { id: "2", poNumber: "PO-2026-0002", vendor: "Oracle", amount: 370000, status: "Approved", createdDate: "01/20/2026", forecast: true },
-  { id: "3", poNumber: "PO-2026-0003", vendor: "Adobe", amount: 210000, status: "Pending", createdDate: "02/01/2026", forecast: false },
-  { id: "4", poNumber: "PO-2026-0004", vendor: "SAP", amount: 330000, status: "Active", createdDate: "02/10/2026", forecast: true },
-  { id: "5", poNumber: "PO-2026-0005", vendor: "Salesforce", amount: 860000, status: "Approved", createdDate: "02/15/2026", forecast: true },
-  { id: "6", poNumber: "PO-2026-0006", vendor: "ServiceNow", amount: 470000, status: "Pending", createdDate: "02/20/2026", forecast: false },
-  { id: "7", poNumber: "PO-2026-0007", vendor: "Workday", amount: 270000, status: "Active", createdDate: "03/01/2026", forecast: true },
-  { id: "8", poNumber: "PO-2026-0008", vendor: "VMware", amount: 410000, status: "Approved", createdDate: "03/05/2026", forecast: true },
-  { id: "9", poNumber: "PO-2026-0009", vendor: "Splunk", amount: 660000, status: "Active", createdDate: "03/10/2026", forecast: true },
-  { id: "10", poNumber: "PO-2026-0010", vendor: "Tableau", amount: 310000, status: "Pending", createdDate: "03/15/2026", forecast: false }
-];
-
-const deletedPOsData = [
-  { id: "1", poNumber: "PO-2025-0999", expenseCategory: "Hardware", deletedDate: "12/15/2025", deletedBy: "John Smith" },
-  { id: "2", poNumber: "PO-2025-0998", expenseCategory: "Software", deletedDate: "12/10/2025", deletedBy: "Jane Doe" },
-  { id: "3", poNumber: "PO-2025-0997", expenseCategory: "Services", deletedDate: "12/05/2025", deletedBy: "Mike Johnson" },
-  { id: "4", poNumber: "PO-2025-0996", expenseCategory: "Maintenance", deletedDate: "11/30/2025", deletedBy: "Sarah Williams" },
-  { id: "5", poNumber: "PO-2025-0995", expenseCategory: "Hardware", deletedDate: "11/25/2025", deletedBy: "David Brown" }
-];
 
 const FinancialAnalystPO = () => {
   // State Management
   const [fiscalYear, setFiscalYear] = useState("FY2026");
-  const [activeTab, setActiveTab] = useState<"portfolio" | "explore" | "deleted">("portfolio");
+  
   const [showMonthlyForecastModal, setShowMonthlyForecastModal] = useState(false);
   const [showPODetailModal, setShowPODetailModal] = useState(false);
   const [showSnapshotModal, setShowSnapshotModal] = useState(false);
@@ -359,7 +339,7 @@ const FinancialAnalystPO = () => {
   });
   const [columnSearches, setColumnSearches] = useState<Record<string, string>>({});
   const [attestationChecked, setAttestationChecked] = useState(false);
-  const [exploreSearch, setExploreSearch] = useState("");
+  
   const [activeView, setActiveView] = useState<"all" | "summarized">("all");
   const [activeFilters, setActiveFilters] = useState<Array<{column: string, value: string}>>([]);
 
@@ -381,16 +361,6 @@ const FinancialAnalystPO = () => {
     totalForecast: acc.totalForecast + row.totalForecast
   }), { q1Commit: 0, q2Commit: 0, q3Commit: 0, q4Commit: 0, totalForecast: 0 });
 
-  // Filter explore data
-  const filteredExploreData = explorePOData.filter(row => {
-    if (!exploreSearch) return true;
-    const searchLower = exploreSearch.toLowerCase();
-    return (
-      row.poNumber.toLowerCase().includes(searchLower) ||
-      row.vendor.toLowerCase().includes(searchLower) ||
-      row.status.toLowerCase().includes(searchLower)
-    );
-  });
 
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -581,46 +551,7 @@ const FinancialAnalystPO = () => {
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="border-b border-border bg-card mb-6">
-          <div className="px-6">
-            <div className="flex gap-1">
-              <button
-                onClick={() => setActiveTab("portfolio")}
-                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === "portfolio" 
-                    ? "border-primary text-primary" 
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Portfolio
-              </button>
-              <button
-                onClick={() => setActiveTab("explore")}
-                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === "explore" 
-                    ? "border-primary text-primary" 
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Explore PO
-              </button>
-              <button
-                onClick={() => setActiveTab("deleted")}
-                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === "deleted" 
-                    ? "border-primary text-primary" 
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Deleted POs
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === "portfolio" && (
+        {/* Portfolio Table */}
           <div className="border border-border rounded-lg bg-card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm min-w-[2000px]">
@@ -714,119 +645,6 @@ const FinancialAnalystPO = () => {
               </table>
             </div>
           </div>
-        )}
-
-        {activeTab === "explore" && (
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search PO#, Vendor, Status..."
-                  value={exploreSearch}
-                  onChange={(e) => setExploreSearch(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-              <Button variant="outline">Filters</Button>
-            </div>
-            <div className="border border-border rounded-lg bg-card overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-muted/50 border-b border-border">
-                    <tr>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">PO#</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Vendor</th>
-                      <th className="px-4 py-3 text-right font-medium text-muted-foreground">Amount</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Created Date</th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Forecast</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredExploreData.map((row, idx) => (
-                      <tr
-                        key={row.id}
-                        className={`border-b border-border hover:bg-muted/30 transition-colors ${
-                          idx % 2 === 0 ? "bg-card" : "bg-muted/10"
-                        }`}
-                      >
-                        <td className="px-4 py-3 font-medium">{row.poNumber}</td>
-                        <td className="px-4 py-3">{row.vendor}</td>
-                        <td className="px-4 py-3 text-right">{formatCurrency(row.amount)}</td>
-                        <td className="px-4 py-3">
-                          <Badge
-                            variant={
-                              row.status === "Active"
-                                ? "default"
-                                : row.status === "Approved"
-                                ? "default"
-                                : "secondary"
-                            }
-                            className={
-                              row.status === "Approved"
-                                ? "bg-green-500 hover:bg-green-600"
-                                : row.status === "Pending"
-                                ? "bg-muted text-muted-foreground"
-                                : ""
-                            }
-                          >
-                            {row.status}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3">{row.createdDate}</td>
-                        <td className="px-4 py-3">
-                          <Button variant="ghost" size="icon" className="h-7 w-7">
-                            <Calendar className="h-4 w-4" />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "deleted" && (
-          <div className="border border-border rounded-lg bg-card overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-muted/50 border-b border-border">
-                  <tr>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">PO#</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Expense Category</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Deleted Date</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Deleted By</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {deletedPOsData.map((row, idx) => (
-                    <tr
-                      key={row.id}
-                      className={`border-b border-border hover:bg-muted/30 transition-colors ${
-                        idx % 2 === 0 ? "bg-card" : "bg-muted/10"
-                      }`}
-                    >
-                      <td className="px-4 py-3 font-medium">{row.poNumber}</td>
-                      <td className="px-4 py-3">{row.expenseCategory}</td>
-                      <td className="px-4 py-3">{row.deletedDate}</td>
-                      <td className="px-4 py-3">{row.deletedBy}</td>
-                      <td className="px-4 py-3">
-                        <Button variant="outline" size="sm" className="gap-2">
-                          <RotateCcw className="h-4 w-4" />
-                          Restore
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
 
         {/* Monthly Forecast Modal */}
         <Dialog open={showMonthlyForecastModal} onOpenChange={setShowMonthlyForecastModal}>
