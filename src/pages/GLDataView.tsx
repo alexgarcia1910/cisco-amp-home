@@ -83,7 +83,7 @@ const GLDataView = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("gl-transactions");
   const [fiscalYear, setFiscalYear] = useState("FY2026");
-  const [columnSearches, setColumnSearches] = useState<Record<string, string>>({});
+  
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(100);
@@ -97,19 +97,9 @@ const GLDataView = () => {
     return [...new Set(values)].sort();
   };
 
-  // Filter data based on column searches and active filters
+  // Filter data based on active filters
   const filteredData = useMemo(() => {
     return mockData.filter((row) => {
-      // Check column searches
-      for (const [key, searchValue] of Object.entries(columnSearches)) {
-        if (searchValue) {
-          const cellValue = String(row[key as keyof typeof row]).toLowerCase();
-          if (!cellValue.includes(searchValue.toLowerCase())) {
-            return false;
-          }
-        }
-      }
-      // Check active filters
       for (const [key, filterValues] of Object.entries(activeFilters)) {
         if (filterValues.length > 0) {
           const cellValue = String(row[key as keyof typeof row]);
@@ -120,7 +110,7 @@ const GLDataView = () => {
       }
       return true;
     });
-  }, [columnSearches, activeFilters]);
+  }, [activeFilters]);
 
   // Pagination
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -129,10 +119,6 @@ const GLDataView = () => {
     currentPage * itemsPerPage
   );
 
-  const handleColumnSearch = (columnKey: string, value: string) => {
-    setColumnSearches((prev) => ({ ...prev, [columnKey]: value }));
-    setCurrentPage(1);
-  };
 
   const toggleFilter = (columnKey: string, value: string) => {
     setActiveFilters((prev) => {
@@ -148,7 +134,6 @@ const GLDataView = () => {
 
   const clearAllFilters = () => {
     setActiveFilters({});
-    setColumnSearches({});
     setCurrentPage(1);
   };
 
@@ -166,8 +151,7 @@ const GLDataView = () => {
     }
   };
 
-  const hasActiveFilters = Object.values(activeFilters).some((f) => f.length > 0) ||
-    Object.values(columnSearches).some((s) => s !== "");
+  const hasActiveFilters = Object.values(activeFilters).some((f) => f.length > 0);
 
   const getActiveFilterCount = () => {
     let count = 0;
@@ -338,20 +322,6 @@ const GLDataView = () => {
                     </th>
                   ))}
                 </tr>
-                {/* Search boxes row */}
-                <tr className="bg-card border-b border-border">
-                  <th className="p-2"></th>
-                  {columns.map((column) => (
-                    <th key={`search-${column.key}`} className="p-2">
-                      <Input
-                        placeholder="Search..."
-                        value={columnSearches[column.key] || ""}
-                        onChange={(e) => handleColumnSearch(column.key, e.target.value)}
-                        className="h-7 text-xs"
-                      />
-                    </th>
-                  ))}
-                </tr>
               </thead>
               <tbody>
                 {paginatedData.map((row, index) => (
@@ -369,16 +339,11 @@ const GLDataView = () => {
                     </td>
                     {columns.map((column) => {
                       const cellValue = row[column.key as keyof typeof row];
-                      const searchTerm = columnSearches[column.key];
-                      const isHighlighted = searchTerm && 
-                        String(cellValue).toLowerCase().includes(searchTerm.toLowerCase());
                       
                       return (
                         <td
                           key={column.key}
-                          className={`p-3 whitespace-nowrap ${
-                            isHighlighted ? "bg-yellow-100" : ""
-                          }`}
+                          className="p-3 whitespace-nowrap"
                         >
                           {cellValue}
                         </td>
