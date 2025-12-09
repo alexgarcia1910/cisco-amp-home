@@ -424,12 +424,6 @@ const FinancialAnalystPO = () => {
       <main className="p-6 pt-4">
         {/* Page Header Card */}
         <div className="bg-card border border-border rounded-lg p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-semibold text-card-foreground">
-              Financial Analyst PO Portfolio: Fiscal Year {fiscalYear.replace("FY", "")}
-          </h1>
-          </div>
-          
           <div className="flex items-center gap-4 mb-4">
             <Select value={fiscalYear} onValueChange={setFiscalYear}>
               <SelectTrigger className="w-32">
@@ -442,6 +436,12 @@ const FinancialAnalystPO = () => {
                 <SelectItem value="FY2027">FY2027</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          
+          <div className="mb-4">
+            <h1 className="text-2xl font-semibold text-card-foreground">
+              Financial Analyst PO Portfolio: Fiscal Year {fiscalYear.replace("FY", "")}
+            </h1>
           </div>
 
           {/* Toggle Pills */}
