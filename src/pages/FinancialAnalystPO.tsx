@@ -427,20 +427,21 @@ const FinancialAnalystPO = () => {
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-semibold text-card-foreground">
               Financial Analyst PO Portfolio: Fiscal Year {fiscalYear.replace("FY", "")}
-            </h1>
-            <div className="flex items-center gap-4">
-              <Select value={fiscalYear} onValueChange={setFiscalYear}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="FY2024">FY2024</SelectItem>
-                  <SelectItem value="FY2025">FY2025</SelectItem>
-                  <SelectItem value="FY2026">FY2026</SelectItem>
-                  <SelectItem value="FY2027">FY2027</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          </h1>
+          </div>
+          
+          <div className="flex items-center gap-4 mb-4">
+            <Select value={fiscalYear} onValueChange={setFiscalYear}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="FY2024">FY2024</SelectItem>
+                <SelectItem value="FY2025">FY2025</SelectItem>
+                <SelectItem value="FY2026">FY2026</SelectItem>
+                <SelectItem value="FY2027">FY2027</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Toggle Pills */}
