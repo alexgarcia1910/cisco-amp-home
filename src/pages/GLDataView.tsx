@@ -449,7 +449,8 @@ const GLDataView = () => {
                       return (
                         <td
                           key={column.key}
-                          className={`p-3 whitespace-nowrap ${isNumeric ? 'text-right' : ''}`}
+                          className={`p-3 whitespace-nowrap cursor-pointer hover:bg-primary/10 ${isNumeric ? 'text-right' : ''}`}
+                          onClick={() => navigate(`/gldataview/${row.poNumber}`)}
                         >
                           {isNumeric && typeof cellValue === 'number'
                             ? cellValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
