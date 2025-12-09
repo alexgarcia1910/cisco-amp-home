@@ -374,6 +374,12 @@ const FinancialAnalystPO = () => {
     setHasUnsavedChanges(true);
   };
 
+  // Delete row function
+  const handleDeleteRow = (rowId: string) => {
+    setTableData(tableData.filter(row => row.id !== rowId));
+    setHasUnsavedChanges(true);
+  };
+
   // Save changes function
   const handleSaveChanges = () => {
     // In a real app, this would save to a backend
@@ -650,7 +656,10 @@ const FinancialAnalystPO = () => {
                             variant="ghost" 
                             size="icon" 
                             className="h-7 w-7 hover:text-destructive"
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteRow(row.id);
+                            }}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
