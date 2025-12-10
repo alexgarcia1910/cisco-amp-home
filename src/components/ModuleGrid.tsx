@@ -22,7 +22,7 @@ const modules = [{
   icon: Briefcase,
   path: "/financialanalystpo"
 }, {
-  title: "Enterprise Software Portfolio New",
+  title: "Enterprise Software Portfolio",
   description: "Comprehensive view of enterprise software assets",
   icon: Server,
   path: "/enterprisesoftwareportfolionew"
