@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/table";
 import TopNav from "@/components/TopNav";
 
-// Mock data for the detail table
+// Mock data for the GL transactions table
 const generateDetailMockData = () => {
   const nodeLevel2Options = ["*Sales (Tuszik)", "*Finance (Patterson)", "*Operations (Subaiya)"];
   const nodeLevel3Options = ["*Sales Strategy, Planning a...", "*Finance Operations", "*IT Operations"];
@@ -55,7 +55,36 @@ const generateDetailMockData = () => {
   }));
 };
 
+// Mock data for Asset Depreciation table
+const generateAssetDepreciationData = () => {
+  const level2Leaders = ["Thimaya Subaiya (tsubaiya)", "Jeetu Patel (jeetup)"];
+  const level3Leaders = ["Fletcher Previn (fprevin)", "Srini Namineni (snamineni)", "Anurag Dhingra (adhingra)"];
+  const level4Leaders = ["Abhi Pandit (abhipa)", "Chandra Callicutt (ccallicu)", "Snorre Kjesbu (skjesbu)"];
+  const level5Leaders = ["David Murray (dmurray)", "Narasimha Raghavan Ram...", "Ty Thorsen (tthorsen)", "Alex Johnson (ajohnso)"];
+  const assetNumbers = ["380236197", "380355154", "380356115", "380412789", "380523456"];
+  const departmentNumbers = ["020070233", "020033078", "282024047", "020045123", "020089456"];
+  const purchaseReqNumbers = ["201252209", "-998", "201391993", "201221006", "201163044", "-999"];
+  const ssTableCds = ["DEP", "ADJ"];
+  const glPostedFlags = ["-", "Y"];
+
+  return Array.from({ length: 15 }, (_, i) => ({
+    id: i + 1,
+    assetCategory: "SFT",
+    assetNumber: assetNumbers[i % assetNumbers.length],
+    departmentNumber: departmentNumbers[i % departmentNumbers.length],
+    purchaseReqNumber: purchaseReqNumbers[i % purchaseReqNumbers.length],
+    poNumber: i % 3 === 0 ? "" : "",
+    level2Leader: level2Leaders[i % level2Leaders.length],
+    level3Leader: level3Leaders[i % level3Leaders.length],
+    level4Leader: level4Leaders[i % level4Leaders.length],
+    level5Leader: level5Leaders[i % level5Leaders.length],
+    ssTableCd: ssTableCds[i % ssTableCds.length],
+    glPostedFlag: glPostedFlags[i % glPostedFlags.length],
+  }));
+};
+
 const mockData = generateDetailMockData();
+const assetDepreciationData = generateAssetDepreciationData();
 
 const ReconciliationDetail = () => {
   const { id } = useParams();
@@ -375,8 +404,157 @@ const ReconciliationDetail = () => {
               </TabsContent>
 
               <TabsContent value="asset-depreciation" className="mt-4">
-                <div className="text-center py-12 text-muted-foreground">
-                  Asset Depreciation data will be displayed here.
+                {/* Action Bar */}
+                <div className="flex items-center justify-between mb-4">
+                  <button className="flex items-center gap-1 text-primary hover:underline text-sm">
+                    Action: <RefreshCw className="h-3 w-3" /> Refresh data
+                  </button>
+                </div>
+
+                {/* Filter Bar */}
+                <div className="flex items-center gap-2 mb-4 flex-wrap">
+                  <span className="text-sm text-muted-foreground">Filtered:</span>
+                  <span className="text-sm text-muted-foreground">No Filters</span>
+                  <button 
+                    className="text-sm text-muted-foreground ml-2"
+                    disabled
+                  >
+                    Clear all filters
+                  </button>
+                </div>
+
+                {/* Asset Depreciation Data Table */}
+                <div className="bg-white rounded-lg border border-border overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        {/* Column Headers Row */}
+                        <TableRow className="bg-[#032D4D]">
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              Asset Category <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              Asset # <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              Department # <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              Purchase REQ # <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              PO # <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              Level 2 Leader <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              Level 3 Leader <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              Level 4 Leader <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              Level 5 Leader <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              SS Table CD <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-white font-medium text-xs">
+                            <div className="flex items-center gap-1">
+                              GL Posted Flag <ChevronDown className="h-3 w-3" />
+                            </div>
+                          </TableHead>
+                        </TableRow>
+                        {/* Search Row */}
+                        <TableRow className="bg-gray-50">
+                          {["assetCategory", "assetNumber", "departmentNumber", "purchaseReqNumber", "poNumber", "level2Leader", "level3Leader", "level4Leader", "level5Leader", "ssTableCd", "glPostedFlag"].map((column) => (
+                            <TableHead key={column} className="p-1">
+                              <Input 
+                                placeholder="Search..."
+                                className="h-7 text-xs bg-white"
+                              />
+                            </TableHead>
+                          ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {assetDepreciationData.slice(0, parseInt(itemsPerPage)).map((row, index) => (
+                          <TableRow 
+                            key={row.id}
+                            className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                          >
+                            <TableCell className="text-xs p-2">{row.assetCategory}</TableCell>
+                            <TableCell className="text-xs p-2">{row.assetNumber}</TableCell>
+                            <TableCell className="text-xs p-2">{row.departmentNumber}</TableCell>
+                            <TableCell className="text-xs p-2">{row.purchaseReqNumber}</TableCell>
+                            <TableCell className="text-xs p-2">{row.poNumber}</TableCell>
+                            <TableCell className="text-xs p-2">{row.level2Leader}</TableCell>
+                            <TableCell className="text-xs p-2">{row.level3Leader}</TableCell>
+                            <TableCell className="text-xs p-2">{row.level4Leader}</TableCell>
+                            <TableCell className="text-xs p-2">{row.level5Leader}</TableCell>
+                            <TableCell className="text-xs p-2">{row.ssTableCd}</TableCell>
+                            <TableCell className="text-xs p-2">{row.glPostedFlag}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Items per page:</span>
+                    <Select value={itemsPerPage} onValueChange={setItemsPerPage}>
+                      <SelectTrigger className="w-16 h-8 text-sm bg-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="10">10</SelectItem>
+                        <SelectItem value="25">25</SelectItem>
+                        <SelectItem value="50">50</SelectItem>
+                        <SelectItem value="100">100</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      disabled
+                    >
+                      Previous
+                    </Button>
+                    <span className="text-sm">Page 1</span>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      disabled
+                    >
+                      Next
+                    </Button>
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>
