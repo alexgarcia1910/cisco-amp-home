@@ -1910,7 +1910,7 @@ const FinancialAnalystPO = () => {
         <Dialog open={showRevertModal} onOpenChange={setShowRevertModal}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Confirm Revert</DialogTitle>
+              <DialogTitle>Restore PO</DialogTitle>
             </DialogHeader>
             <div className="py-4">
               <p className="text-sm text-muted-foreground">
