@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronRight, ChevronDown, RefreshCw } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, Filter, X, Search, Check } from "lucide-react";
 import TopNav from "@/components/TopNav";
 import {
   Select,
@@ -17,6 +17,155 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+
+// Mock data for filter options
+const filterOptions = {
+  level2Leader: ["John Smith", "Jane Doe", "Robert Johnson", "Emily Davis", "Michael Brown"],
+  level3Leader: ["Alex Wilson", "Sarah Miller", "Chris Taylor", "Lisa Anderson", "David Martinez"],
+  level4Leader: ["Tom Harris", "Nancy Clark", "James Lewis", "Patricia Walker", "Daniel Hall"],
+  level5Leader: ["Kevin Young", "Amanda King", "Brian Wright", "Michelle Scott", "Steven Green"],
+  nodeLevel2: ["020535", "020540", "020545", "020550", "020555"],
+  nodeLevel3: ["020535001", "020535002", "020540001", "020545001", "020550001"],
+  nodeLevel4: ["02053500101", "02053500102", "02054000101", "02054500101", "02055000101"],
+  nodeLevel5: ["0205350010101", "0205350010102", "0205400010101", "0205450010101", "0205500010101"],
+  fundingSource: ["Capital", "Operating", "Mixed", "Grant", "Internal"],
+  cogsOpex: ["COGS", "OPEX", "Both"],
+};
+
+interface FilterDropdownProps {
+  label: string;
+  options: string[];
+  value: string[];
+  onChange: (value: string[]) => void;
+}
+
+const FilterDropdown = ({ label, options, value, onChange }: FilterDropdownProps) => {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredOptions = useMemo(() => {
+    if (!search) return options;
+    return options.filter((opt) =>
+      opt.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [options, search]);
+
+  const toggleOption = (option: string) => {
+    if (value.includes(option)) {
+      onChange(value.filter((v) => v !== option));
+    } else {
+      onChange([...value, option]);
+    }
+  };
+
+  const displayText = value.length === 0 ? "All" : value.length === 1 ? value[0] : `${value.length} selected`;
+
+  return (
+    <div className="space-y-1">
+      <label className="text-xs text-muted-foreground">{label}</label>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button
+            className="w-full flex items-center justify-between px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-md hover:bg-gray-100 transition-colors"
+            role="combobox"
+            aria-expanded={open}
+          >
+            <span className="truncate">{displayText}</span>
+            <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[220px] p-0 bg-white z-50" align="start">
+          <div className="p-2 border-b border-border">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-8 h-8 text-sm"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+          {value.length > 0 && (
+            <div className="p-2 border-b border-border flex flex-wrap gap-1">
+              {value.map((v) => (
+                <span
+                  key={v}
+                  className="inline-flex items-center gap-1 bg-[#049FD9]/10 text-[#049FD9] text-xs px-2 py-0.5 rounded"
+                >
+                  {v.length > 10 ? `${v.substring(0, 10)}...` : v}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onChange(value.filter((val) => val !== v));
+                    }}
+                    className="hover:text-red-500"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="max-h-[200px] overflow-y-auto">
+            {filteredOptions.length === 0 ? (
+              <div className="px-3 py-4 text-center text-sm text-muted-foreground">
+                No results found.
+              </div>
+            ) : (
+              filteredOptions.map((option) => (
+                <button
+                  key={option}
+                  onClick={() => toggleOption(option)}
+                  className={cn(
+                    "w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors flex items-center gap-2",
+                    value.includes(option) && "bg-muted"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "h-4 w-4 border rounded flex items-center justify-center shrink-0",
+                      value.includes(option)
+                        ? "bg-[#049FD9] border-[#049FD9]"
+                        : "border-gray-300"
+                    )}
+                  >
+                    {value.includes(option) && (
+                      <Check className="h-3 w-3 text-white" />
+                    )}
+                  </div>
+                  {option}
+                </button>
+              ))
+            )}
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+};
 
 interface DashboardRow {
   id: string;
@@ -456,7 +605,57 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [fiscalYear, setFiscalYear] = useState("FY 2026");
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  
+  // Filter states
+  const [filters, setFilters] = useState({
+    level2Leader: [] as string[],
+    level3Leader: [] as string[],
+    level4Leader: [] as string[],
+    level5Leader: [] as string[],
+    nodeLevel2: [] as string[],
+    nodeLevel3: [] as string[],
+    nodeLevel4: [] as string[],
+    nodeLevel5: [] as string[],
+    fundingSource: [] as string[],
+    cogsOpex: [] as string[],
+  });
+  
+  const [tempFilters, setTempFilters] = useState(filters);
+  
   const dashboardData = generateDashboardData();
+  
+  const activeFilterCount = Object.values(filters).filter(arr => arr.length > 0).length;
+  
+  const handleOpenFilterModal = () => {
+    setTempFilters(filters);
+    setIsFilterModalOpen(true);
+  };
+  
+  const handleApplyFilters = () => {
+    setFilters(tempFilters);
+    setIsFilterModalOpen(false);
+  };
+  
+  const handleResetFilters = () => {
+    const emptyFilters = {
+      level2Leader: [],
+      level3Leader: [],
+      level4Leader: [],
+      level5Leader: [],
+      nodeLevel2: [],
+      nodeLevel3: [],
+      nodeLevel4: [],
+      nodeLevel5: [],
+      fundingSource: [],
+      cogsOpex: [],
+    };
+    setTempFilters(emptyFilters);
+  };
+  
+  const handleCancelFilters = () => {
+    setIsFilterModalOpen(false);
+  };
 
   const toggleRow = (id: string) => {
     const newExpanded = new Set(expandedRows);
@@ -608,13 +807,130 @@ const Dashboard = () => {
         {/* Filter Bar */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 text-[#049FD9] hover:text-[#0389BD] text-sm">
-              <RefreshCw className="h-4 w-4" />
+            <button 
+              onClick={handleOpenFilterModal}
+              className="flex items-center gap-2 text-[#049FD9] hover:text-[#0389BD] text-sm"
+            >
+              <Filter className="h-4 w-4" />
               Filters
             </button>
           </div>
-          <span className="text-sm text-muted-foreground">No Filters Applied</span>
+          <span className="text-sm text-muted-foreground">
+            {activeFilterCount > 0 ? `${activeFilterCount} Filter(s) Applied` : "No Filters Applied"}
+          </span>
         </div>
+
+        {/* Filter Modal */}
+        <Dialog open={isFilterModalOpen} onOpenChange={setIsFilterModalOpen}>
+          <DialogContent className="max-w-[540px] bg-white">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold text-[#032D4D]">Filters</DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6 py-4">
+              {/* Leader Filters Row */}
+              <div className="grid grid-cols-2 gap-4">
+                <FilterDropdown
+                  label="Level 2 Leader"
+                  options={filterOptions.level2Leader}
+                  value={tempFilters.level2Leader}
+                  onChange={(val) => setTempFilters({ ...tempFilters, level2Leader: val })}
+                />
+                <FilterDropdown
+                  label="Node Level 2"
+                  options={filterOptions.nodeLevel2}
+                  value={tempFilters.nodeLevel2}
+                  onChange={(val) => setTempFilters({ ...tempFilters, nodeLevel2: val })}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FilterDropdown
+                  label="Level 3 Leader"
+                  options={filterOptions.level3Leader}
+                  value={tempFilters.level3Leader}
+                  onChange={(val) => setTempFilters({ ...tempFilters, level3Leader: val })}
+                />
+                <FilterDropdown
+                  label="Node Level 3"
+                  options={filterOptions.nodeLevel3}
+                  value={tempFilters.nodeLevel3}
+                  onChange={(val) => setTempFilters({ ...tempFilters, nodeLevel3: val })}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FilterDropdown
+                  label="Level 4 Leader"
+                  options={filterOptions.level4Leader}
+                  value={tempFilters.level4Leader}
+                  onChange={(val) => setTempFilters({ ...tempFilters, level4Leader: val })}
+                />
+                <FilterDropdown
+                  label="Node Level 4"
+                  options={filterOptions.nodeLevel4}
+                  value={tempFilters.nodeLevel4}
+                  onChange={(val) => setTempFilters({ ...tempFilters, nodeLevel4: val })}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FilterDropdown
+                  label="Level 5 Leader"
+                  options={filterOptions.level5Leader}
+                  value={tempFilters.level5Leader}
+                  onChange={(val) => setTempFilters({ ...tempFilters, level5Leader: val })}
+                />
+                <FilterDropdown
+                  label="Node Level 5"
+                  options={filterOptions.nodeLevel5}
+                  value={tempFilters.nodeLevel5}
+                  onChange={(val) => setTempFilters({ ...tempFilters, nodeLevel5: val })}
+                />
+              </div>
+              
+              {/* Bottom Row */}
+              <div className="grid grid-cols-2 gap-4">
+                <FilterDropdown
+                  label="Funding Source"
+                  options={filterOptions.fundingSource}
+                  value={tempFilters.fundingSource}
+                  onChange={(val) => setTempFilters({ ...tempFilters, fundingSource: val })}
+                />
+                <FilterDropdown
+                  label="COGS / OPEX"
+                  options={filterOptions.cogsOpex}
+                  value={tempFilters.cogsOpex}
+                  onChange={(val) => setTempFilters({ ...tempFilters, cogsOpex: val })}
+                />
+              </div>
+            </div>
+            
+            {/* Footer Buttons */}
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <Button
+                variant="ghost"
+                onClick={handleCancelFilters}
+                className="text-muted-foreground"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleResetFilters}
+                className="border-[#049FD9] text-[#049FD9] hover:bg-[#049FD9]/10"
+              >
+                Reset
+              </Button>
+              <Button
+                onClick={handleApplyFilters}
+                className="bg-[#049FD9] text-white hover:bg-[#0389BD]"
+              >
+                Apply
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Data Table */}
         <div className="bg-white rounded-lg border border-border shadow-sm overflow-hidden">
