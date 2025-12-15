@@ -1914,7 +1914,7 @@ const FinancialAnalystPO = () => {
             </DialogHeader>
             <div className="py-4">
               <p className="text-sm text-muted-foreground">
-                Are you sure you want to undelete <span className="font-semibold text-foreground">{revertPONumber}</span> and move it back to the main table?
+                Are you sure you want to restore <span className="font-semibold text-foreground">{revertPONumber}</span>?
               </p>
             </div>
             <DialogFooter>
