@@ -621,11 +621,34 @@ const FinancialAnalystPO = () => {
 
           <Separator className="my-4" />
 
-          {/* Subheader */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-muted-foreground">Financial Analyst UI</span>
-              <Popover open={selectColumnsOpen} onOpenChange={setSelectColumnsOpen}>
+          {/* Tabs Navigation */}
+          <Tabs defaultValue="financial-analyst" className="w-full">
+            <TabsList className="bg-transparent border-b border-border rounded-none h-auto p-0 mb-4">
+              <TabsTrigger 
+                value="financial-analyst" 
+                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none rounded-none px-4 py-2 text-sm font-medium"
+              >
+                Financial Analyst UI
+              </TabsTrigger>
+              <TabsTrigger 
+                value="explore-pos" 
+                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none rounded-none px-4 py-2 text-sm font-medium"
+              >
+                Explore POs (Across Departments)
+              </TabsTrigger>
+              <TabsTrigger 
+                value="deleted-pos" 
+                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none rounded-none px-4 py-2 text-sm font-medium"
+              >
+                Deleted POs
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="financial-analyst" className="mt-0">
+              {/* Subheader */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Popover open={selectColumnsOpen} onOpenChange={setSelectColumnsOpen}>
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="sm" className="gap-2">
                     <Columns className="h-4 w-4" />
@@ -761,9 +784,8 @@ const FinancialAnalystPO = () => {
               </Button>
             </div>
           </div>
-        </div>
 
-        {/* Portfolio Table */}
+          {/* Portfolio Table */}
           <div className="border border-border rounded-lg bg-card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm min-w-[2000px]">
@@ -864,7 +886,21 @@ const FinancialAnalystPO = () => {
               </table>
             </div>
           </div>
+            </TabsContent>
 
+            <TabsContent value="explore-pos" className="mt-0">
+              <div className="flex items-center justify-center h-64 text-muted-foreground">
+                Explore POs (Across Departments) content will appear here
+              </div>
+            </TabsContent>
+
+            <TabsContent value="deleted-pos" className="mt-0">
+              <div className="flex items-center justify-center h-64 text-muted-foreground">
+                Deleted POs content will appear here
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
 
         {/* Monthly Forecast Modal */}
         <Dialog open={showMonthlyForecastModal} onOpenChange={setShowMonthlyForecastModal}>
