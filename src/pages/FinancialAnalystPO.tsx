@@ -348,6 +348,7 @@ const FinancialAnalystPO = () => {
   const [selectedPO, setSelectedPO] = useState<string | null>(null);
   const [selectedRowData, setSelectedRowData] = useState<typeof portfolioData[0] | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showExplorePOModal, setShowExplorePOModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [monthlyForecast, setMonthlyForecast] = useState<Record<string, string>>({});
   const [legendFilters, setLegendFilters] = useState({
@@ -1030,7 +1031,10 @@ const FinancialAnalystPO = () => {
                       ].map((row, idx) => (
                         <tr key={idx} className="border-b border-border hover:bg-muted/20">
                           <td className="px-3 py-2">
-                            <ExternalLink className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-primary" />
+                            <ExternalLink 
+                              className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-primary" 
+                              onClick={() => setShowExplorePOModal(true)}
+                            />
                           </td>
                           <td className="px-3 py-2">{row.dept}</td>
                           <td className="px-3 py-2">{row.project}</td>
@@ -1562,6 +1566,180 @@ const FinancialAnalystPO = () => {
                   <Upload className="h-4 w-4" />
                   Upload
                 </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Explore PO Detail Modal */}
+        <Dialog open={showExplorePOModal} onOpenChange={setShowExplorePOModal}>
+          <DialogContent className="max-w-[95vw] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-sm font-normal">
+                Selected Fiscal Year: <span className="font-bold">FY26</span>
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-4 mt-4">
+              {/* Filter Status */}
+              <div className="text-sm text-muted-foreground">
+                Filtered: <span>No Filters</span>
+              </div>
+
+              {/* Detail Table */}
+              <div className="border border-border rounded-lg bg-card overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs min-w-[2200px]">
+                    <thead>
+                      {/* Column Headers Row */}
+                      <tr className="bg-primary text-primary-foreground">
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            Overwrite Amortization Schedule <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            Software Publisher <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            PO# <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            PO Amount <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            PO Start Date <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            PO End Date <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            Adjusted PO Start Date <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            Adjusted PO End Date <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            PO Term (Months) <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            PO Current Amort Rate <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            PO Fiscal Year <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            Aug-FY26 <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-primary-foreground/20">
+                          <div className="flex items-center gap-1">
+                            Sep-FY26 <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            Oct-FY26 <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                      </tr>
+                      {/* Search Row */}
+                      <tr className="bg-primary/90 text-primary-foreground">
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1 border-r border-primary-foreground/20">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                        <th className="px-2 py-1">
+                          <Input placeholder="Search" className="h-6 text-xs bg-white text-foreground" />
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { publisher: "CERTINIA INC", po: "4500026187", amount: "$303,264", startDate: "11/19/2024", endDate: "03/30/2026", adjStartDate: "11/30/2024", adjEndDate: "03/30/2026", term: "16", amortRate: "$18,954", fiscalYear: "FY25", aug: "$18,954", sep: "$18,954", oct: "$18,954" },
+                        { publisher: "CERTINIA INC", po: "(4500026187)", amount: "", startDate: "", endDate: "", adjStartDate: "", adjEndDate: "07/30/2027", term: "", amortRate: "", fiscalYear: "FY26", aug: "", sep: "", oct: "" },
+                      ].map((row, idx) => (
+                        <tr key={idx} className="border-b border-border hover:bg-muted/20">
+                          <td className="px-3 py-2 border-r border-border">
+                            <Button variant="outline" size="sm" className="h-7 text-xs gap-1">
+                              <Edit className="h-3 w-3" />
+                              Edit
+                            </Button>
+                          </td>
+                          <td className="px-3 py-2 border-r border-border">{row.publisher}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.po}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.amount}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.startDate}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.endDate}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.adjStartDate}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.adjEndDate}</td>
+                          <td className="px-3 py-2 border-r border-border text-center">{row.term}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.amortRate}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.fiscalYear}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.aug}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.sep}</td>
+                          <td className="px-3 py-2">{row.oct}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </DialogContent>
