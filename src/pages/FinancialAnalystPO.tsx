@@ -889,8 +889,165 @@ const FinancialAnalystPO = () => {
             </TabsContent>
 
             <TabsContent value="explore-pos" className="mt-0">
-              <div className="flex items-center justify-center h-64 text-muted-foreground">
-                Explore POs (Across Departments) content will appear here
+              {/* Action Bar */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Action:</span>
+                  <button className="text-sm text-primary hover:underline flex items-center gap-1">
+                    <RefreshCw className="h-3 w-3" />
+                    Refresh data
+                  </button>
+                </div>
+              </div>
+
+              {/* Filter Status */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-sm text-muted-foreground">
+                  Filtered: <span>No Filters</span>
+                </div>
+                <button className="text-sm text-primary hover:underline">
+                  Clear all filters
+                </button>
+              </div>
+
+              {/* Explore POs Table */}
+              <div className="border border-border rounded-lg bg-card overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm min-w-[1800px]">
+                    <thead>
+                      {/* Column Headers Row */}
+                      <tr className="border-b border-border bg-muted/30">
+                        <th className="px-3 py-2 text-left font-medium w-12"></th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            Department <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            Project <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            Vendor <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            PO Number <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            PO Amount <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            PO Start Date <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            PO End Date <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            Level 2 Leader <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            Level 3 Leader <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            Level 4 Leader <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            Level 5 Leader <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                      </tr>
+                      {/* Search Row */}
+                      <tr className="border-b border-border bg-muted/10">
+                        <th className="px-3 py-2"></th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-7 text-xs" />
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { dept: "010001001", project: "", vendor: "Certinia Inc/Formerly: FinancialForce.com, Inc", poNumber: "(4500026187)", amount: "0", startDate: "", endDate: "", l2: "Liz Centoni (lrajaram)", l3: "Sandeep Milar (smilarma)", l4: "Evan Parthenis (eparthen)", l5: "Marcia" },
+                        { dept: "010001001", project: "", vendor: "Certinia Inc/Formerly: FinancialForce.com, Inc", poNumber: "4500026187", amount: "$303,264", startDate: "11/19/2024", endDate: "3/30/2026", l2: "Liz Centoni (lrajaram)", l3: "Sandeep Milar (smilarma)", l4: "Evan Parthenis (eparthen)", l5: "Marcia" },
+                        { dept: "010001004", project: "", vendor: "Gainsight, Inc.", poNumber: "(4500016522)", amount: "0", startDate: "", endDate: "", l2: "Liz Centoni (lrajaram)", l3: "Lavanya Gopalakrishnan (lgopalak)", l4: "Ryan Brown (ryanbrow)", l5: "Ryan B" },
+                        { dept: "010001008", project: "", vendor: "Pluralsight, Inc.", poNumber: "4500014378", amount: "$1,708,781", startDate: "5/21/2023", endDate: "5/20/2026", l2: "Oliver Tuszik (otuszik)", l3: "Frank Dimina (frdimina)", l4: "Linda Page (lpage)", l5: "Julie Au (jbethke)" },
+                        { dept: "010001008", project: "", vendor: "Insight Direct USA, Inc.", poNumber: "(4500024681)", amount: "0", startDate: "", endDate: "", l2: "Liz Centoni (lrajaram)", l3: "Sandeep Milar (smilarma)", l4: "Jay Volk (jovolk)", l5: "Fely M. (felyma)" },
+                        { dept: "010001008", project: "", vendor: "Pluralsight, Inc.", poNumber: "(4500014378)", amount: "0", startDate: "", endDate: "", l2: "Oliver Tuszik (otuszik)", l3: "Frank Dimina (frdimina)", l4: "Linda Page (lpage)", l5: "Julie Au (jbethke)" },
+                        { dept: "010001008", project: "", vendor: "Insight Direct USA, Inc.", poNumber: "(4500021103)", amount: "0", startDate: "", endDate: "", l2: "Liz Centoni (lrajaram)", l3: "Sandeep Milar (smilarma)", l4: "Jay Volk (jovolk)", l5: "Henry V" },
+                        { dept: "010001024", project: "", vendor: "Insight Direct USA, Inc.", poNumber: "(4500024908)", amount: "0", startDate: "", endDate: "", l2: "Liz Centoni (lrajaram)", l3: "Sandeep Milar (smilarma)", l4: "Janine Daniel (jandanie)", l5: "Reid A" },
+                        { dept: "010001024", project: "", vendor: "Insight Direct USA, Inc.", poNumber: "4500024908", amount: "$478", startDate: "8/28/2024", endDate: "8/27/2025", l2: "Liz Centoni (lrajaram)", l3: "Sandeep Milar (smilarma)", l4: "Janine Daniel (jandanie)", l5: "Reid A" },
+                        { dept: "010001201", project: "", vendor: "Ortoo Ltd", poNumber: "4500026421", amount: "$12,342", startDate: "1/31/2025", endDate: "1/30/2026", l2: "Liz Centoni (lrajaram)", l3: "Sandeep Milar (smilarma)", l4: "Evan Parthenis (eparthen)", l5: "Marcia" },
+                        { dept: "010001201", project: "", vendor: "F-Secure Cyber Security, Inc.DBA: WithSecure, Inc.", poNumber: "(4500024665)", amount: "0", startDate: "", endDate: "", l2: "Liz Centoni (lrajaram)", l3: "Sandeep Milar (smilarma)", l4: "Evan Parthenis (eparthen)", l5: "Marcia" },
+                        { dept: "010001201", project: "", vendor: "Assembled, Inc.", poNumber: "(4500026725)", amount: "0", startDate: "", endDate: "", l2: "Liz Centoni (lrajaram)", l3: "Buffy Ransom (buransom)", l4: "Neal Alsup (nalsup)", l5: "Crystal" },
+                        { dept: "010001201", project: "", vendor: "Ortoo Ltd", poNumber: "(4500026421)", amount: "0", startDate: "", endDate: "", l2: "Liz Centoni (lrajaram)", l3: "Sandeep Milar (smilarma)", l4: "Evan Parthenis (eparthen)", l5: "Marcia" },
+                      ].map((row, idx) => (
+                        <tr key={idx} className="border-b border-border hover:bg-muted/20">
+                          <td className="px-3 py-2">
+                            <ExternalLink className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-primary" />
+                          </td>
+                          <td className="px-3 py-2">{row.dept}</td>
+                          <td className="px-3 py-2">{row.project}</td>
+                          <td className="px-3 py-2 max-w-[200px] truncate">{row.vendor}</td>
+                          <td className="px-3 py-2">{row.poNumber}</td>
+                          <td className="px-3 py-2">{row.amount}</td>
+                          <td className="px-3 py-2">{row.startDate}</td>
+                          <td className="px-3 py-2">{row.endDate}</td>
+                          <td className="px-3 py-2">{row.l2}</td>
+                          <td className="px-3 py-2">{row.l3}</td>
+                          <td className="px-3 py-2">{row.l4}</td>
+                          <td className="px-3 py-2">{row.l5}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </TabsContent>
 
