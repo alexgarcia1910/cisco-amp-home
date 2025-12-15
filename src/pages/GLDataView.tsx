@@ -76,9 +76,36 @@ const generateMockData = () => {
   }));
 };
 
-const mockData = generateMockData();
+// Mock data for Asset Depreciation
+const generateAssetDepreciationData = () => {
+  const assetCategories = ["Software", "Hardware", "Equipment", "Furniture", "Vehicles"];
+  const level2Leaders = ["John Smith", "Sarah Johnson", "Michael Brown", "Emily Davis", "Robert Wilson"];
+  const level3Leaders = ["James Lee", "Lisa Wang", "David Chen", "Amanda White", "Chris Martin"];
+  const level4Leaders = ["Tom Anderson", "Jennifer Taylor", "Kevin Moore", "Rachel Green", "Mark Thompson"];
+  const level5Leaders = ["Alex Garcia", "Nicole Harris", "Brian Clark", "Stephanie Lewis", "Daniel Walker"];
+  const ssTableCodes = ["SW001", "HW002", "EQ003", "FN004", "VH005", "SW006", "HW007"];
+  const glPostedFlags = ["Y", "N"];
 
-const columns = [
+  return Array.from({ length: 100 }, (_, i) => ({
+    id: `asset-${i + 1}`,
+    assetCategory: assetCategories[Math.floor(Math.random() * assetCategories.length)],
+    assetNumber: `AST${String(100000 + i).padStart(6, "0")}`,
+    departmentNumber: `${1000 + Math.floor(Math.random() * 9000)}`,
+    purchaseReqNumber: `PR${String(200000 + Math.floor(Math.random() * 100000)).padStart(7, "0")}`,
+    poNumber: `PO${String(300000 + Math.floor(Math.random() * 100000)).padStart(7, "0")}`,
+    level2Leader: level2Leaders[Math.floor(Math.random() * level2Leaders.length)],
+    level3Leader: level3Leaders[Math.floor(Math.random() * level3Leaders.length)],
+    level4Leader: level4Leaders[Math.floor(Math.random() * level4Leaders.length)],
+    level5Leader: level5Leaders[Math.floor(Math.random() * level5Leaders.length)],
+    ssTableCd: ssTableCodes[Math.floor(Math.random() * ssTableCodes.length)],
+    glPostedFlag: glPostedFlags[Math.floor(Math.random() * glPostedFlags.length)],
+  }));
+};
+
+const mockData = generateMockData();
+const assetDepreciationData = generateAssetDepreciationData();
+
+const glColumns = [
   { key: "softwarePublisher", label: "Software Publisher" },
   { key: "usdNet", label: "USD Net", isNumeric: true },
   { key: "glDescription", label: "GL Description" },
@@ -96,30 +123,65 @@ const columns = [
   { key: "accountDesc", label: "Account Description" },
 ];
 
+const assetDepreciationColumns = [
+  { key: "assetCategory", label: "Asset Category" },
+  { key: "assetNumber", label: "Asset #" },
+  { key: "departmentNumber", label: "Department #" },
+  { key: "purchaseReqNumber", label: "Purchase REQ #" },
+  { key: "poNumber", label: "PO #" },
+  { key: "level2Leader", label: "Level 2 Leader" },
+  { key: "level3Leader", label: "Level 3 Leader" },
+  { key: "level4Leader", label: "Level 4 Leader" },
+  { key: "level5Leader", label: "Level 5 Leader" },
+  { key: "ssTableCd", label: "SS Table CD" },
+  { key: "glPostedFlag", label: "GL Posted Flag" },
+];
+
 const GLDataView = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("gl-transactions");
   const [fiscalYear, setFiscalYear] = useState("FY2026");
   
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(100);
-  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
+  // GL Transactions state
+  const [glSelectedRows, setGlSelectedRows] = useState<string[]>([]);
+  const [glCurrentPage, setGlCurrentPage] = useState(1);
+  const [glItemsPerPage, setGlItemsPerPage] = useState(100);
+  const [glActiveFilters, setGlActiveFilters] = useState<Record<string, string[]>>({});
+  
+  // Asset Depreciation state
+  const [assetSelectedRows, setAssetSelectedRows] = useState<string[]>([]);
+  const [assetCurrentPage, setAssetCurrentPage] = useState(1);
+  const [assetItemsPerPage, setAssetItemsPerPage] = useState(100);
+  const [assetActiveFilters, setAssetActiveFilters] = useState<Record<string, string[]>>({});
+  
+  // Shared filter modal state
   const [filterSearch, setFilterSearch] = useState("");
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [selectedFilterField, setSelectedFilterField] = useState<string>("");
   const [pendingFilterValues, setPendingFilterValues] = useState<string[]>([]);
 
+  // Dynamic columns based on active tab
+  const currentColumns = activeTab === "gl-transactions" ? glColumns : assetDepreciationColumns;
+  const currentData = activeTab === "gl-transactions" ? mockData : assetDepreciationData;
+  const currentFilters = activeTab === "gl-transactions" ? glActiveFilters : assetActiveFilters;
+  const setCurrentFilters = activeTab === "gl-transactions" ? setGlActiveFilters : setAssetActiveFilters;
+  const currentSelectedRows = activeTab === "gl-transactions" ? glSelectedRows : assetSelectedRows;
+  const setCurrentSelectedRows = activeTab === "gl-transactions" ? setGlSelectedRows : setAssetSelectedRows;
+  const currentPage = activeTab === "gl-transactions" ? glCurrentPage : assetCurrentPage;
+  const setCurrentPage = activeTab === "gl-transactions" ? setGlCurrentPage : setAssetCurrentPage;
+  const itemsPerPage = activeTab === "gl-transactions" ? glItemsPerPage : assetItemsPerPage;
+  const setItemsPerPage = activeTab === "gl-transactions" ? setGlItemsPerPage : setAssetItemsPerPage;
+
   // Get unique values for each column (as strings for filtering)
   const getColumnOptions = (columnKey: string): string[] => {
-    const values = mockData.map((row) => String(row[columnKey as keyof typeof row]));
+    const values = currentData.map((row) => String(row[columnKey as keyof typeof row]));
     return [...new Set(values)].sort();
   };
 
   // Filter data based on active filters
   const filteredData = useMemo(() => {
-    return mockData.filter((row) => {
-      for (const [key, filterValues] of Object.entries(activeFilters)) {
+    return currentData.filter((row) => {
+      for (const [key, filterValues] of Object.entries(currentFilters)) {
         if (filterValues.length > 0) {
           const cellValue = String(row[key as keyof typeof row]);
           if (!filterValues.includes(cellValue)) {
@@ -129,7 +191,7 @@ const GLDataView = () => {
       }
       return true;
     });
-  }, [activeFilters]);
+  }, [currentFilters, currentData]);
 
   // Pagination
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -140,7 +202,7 @@ const GLDataView = () => {
 
 
   const toggleFilter = (columnKey: string, value: string) => {
-    setActiveFilters((prev) => {
+    setCurrentFilters((prev) => {
       const current = prev[columnKey] || [];
       if (current.includes(value)) {
         return { ...prev, [columnKey]: current.filter((v) => v !== value) };
@@ -152,29 +214,29 @@ const GLDataView = () => {
   };
 
   const clearAllFilters = () => {
-    setActiveFilters({});
+    setCurrentFilters({});
     setCurrentPage(1);
   };
 
   const toggleRowSelection = (rowId: string) => {
-    setSelectedRows((prev) =>
+    setCurrentSelectedRows((prev) =>
       prev.includes(rowId) ? prev.filter((id) => id !== rowId) : [...prev, rowId]
     );
   };
 
   const toggleAllRows = () => {
-    if (selectedRows.length === paginatedData.length) {
-      setSelectedRows([]);
+    if (currentSelectedRows.length === paginatedData.length) {
+      setCurrentSelectedRows([]);
     } else {
-      setSelectedRows(paginatedData.map((row) => row.id));
+      setCurrentSelectedRows(paginatedData.map((row) => row.id));
     }
   };
 
-  const hasActiveFilters = Object.values(activeFilters).some((f) => f.length > 0);
+  const hasActiveFilters = Object.values(currentFilters).some((f) => f.length > 0);
 
   const getActiveFilterCount = () => {
     let count = 0;
-    for (const values of Object.values(activeFilters)) {
+    for (const values of Object.values(currentFilters)) {
       count += values.length;
     }
     return count;
@@ -257,14 +319,14 @@ const GLDataView = () => {
             <span className="text-sm text-muted-foreground">
               {hasActiveFilters ? `${getActiveFilterCount()} filter(s) applied` : "No Filters"}
             </span>
-            {Object.entries(activeFilters).map(([key, values]) =>
+            {Object.entries(currentFilters).map(([key, values]) =>
               values.map((value) => (
                 <Badge
                   key={`${key}-${value}`}
                   variant="secondary"
                   className="gap-1 bg-primary/10 text-primary"
                 >
-                  {columns.find((c) => c.key === key)?.label}: {value}
+                  {currentColumns.find((c) => c.key === key)?.label}: {value}
                   <X
                     className="h-3 w-3 cursor-pointer"
                     onClick={() => toggleFilter(key, value)}
@@ -304,14 +366,14 @@ const GLDataView = () => {
                   value={selectedFilterField} 
                   onValueChange={(value) => {
                     setSelectedFilterField(value);
-                    setPendingFilterValues(activeFilters[value] || []);
+                    setPendingFilterValues(currentFilters[value] || []);
                   }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Choose a field" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
-                    {columns.map((column) => (
+                    {currentColumns.map((column) => (
                       <SelectItem key={column.key} value={column.key}>
                         {column.label}
                       </SelectItem>
@@ -387,7 +449,7 @@ const GLDataView = () => {
               <Button 
                 onClick={() => {
                   if (selectedFilterField && pendingFilterValues.length > 0) {
-                    setActiveFilters(prev => ({
+                    setCurrentFilters(prev => ({
                       ...prev,
                       [selectedFilterField]: pendingFilterValues
                     }));
@@ -414,11 +476,11 @@ const GLDataView = () => {
                 <tr className="bg-muted/50 border-b border-border">
                   <th className="p-3 text-left w-12">
                     <Checkbox
-                      checked={selectedRows.length === paginatedData.length && paginatedData.length > 0}
+                      checked={currentSelectedRows.length === paginatedData.length && paginatedData.length > 0}
                       onCheckedChange={toggleAllRows}
                     />
                   </th>
-                  {columns.map((column) => (
+                  {currentColumns.map((column) => (
                     <th 
                       key={column.key} 
                       className={`p-3 font-medium text-card-foreground whitespace-nowrap ${column.key === 'usdNet' ? 'text-right' : 'text-left'}`}
@@ -438,12 +500,12 @@ const GLDataView = () => {
                   >
                     <td className="p-3">
                       <Checkbox
-                        checked={selectedRows.includes(row.id)}
+                        checked={currentSelectedRows.includes(row.id)}
                         onCheckedChange={() => toggleRowSelection(row.id)}
                       />
                     </td>
-                    {columns.map((column) => {
-                      const cellValue = row[column.key as keyof typeof row];
+                    {currentColumns.map((column) => {
+                      const cellValue = row[column.key as keyof typeof row] as string | number;
                       const isNumeric = column.key === 'usdNet';
                       
                       return (
@@ -461,18 +523,20 @@ const GLDataView = () => {
                   </tr>
                 ))}
               </tbody>
-              {/* Sticky footer row with total */}
-              <tfoot className="sticky bottom-0 bg-primary/10 border-t-2 border-primary">
-                <tr>
-                  <td className="p-3 font-semibold text-card-foreground" colSpan={2}>
-                    Total Amount
-                  </td>
-                  <td className="p-3 font-semibold text-card-foreground">
-                    ${filteredData.reduce((sum, row) => sum + row.usdNet, 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </td>
-                  <td colSpan={columns.length - 2}></td>
-                </tr>
-              </tfoot>
+              {/* Sticky footer row with total - only for GL transactions */}
+              {activeTab === "gl-transactions" && (
+                <tfoot className="sticky bottom-0 bg-primary/10 border-t-2 border-primary">
+                  <tr>
+                    <td className="p-3 font-semibold text-card-foreground" colSpan={2}>
+                      Total Amount
+                    </td>
+                    <td className="p-3 font-semibold text-card-foreground">
+                      ${(filteredData as typeof mockData).reduce((sum, row) => sum + row.usdNet, 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
+                    <td colSpan={currentColumns.length - 2}></td>
+                  </tr>
+                </tfoot>
+              )}
             </table>
           </div>
 
