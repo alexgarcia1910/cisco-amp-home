@@ -30,7 +30,7 @@ const modules = [{
   title: "Finance Leader's Dashboard",
   description: "Executive dashboard with key financial metrics",
   icon: BarChart3,
-  path: undefined
+  path: "/dashboard"
 }];
 const ModuleGrid = () => {
   return <main className="mx-auto max-w-7xl px-6 lg:px-8 py-10">

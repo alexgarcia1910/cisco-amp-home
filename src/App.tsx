@@ -14,6 +14,7 @@ import GLDataView from "./pages/GLDataView";
 import GLDataViewDetail from "./pages/GLDataViewDetail";
 import Reconciliation from "./pages/Reconciliation";
 import ReconciliationDetail from "./pages/ReconciliationDetail";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/gldataview/:id" element={<GLDataViewDetail />} />
           <Route path="/reconciliation" element={<Reconciliation />} />
           <Route path="/reconciliation/:id" element={<ReconciliationDetail />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
