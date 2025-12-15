@@ -389,7 +389,8 @@ const Reconciliation = () => {
                 {paginatedData.map((row, index) => (
                   <TableRow
                     key={row.id}
-                    className={index % 2 === 0 ? "bg-white" : "bg-muted/30"}
+                    className={`${index % 2 === 0 ? "bg-white" : "bg-muted/30"} cursor-pointer hover:bg-blue-50`}
+                    onClick={() => navigate(`/reconciliation/${row.id}`)}
                   >
                     <TableCell className="text-xs whitespace-nowrap">{row.nodeLevel2}</TableCell>
                     <TableCell className="text-xs whitespace-nowrap">{row.nodeLevel3}</TableCell>
