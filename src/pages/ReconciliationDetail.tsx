@@ -83,8 +83,54 @@ const generateAssetDepreciationData = () => {
   }));
 };
 
+// Mock data for Yearly PO Financials table
+const generateYearlyPOFinancialsData = () => {
+  const vendors = [
+    "360INSIGHTS USA LTD", "SHI INTERNATIONAL CORP", "ALTRATA INC", "GOVLY INC", 
+    "MINDTICKLE INC", "Software Allocations", "ARTICULATE GLOBAL LLC", "Misc Allocations",
+    "ORACLE CORP", "MICROSOFT INC", "ADOBE SYSTEMS", "SALESFORCE INC"
+  ];
+  const poNumbers = [
+    "USA000EP676650", "USA000EP670622", "USA000EP690598", "USA000EP687432",
+    "USA000EP691234", "USA000EP678901", "USA000EP665432", "USA000EP654321"
+  ];
+
+  return Array.from({ length: 15 }, (_, i) => {
+    // Generate values where some actual amounts match forecast amounts (for green highlighting)
+    const actualQ1 = [1700, 33046, 52000, 247998, -49486, 0, -142451, 15000][i % 8];
+    const commitQ1 = [0, 33046, 52000, 0, -49486, 0, -142451, 15000][i % 8];
+    const forecastQ1 = [1700, 33046, 52000, 247998, 0, 0, -142451, 18000][i % 8]; // Some match actualQ1
+    
+    const actualQ2 = [0, -247998, 52000, 0, 33046, 0, 15000, -49486][i % 8];
+    const commitQ2 = [0, -247998, 0, 0, 33046, 0, 15000, 0][i % 8];
+    const forecastQ2 = [0, -247998, 52000, 0, 33046, 0, 15000, -49486][i % 8];
+    
+    const actualQ3 = [52000, 0, -142451, 1700, 0, 247998, 33046, 0][i % 8];
+    const commitQ3 = [52000, 0, 0, 0, 0, 247998, 0, 0][i % 8];
+    const forecastQ3 = [52000, 0, -142451, 1700, 0, 0, 33046, 0][i % 8];
+
+    return {
+      id: i + 1,
+      department: "020535002",
+      project: i % 4 === 0 ? "PRJ-" + (1000 + i) : "",
+      vendor: vendors[i % vendors.length],
+      poNumber: poNumbers[i % poNumbers.length],
+      actualQ1,
+      commitQ1,
+      forecastQ1,
+      actualQ2,
+      commitQ2,
+      forecastQ2,
+      actualQ3,
+      commitQ3,
+      forecastQ3,
+    };
+  });
+};
+
 const mockData = generateDetailMockData();
 const assetDepreciationData = generateAssetDepreciationData();
+const yearlyPOFinancialsData = generateYearlyPOFinancialsData();
 
 const ReconciliationDetail = () => {
   const { id } = useParams();
@@ -561,8 +607,235 @@ const ReconciliationDetail = () => {
           </TabsContent>
 
           <TabsContent value="yearly-po" className="mt-4">
-            <div className="text-center py-12 text-muted-foreground">
-              Yearly PO Financials data will be displayed here.
+            {/* Action Bar */}
+            <div className="flex items-center justify-between mb-4">
+              <button className="flex items-center gap-1 text-primary hover:underline text-sm">
+                Action: <RefreshCw className="h-3 w-3" /> Refresh data
+              </button>
+            </div>
+
+            {/* Filter Bar */}
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <span className="text-sm text-muted-foreground">Filtered:</span>
+              <span className="text-sm text-muted-foreground">No Filters</span>
+              <button 
+                className="text-sm text-muted-foreground ml-2"
+                disabled
+              >
+                Clear all filters
+              </button>
+            </div>
+
+            {/* Yearly PO Financials Data Table */}
+            <div className="bg-white rounded-lg border border-border overflow-hidden">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    {/* Quarter Group Headers Row */}
+                    <TableRow className="bg-blue-100">
+                      <TableHead className="text-[#032D4D] font-medium text-xs" colSpan={4}></TableHead>
+                      <TableHead className="text-[#032D4D] font-semibold text-xs text-center border-l border-blue-200" colSpan={3}>Q1</TableHead>
+                      <TableHead className="text-[#032D4D] font-semibold text-xs text-center border-l border-blue-200" colSpan={3}>Q2</TableHead>
+                      <TableHead className="text-[#032D4D] font-semibold text-xs text-center border-l border-blue-200" colSpan={3}>Q3</TableHead>
+                    </TableRow>
+                    {/* Column Headers Row */}
+                    <TableRow className="bg-[#032D4D]">
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          Department <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          Project <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          Vendor <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          PO Number <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs border-l border-blue-300">
+                        <div className="flex items-center gap-1">
+                          Actual Amount - Q1 <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          Commit Amount - Q1 <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          Forecast Amount - Q1 <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs border-l border-blue-300">
+                        <div className="flex items-center gap-1">
+                          Actual Amount - Q2 <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          Commit Amount - Q2 <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          Forecast Amount - Q2 <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs border-l border-blue-300">
+                        <div className="flex items-center gap-1">
+                          Actual Amount - Q3 <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          Commit Amount - Q3 <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-white font-medium text-xs">
+                        <div className="flex items-center gap-1">
+                          Forecast Amount - Q3 <ChevronDown className="h-3 w-3" />
+                        </div>
+                      </TableHead>
+                    </TableRow>
+                    {/* Search Row */}
+                    <TableRow className="bg-gray-50">
+                      <TableHead className="p-1"></TableHead>
+                      <TableHead className="p-1">
+                        <Input placeholder="Search..." className="h-7 text-xs bg-white" />
+                      </TableHead>
+                      <TableHead className="p-1">
+                        <Input placeholder="Search..." className="h-7 text-xs bg-white" />
+                      </TableHead>
+                      <TableHead className="p-1">
+                        <Input placeholder="Search..." className="h-7 text-xs bg-white" />
+                      </TableHead>
+                      <TableHead className="p-1"></TableHead>
+                      <TableHead className="p-1"></TableHead>
+                      <TableHead className="p-1"></TableHead>
+                      <TableHead className="p-1"></TableHead>
+                      <TableHead className="p-1"></TableHead>
+                      <TableHead className="p-1"></TableHead>
+                      <TableHead className="p-1"></TableHead>
+                      <TableHead className="p-1"></TableHead>
+                      <TableHead className="p-1"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {yearlyPOFinancialsData.slice(0, parseInt(itemsPerPage)).map((row, index) => {
+                      const formatCurrency = (value: number) => {
+                        if (value === 0) return "$0";
+                        const absValue = Math.abs(value).toLocaleString();
+                        return value < 0 ? `-$${absValue}` : `$${absValue}`;
+                      };
+
+                      return (
+                        <TableRow 
+                          key={row.id}
+                          className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                        >
+                          <TableCell className="text-xs p-2">{row.department}</TableCell>
+                          <TableCell className="text-xs p-2">{row.project}</TableCell>
+                          <TableCell className="text-xs p-2">{row.vendor}</TableCell>
+                          <TableCell className="text-xs p-2">{row.poNumber}</TableCell>
+                          <TableCell className={`text-xs p-2 border-l border-gray-200 ${row.actualQ1 === row.forecastQ1 && row.actualQ1 !== 0 ? 'bg-green-400' : ''}`}>
+                            {formatCurrency(row.actualQ1)}
+                          </TableCell>
+                          <TableCell className="text-xs p-2">{formatCurrency(row.commitQ1)}</TableCell>
+                          <TableCell className="text-xs p-2">{formatCurrency(row.forecastQ1)}</TableCell>
+                          <TableCell className={`text-xs p-2 border-l border-gray-200 ${row.actualQ2 === row.forecastQ2 && row.actualQ2 !== 0 ? 'bg-green-400' : ''}`}>
+                            {formatCurrency(row.actualQ2)}
+                          </TableCell>
+                          <TableCell className="text-xs p-2">{formatCurrency(row.commitQ2)}</TableCell>
+                          <TableCell className="text-xs p-2">{formatCurrency(row.forecastQ2)}</TableCell>
+                          <TableCell className={`text-xs p-2 border-l border-gray-200 ${row.actualQ3 === row.forecastQ3 && row.actualQ3 !== 0 ? 'bg-green-400' : ''}`}>
+                            {formatCurrency(row.actualQ3)}
+                          </TableCell>
+                          <TableCell className="text-xs p-2">{formatCurrency(row.commitQ3)}</TableCell>
+                          <TableCell className="text-xs p-2">{formatCurrency(row.forecastQ3)}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                    {/* Total Amounts Row */}
+                    <TableRow className="bg-blue-100 font-semibold">
+                      <TableCell className="text-xs p-2">Total Amounts</TableCell>
+                      <TableCell className="text-xs p-2"></TableCell>
+                      <TableCell className="text-xs p-2"></TableCell>
+                      <TableCell className="text-xs p-2"></TableCell>
+                      <TableCell className="text-xs p-2 border-l border-blue-200">
+                        ${yearlyPOFinancialsData.reduce((sum, row) => sum + row.actualQ1, 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-xs p-2">
+                        ${yearlyPOFinancialsData.reduce((sum, row) => sum + row.commitQ1, 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-xs p-2">
+                        ${yearlyPOFinancialsData.reduce((sum, row) => sum + row.forecastQ1, 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-xs p-2 border-l border-blue-200">
+                        ${yearlyPOFinancialsData.reduce((sum, row) => sum + row.actualQ2, 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-xs p-2">
+                        ${yearlyPOFinancialsData.reduce((sum, row) => sum + row.commitQ2, 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-xs p-2">
+                        ${yearlyPOFinancialsData.reduce((sum, row) => sum + row.forecastQ2, 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-xs p-2 border-l border-blue-200">
+                        ${yearlyPOFinancialsData.reduce((sum, row) => sum + row.actualQ3, 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-xs p-2">
+                        ${yearlyPOFinancialsData.reduce((sum, row) => sum + row.commitQ3, 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-xs p-2">
+                        ${yearlyPOFinancialsData.reduce((sum, row) => sum + row.forecastQ3, 0).toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex items-center justify-between mt-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Items per page:</span>
+                <Select value={itemsPerPage} onValueChange={setItemsPerPage}>
+                  <SelectTrigger className="w-16 h-8 text-sm bg-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="25">25</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  disabled
+                >
+                  Previous
+                </Button>
+                <span className="text-sm">Page 1</span>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  disabled
+                >
+                  Next
+                </Button>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
