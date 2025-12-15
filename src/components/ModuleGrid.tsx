@@ -15,7 +15,7 @@ const modules = [{
   title: "Department-wise GL Reconciliation View",
   description: "Reconcile GL data organized by department",
   icon: Building2,
-  path: undefined
+  path: "/reconciliation"
 }, {
   title: "Financial Analysts PO Portfolio",
   description: "Purchase order portfolio management for analysts",
