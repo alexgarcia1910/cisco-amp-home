@@ -349,6 +349,8 @@ const FinancialAnalystPO = () => {
   const [selectedRowData, setSelectedRowData] = useState<typeof portfolioData[0] | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showExplorePOModal, setShowExplorePOModal] = useState(false);
+  const [showRevertModal, setShowRevertModal] = useState(false);
+  const [revertPONumber, setRevertPONumber] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [monthlyForecast, setMonthlyForecast] = useState<Record<string, string>>({});
   const [legendFilters, setLegendFilters] = useState({
@@ -1056,8 +1058,169 @@ const FinancialAnalystPO = () => {
             </TabsContent>
 
             <TabsContent value="deleted-pos" className="mt-0">
-              <div className="flex items-center justify-center h-64 text-muted-foreground">
-                Deleted POs content will appear here
+              {/* Action Bar */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">Action:</span>
+                  <button className="flex items-center gap-1 text-primary hover:underline">
+                    <RefreshCw className="h-3 w-3" />
+                    Refresh data
+                  </button>
+                </div>
+              </div>
+
+              {/* Filter Status */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-sm text-muted-foreground">
+                  Filtered: No Filters
+                </div>
+                <button className="text-sm text-muted-foreground hover:text-primary">
+                  Clear all filters
+                </button>
+              </div>
+
+              {/* Deleted POs Table */}
+              <div className="border border-border rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-muted/30 border-b border-border">
+                        <th className="px-3 py-2 text-left font-medium border-r border-border w-12"></th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            Department Number <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            Project / Program <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            Vendor Name <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            PO# <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            PO Amount <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            PO Start Date <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            PO End Date <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            Level 2 Leader <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            Level 3 Leader <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium border-r border-border">
+                          <div className="flex items-center gap-1">
+                            Level 4 Leader <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                        <th className="px-3 py-2 text-left font-medium">
+                          <div className="flex items-center gap-1">
+                            Level 5 Leader <ChevronDown className="h-3 w-3" />
+                          </div>
+                        </th>
+                      </tr>
+                      <tr className="bg-muted/10 border-b border-border">
+                        <th className="px-3 py-1 border-r border-border"></th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1 border-r border-border">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                        <th className="px-3 py-1">
+                          <Input placeholder="Search" className="h-6 text-xs" />
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { deptNum: "20534991", project: "", vendor: "ASANA INC", po: "(USA000EP459138)", amount: "", startDate: "", endDate: "", l2: "Gary Steele (garystl)", l3: "Nick Michaelides (nimichae)", l4: "Gary Hall", l5: "" },
+                        { deptNum: "20534999", project: "", vendor: "CLARI INC", po: "USA000EP657519_", amount: "$929,607", startDate: "", endDate: "", l2: "Oliver Tuszik (otuszik)", l3: "John Wunder (jwunder)", l4: "Emily Killam (ekillam)", l5: "" },
+                        { deptNum: "20534999", project: "", vendor: "CLARI INC", po: "USA000EP596066_Sales_GTM_FY26FCS...", amount: "$532,000", startDate: "12/30/2024", endDate: "12/29/2025", l2: "Scott Herren (rsherren)", l3: "Andrew Ashton", l4: "Kevin Cory (kcory)", l5: "" },
+                        { deptNum: "20534999", project: "", vendor: "CLARI INC", po: "USA000EP599000_Sales_GTM_FY26FCS...", amount: "$3,002,580", startDate: "10/26/2024", endDate: "10/25/2026", l2: "Oliver Tuszik (otuszik)", l3: "John Wunder (jwunder)", l4: "Emily Killam (ekillam)", l5: "" },
+                        { deptNum: "20534999", project: "", vendor: "CLARI INC", po: "USA000EP553479_", amount: "$574,882", startDate: "", endDate: "", l2: "Scott Herren (rsherren)", l3: "Andrew Ashton", l4: "Kevin Cory (kcory)", l5: "" },
+                        { deptNum: "20534999", project: "", vendor: "CLARI INC", po: "USA000EP589686_Sales_GTM_FY26FCS...", amount: "$613,638", startDate: "10/30/2025", endDate: "10/29/2026", l2: "Scott Herren (rsherren)", l3: "Andrew Ashton", l4: "Kevin Cory (kcory)", l5: "" },
+                        { deptNum: "20433031", project: "", vendor: "ECHOVISION LLC", po: "(USA000EP570416)", amount: "", startDate: "", endDate: "", l2: "Gary Steele (garystl)", l3: "John Wunder (jwunder)", l4: "Melinda Cox", l5: "" },
+                        { deptNum: "20438935", project: "", vendor: "GARTNER INC", po: "USA000EP488373", amount: "$41,550", startDate: "10/31/2023", endDate: "04/28/2026", l2: "Gary Steele (garystl)", l3: "John Wunder (jwunder)", l4: "Melinda Cox", l5: "" },
+                        { deptNum: "20438935", project: "", vendor: "GARTNER INC", po: "(USA000EP488373)", amount: "", startDate: "", endDate: "", l2: "Gary Steele (garystl)", l3: "John Wunder (jwunder)", l4: "Melinda Cox", l5: "" },
+                        { deptNum: "20534999", project: "", vendor: "GONG IO INC", po: "(USA000EP606692_XC2)", amount: "", startDate: "", endDate: "", l2: "Oliver Tuszik (otuszik)", l3: "John Wunder (jwunder)", l4: "Emily Killam (ekillam)", l5: "" },
+                      ].map((row, idx) => (
+                        <tr key={idx} className="border-b border-border hover:bg-muted/20">
+                          <td className="px-3 py-2 border-r border-border">
+                            <button 
+                              onClick={() => {
+                                setRevertPONumber(row.po);
+                                setShowRevertModal(true);
+                              }}
+                              className="text-muted-foreground hover:text-primary"
+                              title="Revert to main table"
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </button>
+                          </td>
+                          <td className="px-3 py-2 border-r border-border">{row.deptNum}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.project}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.vendor}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.po}</td>
+                          <td className="px-3 py-2 border-r border-border text-right">{row.amount}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.startDate}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.endDate}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.l2}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.l3}</td>
+                          <td className="px-3 py-2 border-r border-border">{row.l4}</td>
+                          <td className="px-3 py-2">{row.l5}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
@@ -1742,6 +1905,28 @@ const FinancialAnalystPO = () => {
                 </div>
               </div>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Revert Confirmation Modal */}
+        <Dialog open={showRevertModal} onOpenChange={setShowRevertModal}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Confirm Revert</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p className="text-sm text-muted-foreground">
+                Are you sure you want to undelete <span className="font-semibold text-foreground">{revertPONumber}</span> and move it back to the main table?
+              </p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowRevertModal(false)}>
+                Cancel
+              </Button>
+              <Button onClick={() => setShowRevertModal(false)}>
+                Confirm
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </main>
