@@ -146,6 +146,96 @@ const GLDataViewDetail = () => {
           Forecast for this PO does not exist within Logged-In User's Portfolio
         </p>
 
+        {/* PO Details Section */}
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-foreground mb-2">PO Details</h2>
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-[#032D4D]">
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Department</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">PO</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">PO Amount</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">PO Start Date</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">PO End Date</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Annual Contract Value</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Total Contract Value</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Contract Renewal or Change Quarter</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Fiscal Year</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Commit Amount - Q1</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Commit Amount - Q2</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Commit Amount - Q3</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Commit Amount - Q4</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow className="bg-background">
+                    <TableCell className="text-xs whitespace-nowrap">IT Infrastructure</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">{id}</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$1,250,000.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">01/15/2025</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">01/14/2026</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$1,250,000.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$3,750,000.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">Q1 FY27</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">FY26</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$312,500.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$312,500.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$312,500.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$312,500.00</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </div>
+
+        {/* Renewal PO Details Section */}
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-foreground mb-2">Renewal PO Details</h2>
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-[#032D4D]">
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Department</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">PO</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">PO Amount</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">PO Start Date</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">PO End Date</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Annual Contract Value</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Total Contract Value</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Contract Renewal or Change Quarter</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Fiscal Year</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Commit Amount - Q1 FY27</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Commit Amount - Q2 FY27</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Commit Amount - Q3 FY27</TableHead>
+                    <TableHead className="text-xs font-medium text-white whitespace-nowrap">Commit Amount - Q4 FY27</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow className="bg-background">
+                    <TableCell className="text-xs whitespace-nowrap">IT Infrastructure</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">{id}-R1</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$1,312,500.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">01/15/2026</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">01/14/2027</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$1,312,500.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$3,937,500.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">Q1 FY28</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">FY27</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$328,125.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$328,125.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$328,125.00</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">$328,125.00</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </div>
+
         {/* GL Transaction Details Collapsible */}
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <div className="bg-card border border-border rounded-lg">
